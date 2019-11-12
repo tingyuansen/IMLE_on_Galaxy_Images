@@ -28,14 +28,18 @@
 # 3. Set PYTHON_DIR and NUMPY_DIR to the directories for Python and Numpy (Note that the code only supports Python 2.7)
 # 4. Run make
 
+#BLAS=/usr/local/lapack/3.5.0
+#NETLIB_DIR=/usr/lib64/libblas.so.3.2.1
+#ATLAS_DIR=/usr/lib64/libblas.so.3.2.1
+#OPENBLAS_DIR=/usr/lib64/libblas.so.3.2.1
+#MKL_DIR=/opt/intel/compilers_and_libraries_2019.2.187/linux/mkl
 CC=gcc
-BLAS=netlib
-NETLIB_DIR=/usr/lib/libblas
-ATLAS_DIR=/usr/lib/atlas-base
-OPENBLAS_DIR=/usr/lib/openblas-base
-MKL_DIR=/opt/intel/mkl
-PYTHON_DIR=/usr/include/python2.7
-NUMPY_DIR=/usr/local/lib/python2.7/dist-packages/numpy/core/include
+BLAS=openblas
+OPENBLAS_DIR=/usr/lib64/libopenblas64.so
+PYTHON_DIR=/opt/sns/anaconda2/2019.3/include/python2.7/
+NUMPY_DIR=/opt/sns/anaconda2/2019.3/lib/python2.7/site-packages/
+#PYTHON_DIR=/home/ting/anaconda3/include/python3.7m/
+#NUMPY_DIR=/home/ting/anaconda3/lib/python3.7/site-packages
 
 SRC_DIR=src
 INCL_DIR=include
