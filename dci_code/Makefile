@@ -33,11 +33,15 @@
 #ATLAS_DIR=/usr/lib64/libblas.so.3.2.1
 #OPENBLAS_DIR=/usr/lib64/libblas.so.3.2.1
 #MKL_DIR=/opt/intel/compilers_and_libraries_2019.2.187/linux/mkl
+
 CC=gcc
 BLAS=openblas
 OPENBLAS_DIR=/usr/lib64/libopenblas64.so
-PYTHON_DIR=/opt/sns/anaconda2/2019.3/include/python2.7/
-NUMPY_DIR=/opt/sns/anaconda2/2019.3/lib/python2.7/site-packages/
+
+PYTHON_DIR=/home/ting/anaconda2/include/python2.7/
+NUMPY_DIR=/home/ting/anaconda2/lib/python2.7/site-packages/
+#PYTHON_DIR=/opt/sns/anaconda2/2019.3/include/python2.7/
+#NUMPY_DIR=/opt/sns/anaconda2/2019.3/lib/python2.7/site-packages/
 #PYTHON_DIR=/home/ting/anaconda3/include/python3.7m/
 #NUMPY_DIR=/home/ting/anaconda3/lib/python3.7/site-packages
 
