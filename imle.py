@@ -142,7 +142,7 @@ class IMLE():
 def main(*args):
 
     # train_data is of shape N x C x H x W
-    train_data = np.random.randn(128, 1, 28, 28)
+    train_data = np.random.rand(128, 1, 28, 28)
 
     # initiate network
     z_dim = 64
