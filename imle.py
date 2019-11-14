@@ -30,7 +30,7 @@ class ConvolutionalImplicitModel(nn.Module):
         z = self.relu(self.bn1(self.tconv1(z)))
         z = self.relu(self.bn2(self.tconv2(z)))
         z = self.relu(self.bn3(self.tconv3(z)))
-        z = torch.LeakyReLU(self.tconv4(z))
+        z = torch.nn.LeakyReLU(self.tconv4(z))
         return z
 
 
