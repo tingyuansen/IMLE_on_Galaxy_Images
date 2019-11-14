@@ -1,42 +1,18 @@
-'''
-Code for Implicit Maximum Likelihood Estimation
-
-This code implements the method described in the Implicit Maximum Likelihood
-Estimation paper, which can be found at https://arxiv.org/abs/1809.09087
-
-Copyright (C) 2018    Ke Li
-
-This file is part of the Implicit Maximum Likelihood Estimation reference
-implementation.
-
-The Implicit Maximum Likelihood Estimation reference implementation is free
-software: you can redistribute it and/or modify it under the terms of the GNU
-Affero General Public License as published by the Free Software Foundation,
-either version 3 of the License, or (at your option) any later version.
-
-The Implicit Maximum Likelihood Estimation reference implementation is
-distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with the Dynamic Continuous Indexing reference implementation.  If
-not, see <http://www.gnu.org/licenses/>.
-'''
-
+# import packages
 import numpy as np
+
 import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.autograd import Variable
+
 import sys
 sys.path.append('./dci_code')
 from dci import DCI
-import collections
 
-Hyperparams = collections.namedtuple('Hyperarams', 'base_lr batch_size num_epochs decay_step decay_rate staleness num_samples_factor')
-Hyperparams.__new__.__defaults__ = (None, None, None, None, None, None, None)
 
+#=============================================================================================================
+# define network
 class ConvolutionalImplicitModel(nn.Module):
     def __init__(self, z_dim):
         super(ConvolutionalImplicitModel, self).__init__()
@@ -57,36 +33,51 @@ class ConvolutionalImplicitModel(nn.Module):
         z = torch.sigmoid(self.tconv4(z))
         return z
 
+
+#=============================================================================================================
+# define class
 class IMLE():
     def __init__(self, z_dim):
         self.z_dim = z_dim
         self.model = ConvolutionalImplicitModel(z_dim).cuda()
         self.dci_db = None
 
-    def train(self, data_np, hyperparams, shuffle_data = True):
+#-----------------------------------------------------------------------------------------------------------
+    def train(self, data_np, base_lr=1e-3, batch_size=64, num_epochs=100,\
+              decay_step=25, decay_rate=1.0, staleness=5, num_samples_factor=10, shuffle_data = True):
+
+        # define metric
         loss_fn = nn.MSELoss().cuda()
+
+        # make model trainable
         self.model.train()
 
-        batch_size = hyperparams.batch_size
+        # train in batch
         num_batches = data_np.shape[0] // batch_size
-        num_samples = num_batches * hyperparams.num_samples_factor
 
-        if shuffle_data:
-            data_ordering = np.random.permutation(data_np.shape[0])
-            data_np = data_np[data_ordering]
+        # true data to mock sample
+        num_samples = num_batches * num_samples_factor
 
+#-----------------------------------------------------------------------------------------------------------
+        # make it in 1D data image for DCI
         data_flat_np = np.reshape(data_np, (data_np.shape[0], np.prod(data_np.shape[1:])))
 
+        # initiate dci
         if self.dci_db is None:
             self.dci_db = DCI(np.prod(data_np.shape[1:]), num_comp_indices = 2, num_simp_indices = 7)
 
-        for epoch in range(hyperparams.num_epochs):
+#-----------------------------------------------------------------------------------------------------------
+        # train through various epochs
+        for epoch in range(num_epochs):
 
-            if epoch % hyperparams.decay_step == 0:
-                lr = hyperparams.base_lr * hyperparams.decay_rate ** (epoch // hyperparams.decay_step)
+            # decay the learning rate
+            if epoch % decay_step == 0:
+                lr = base_lr * decay_rate ** (epoch // decay_step)
                 optimizer = optim.Adam(self.model.parameters(), lr=lr, betas=(0.5, 0.999), weight_decay=1e-5)
 
-            if epoch % hyperparams.staleness == 0:
+#-----------------------------------------------------------------------------------------------------------
+
+            if epoch % staleness == 0:
                 z_np = np.empty((num_samples * batch_size, self.z_dim, 1, 1))
                 samples_np = np.empty((num_samples * batch_size,)+data_np.shape[1:])
                 for i in range(num_samples):
@@ -107,12 +98,23 @@ class IMLE():
 
                 del samples_np, samples_flat_np
 
+#-----------------------------------------------------------------------------------------------------------
+            # gradient descent
             err = 0.
+
+            # loop over all batches
             for i in range(num_batches):
+                # set up backprop
                 self.model.zero_grad()
+
+#-----------------------------------------------------------------------------------------------------------
+                # evaluate the models
                 cur_z = torch.from_numpy(z_np[i*batch_size:(i+1)*batch_size]).float().cuda()
                 cur_data = torch.from_numpy(data_np[i*batch_size:(i+1)*batch_size]).float().cuda()
                 cur_samples = self.model(cur_z)
+
+#-----------------------------------------------------------------------------------------------------------
+                # calculate MSE loss of the two images
                 loss = loss_fn(cur_samples, cur_data)
                 loss.backward()
                 err += loss.item()
@@ -120,34 +122,23 @@ class IMLE():
 
             print("Epoch %d: Error: %f" % (epoch, err / num_batches))
 
+
+#=============================================================================================================
+# run the codes
 def main(*args):
 
-    if len(args) > 0:
-        device_id = int(args[0])
-    else:
-        device_id = 0
-
-    torch.cuda.set_device(device_id)
-
-    # train_data is of shape N x C x H x W, where N is the number of examples, C is the number of channels, H is the height and W is the width
+    # train_data is of shape N x C x H x W
     train_data = np.random.randn(128, 1, 28, 28)
 
+    # initiate network
     z_dim = 64
     imle = IMLE(z_dim)
 
-    # Hyperparameters:
-
-    # base_lr: Base learning rate
-    # batch_size: Batch size
-    # num_epochs: Number of epochs
-    # decay_step: Number of epochs before learning rate decay
-    # decay_rate: Rate of learning rate decay
-    # staleness: Number of times to re-use nearest samples
-    # num_samples_factor: Ratio of the number of generated samples to the number of real data examples
-    imle.train(train_data, Hyperparams(base_lr=1e-3, batch_size=64, num_epochs=100, decay_step=25, decay_rate=1.0, staleness=5, num_samples_factor=10))
-
+#---------------------------------------------------------------------------------------------
+    # train the network
+    imle.train(train_data)
     torch.save(imle.model.state_dict(), 'net_weights.pth')
 
-
+#---------------------------------------------------------------------------------------------
 if __name__ == '__main__':
     main(*sys.argv[1:])
