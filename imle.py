@@ -76,34 +76,45 @@ class IMLE():
                 optimizer = optim.Adam(self.model.parameters(), lr=lr, betas=(0.5, 0.999), weight_decay=1e-5)
 
 #-----------------------------------------------------------------------------------------------------------
-
+            # re-evaluate the closest models routinely
             if epoch % staleness == 0:
+
+                # initiate numpy array to store latent draws and the associate sample
                 z_np = np.empty((num_samples * batch_size, self.z_dim, 1, 1))
                 samples_np = np.empty((num_samples * batch_size,)+data_np.shape[1:])
+
+                # make sample (in batch to avoid GPU memory problem)
                 for i in range(num_samples):
                     z = torch.randn(batch_size, self.z_dim, 1, 1).cuda()
                     samples = self.model(z)
                     z_np[i*batch_size:(i+1)*batch_size] = z.cpu().data.numpy()
                     samples_np[i*batch_size:(i+1)*batch_size] = samples.cpu().data.numpy()
 
+                # make 1D images
                 samples_flat_np = np.reshape(samples_np, (samples_np.shape[0], np.prod(samples_np.shape[1:])))
 
+#-----------------------------------------------------------------------------------------------------------
+                # find the nearest neighbours
                 self.dci_db.reset()
                 self.dci_db.add(samples_flat_np, num_levels = 2, field_of_view = 10, prop_to_retrieve = 0.002)
                 nearest_indices, _ = self.dci_db.query(data_flat_np, num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
                 nearest_indices = np.array(nearest_indices)[:,0]
-
                 z_np = z_np[nearest_indices]
+
+                # add random noise to the latent space to faciliate training
                 z_np += 0.01*np.random.randn(*z_np.shape)
 
+                # delete to save Hyperparameters
                 del samples_np, samples_flat_np
 
-#-----------------------------------------------------------------------------------------------------------
+
+#=============================================================================================================
             # gradient descent
             err = 0.
 
             # loop over all batches
             for i in range(num_batches):
+
                 # set up backprop
                 self.model.zero_grad()
 
