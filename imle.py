@@ -142,13 +142,20 @@ class IMLE():
 def main(*args):
 
     # train_data is of shape N x C x H x W
-    train_data = np.random.rand(128, 1, 28, 28)
+    #train_data = np.random.rand(128, 1, 28, 28)
 
+    # restore data
+    temp = np.load("../Zeldovich_Approximation.npz")
+    sim_z0 = temp["sim_z0"]
+    sim_z0 = sim_z0.reshape(sim_z0.shape[0]*sim_z0.shape[1],1,sim_z0.shape[2],sim_z0.shape[3])
+    train_data = sim_z0[:,:,::2,::2][:,:,2:-2,2:-2]
+
+#---------------------------------------------------------------------------------------------
     # initiate network
     z_dim = 64
     imle = IMLE(z_dim)
 
-#---------------------------------------------------------------------------------------------
+
     # train the network
     imle.train(train_data)
     torch.save(imle.model.state_dict(), 'net_weights.pth')
