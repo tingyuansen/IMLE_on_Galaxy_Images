@@ -105,8 +105,8 @@ class IMLE():
                 z_np += 0.01*np.random.randn(*z_np.shape)
 
                 # save the mock sample
-                np.savez("../results.npz", data_np=data_np, sample_np=sample_np)
-                
+                np.savez("../results.npz", data_np=data_np, samples_np=samples_np)
+
                 # delete to save Hyperparameters
                 del samples_np, samples_flat_np
 
