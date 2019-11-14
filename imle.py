@@ -148,7 +148,7 @@ def main(*args):
     temp = np.load("../Zeldovich_Approximation.npz")
     sim_z0 = temp["sim_z0"]
     sim_z0 = sim_z0.reshape(sim_z0.shape[0]*sim_z0.shape[1],1,sim_z0.shape[2],sim_z0.shape[3])
-    train_data = sim_z0[:,:,::2,::2][:,:,2:-2,2:-2]
+    train_data = sim_z0[:,:,::2,::2][::100,:,2:-2,2:-2]
 
 #---------------------------------------------------------------------------------------------
     # initiate network
