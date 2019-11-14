@@ -130,7 +130,7 @@ def main(*args):
     torch.cuda.set_device(device_id)
 
     # train_data is of shape N x C x H x W, where N is the number of examples, C is the number of channels, H is the height and W is the width
-    train_data = np.random.randn(128, 1, 28, 28)
+    train_data = np.random.randn(128, 1, 64, 64)
 
     z_dim = 64
     imle = IMLE(z_dim)
