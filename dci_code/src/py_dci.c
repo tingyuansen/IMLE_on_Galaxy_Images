@@ -28,6 +28,20 @@
 #include "numpy/arrayobject.h"
 #include "dci.h"
 
+#if PY_MAJOR_VERSION >= 3
+#define PY3K
+#endif
+
+#ifdef PY3K
+
+struct module_state {
+    PyObject *error;
+};
+
+#define GETSTATE(m) ((struct module_state*)PyModule_GetState(m))
+
+#endif
+
 // DCI struct with some additional structures for Python-specific bookkeeping
 typedef struct py_dci {
     dci dci_inst;
@@ -294,7 +308,7 @@ static PyObject *py_dci_get_proj_vec(PyObject *self, PyObject *args) {
 }
 
 // Methods table - maps names in Python to C functions  
-static PyMethodDef py_dci_methods[] = {
+static PyMethodDef py_dci_module_methods[] = {
     {"new", py_dci_new, METH_VARARGS, "Create new DCI instance."},
     {"add", py_dci_add, METH_VARARGS, "Add data."},
     {"query", py_dci_query, METH_VARARGS, "Search for nearest neighbours."},
@@ -306,8 +320,43 @@ static PyMethodDef py_dci_methods[] = {
     {NULL, NULL, 0, NULL}
 };
 
+#ifdef PY3K
+
+static int py_dci_module_traverse(PyObject *m, visitproc visit, void *arg) {
+    Py_VISIT(GETSTATE(m)->error);
+    return 0;
+}
+
+static int py_dci_module_clear(PyObject *m) {
+    Py_CLEAR(GETSTATE(m)->error);
+    return 0;
+}
+
+static struct PyModuleDef py_dci_module_def = {
+        PyModuleDef_HEAD_INIT,
+        "_dci",
+        NULL,
+        sizeof(struct module_state),
+        py_dci_module_methods,
+        NULL,
+        py_dci_module_traverse,
+        py_dci_module_clear,
+        NULL
+};
+
+// Module name is "_dci"
+PyMODINIT_FUNC PyInit__dci(void) {
+    PyObject *module = PyModule_Create(&py_dci_module_def);
+    import_array();     // Import Numpy
+    return module;
+}
+
+#else
+
 // Module name is "_dci"
 PyMODINIT_FUNC init_dci(void) {
-    (void) Py_InitModule("_dci", py_dci_methods);
+    (void) Py_InitModule("_dci", py_dci_module_methods);
     import_array();     // Import Numpy
 }
+
+#endif
