@@ -105,7 +105,9 @@ class IMLE():
                 z_np += 0.01*np.random.randn(*z_np.shape)
 
                 # save the mock sample
-                np.savez("../results.npz", data_np=data_np, samples_np=samples_np, nearest_indices=nearest_indices)
+                if epoch % 100 == 0:
+                    np.savez("../results_2D.npz", data_np=data_np,\
+                            samples_np=samples_np, nearest_indices=nearest_indices)
 
                 # delete to save Hyperparameters
                 del samples_np, samples_flat_np
@@ -145,10 +147,8 @@ def main(*args):
     #train_data = np.random.rand(128, 1, 28, 28)
 
     # restore data
-    temp = np.load("../Zeldovich_Approximation.npz")
-    sim_z0 = temp["sim_z0"] + 1.
-    sim_z0 = sim_z0.reshape(sim_z0.shape[0]*sim_z0.shape[1],1,sim_z0.shape[2],sim_z0.shape[3])
-    train_data = sim_z0[::100,:,:,:]
+    train_data = np.load("../DES_DR1.npy")[::100,::2,::2,0]
+    train_data = train_data[:,None,:,:]
     print(train_data.shape)
 
 #---------------------------------------------------------------------------------------------
@@ -158,7 +158,7 @@ def main(*args):
 
     # train the network
     imle.train(train_data)
-    torch.save(imle.model.state_dict(), 'net_weights.pth')
+    torch.save(imle.model.state_dict(), 'net_weights_2D.pth')
 
 #---------------------------------------------------------------------------------------------
 if __name__ == '__main__':
