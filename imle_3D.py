@@ -144,8 +144,8 @@ class IMLE():
 def main(*args):
 
     # restore data
-    temp = np.load("../Zeldovich_Approximation_Training.npz")
-    sim_z0 = temp["sim_z0"] + 5.
+    temp = np.load("../Zeldovich_Approximation.npz")
+    sim_z0 = temp["sim_z0"][::90] + 5.
     train_data = sim_z0[:,None,:,:,:]
     print(train_data.shape)
 
