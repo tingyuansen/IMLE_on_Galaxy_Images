@@ -43,8 +43,8 @@ class IMLE():
         self.dci_db = None
 
 #-----------------------------------------------------------------------------------------------------------
-    def train(self, data_np, base_lr=1e-3, batch_size=64, num_epochs=1000,\
-              decay_step=25, decay_rate=1.0, staleness=5, num_samples_factor=10):
+    def train(self, data_np, base_lr=1e-3, batch_size=64, num_epochs=5000,\
+              decay_step=25, decay_rate=1.0, staleness=50, num_samples_factor=10):
 
         # define metric
         loss_fn = nn.MSELoss().cuda()
@@ -155,7 +155,7 @@ def main(*args):
 
 #---------------------------------------------------------------------------------------------
     # initiate network
-    z_dim = 256
+    z_dim = 64
     imle = IMLE(z_dim)
 
     # train the network
