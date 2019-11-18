@@ -141,9 +141,6 @@ class IMLE():
 # run the codes
 def main(*args):
 
-    # train_data is of shape N x C x H x W
-    #train_data = np.random.rand(128, 1, 28, 28)
-
     # restore data
     temp = np.load("../Zeldovich_Approximation.npz")
     sim_z0 = temp["sim_z0"] + 1.
