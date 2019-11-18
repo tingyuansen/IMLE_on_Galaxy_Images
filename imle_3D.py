@@ -27,6 +27,8 @@ class ConvolutionalImplicitModel(nn.Module):
         self.relu = nn.ReLU(True)
 
     def forward(self, z):
+        print(z)
+        print(self.tconv1(z))
         z = self.relu(self.bn1(self.tconv1(z)))
         z = self.relu(self.bn2(self.tconv2(z)))
         z = self.relu(self.bn3(self.tconv3(z)))
