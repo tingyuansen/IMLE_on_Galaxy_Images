@@ -81,7 +81,7 @@ class IMLE():
             # decay the learning rate
             if epoch % decay_step == 0:
                 lr = base_lr * decay_rate ** (epoch // decay_step)
-                optimizer = optim.Adam([self.model.parameters(), self.model2.parameters()],\
+                optimizer = optim.Adam(list(self.model.parameters()) + list(self.model2.parameters()),\
                                         lr=lr, betas=(0.5, 0.999), weight_decay=1e-5)
 
 #-----------------------------------------------------------------------------------------------------------
@@ -129,7 +129,6 @@ class IMLE():
 
                 # delete to save Hyperparameters
                 del samples_np, samples_flat_np
-
 
 
 #=============================================================================================================
