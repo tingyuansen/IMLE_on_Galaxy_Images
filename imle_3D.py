@@ -39,11 +39,15 @@ class ConvolutionalImplicitModel(nn.Module):
 class IMLE():
     def __init__(self, z_dim):
         self.z_dim = z_dim
+
         self.model = ConvolutionalImplicitModel(z_dim).cuda()
+        self.model2 = ConvolutionalImplicitModel(z_dim).cuda()
+
         self.dci_db = None
+        self.dci_db2 = None
 
 #-----------------------------------------------------------------------------------------------------------
-    def train(self, data_np, base_lr=1e-3, batch_size=64, num_epochs=500,\
+    def train(self, data_np, data_np2, base_lr=1e-3, batch_size=64, num_epochs=10000,\
               decay_step=25, decay_rate=1.0, staleness=5, num_samples_factor=10, shuffle_data = True):
 
         # define metric
@@ -51,6 +55,7 @@ class IMLE():
 
         # make model trainable
         self.model.train()
+        self.model2.train()
 
         # train in batch
         num_batches = data_np.shape[0] // batch_size
@@ -61,10 +66,13 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
         # make it in 1D data image for DCI
         data_flat_np = np.reshape(data_np, (data_np.shape[0], np.prod(data_np.shape[1:])))
+        data_flat_np2 = np.reshape(data_np2, (data_np2.shape[0], np.prod(data_np2.shape[1:])))
 
         # initiate dci
         if self.dci_db is None:
             self.dci_db = DCI(np.prod(data_np.shape[1:]), num_comp_indices = 2, num_simp_indices = 7)
+        if self.dci_db2 is None:
+            self.dci_db2 = DCI(np.prod(data_np2.shape[1:]), num_comp_indices = 2, num_simp_indices = 7)
 
 #-----------------------------------------------------------------------------------------------------------
         # train through various epochs
@@ -73,7 +81,8 @@ class IMLE():
             # decay the learning rate
             if epoch % decay_step == 0:
                 lr = base_lr * decay_rate ** (epoch // decay_step)
-                optimizer = optim.Adam(self.model.parameters(), lr=lr, betas=(0.5, 0.999), weight_decay=1e-5)
+                optimizer = optim.Adam([self.model.parameters(), self.model2.parameters()],\
+                                        lr=lr, betas=(0.5, 0.999), weight_decay=1e-5)
 
 #-----------------------------------------------------------------------------------------------------------
             # re-evaluate the closest models routinely
@@ -81,14 +90,21 @@ class IMLE():
 
                 # initiate numpy array to store latent draws and the associate sample
                 z_np = np.empty((num_samples * batch_size, self.z_dim, 1, 1, 1))
+
                 samples_np = np.empty((num_samples * batch_size,)+data_np.shape[1:])
+                samples_np2 = np.empty((num_samples * batch_size,)+data_np2.shape[1:])
 
                 # make sample (in batch to avoid GPU memory problem)
                 for i in range(num_samples):
                     z = torch.randn(batch_size, self.z_dim, 1, 1, 1).cuda()
+
                     samples = self.model(z)
+                    samples2 = self.model2(z)
+
                     z_np[i*batch_size:(i+1)*batch_size] = z.cpu().data.numpy()
+
                     samples_np[i*batch_size:(i+1)*batch_size] = samples.cpu().data.numpy()
+                    samples_np2[i*batch_size:(i+1)*batch_size] = samples2.cpu().data.numpy()
 
                 # make 1D images
                 samples_flat_np = np.reshape(samples_np, (samples_np.shape[0], np.prod(samples_np.shape[1:])))
@@ -106,7 +122,10 @@ class IMLE():
 
                 # save the mock sample
                 if epoch %100 == 0:
-                    np.savez("../results.npz", data_np=data_np, samples_np=samples_np, nearest_indices=nearest_indices)
+                    np.savez("../results.npz", data_np=data_np,\
+                                               samples_np=samples_np,\
+                                               samples_np2=samples_np2,\
+                                               nearest_indices=nearest_indices)
 
                 # delete to save Hyperparameters
                 del samples_np, samples_flat_np
@@ -122,16 +141,21 @@ class IMLE():
 
                 # set up backprop
                 self.model.zero_grad()
+                self.model2.zero_grad()
 
 #-----------------------------------------------------------------------------------------------------------
                 # evaluate the models
                 cur_z = torch.from_numpy(z_np[i*batch_size:(i+1)*batch_size]).float().cuda()
+
                 cur_data = torch.from_numpy(data_np[i*batch_size:(i+1)*batch_size]).float().cuda()
+                cur_data2 = torch.from_numpy(data_np2[i*batch_size:(i+1)*batch_size]).float().cuda()
+
                 cur_samples = self.model(cur_z)
+                cur_samples2 = self.model2(cur_z)
 
 #-----------------------------------------------------------------------------------------------------------
                 # calculate MSE loss of the two images
-                loss = loss_fn(cur_samples, cur_data)
+                loss = loss_fn(cur_samples, cur_data) + loss_fn(cur_samples2, cur_data2)
                 loss.backward()
                 err += loss.item()
                 optimizer.step()
@@ -146,7 +170,11 @@ def main(*args):
     # restore data
     temp = np.load("../Zeldovich_Approximation.npz")
     sim_z0 = temp["sim_z0"][:90] + 5.
+    sim_z50 = temp["sim_z50"][:90] + 5.
+
     train_data = sim_z0[:,None,:,:,:]
+    train_data2 = sim_z50[:,None,:,:,:]
+
     print(train_data.shape)
 
 #---------------------------------------------------------------------------------------------
@@ -155,8 +183,9 @@ def main(*args):
     imle = IMLE(z_dim)
 
     # train the network
-    imle.train(train_data)
+    imle.train(train_data, train_data2)
     torch.save(imle.model.state_dict(), 'net_weights.pth')
+    torch.save(imle.model2.state_dict(), 'net_weights2.pth')
 
 #---------------------------------------------------------------------------------------------
 if __name__ == '__main__':
