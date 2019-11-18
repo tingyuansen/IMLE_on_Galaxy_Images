@@ -43,8 +43,8 @@ class IMLE():
         self.dci_db = None
 
 #-----------------------------------------------------------------------------------------------------------
-    def train(self, data_np, base_lr=1e-3, batch_size=64, num_epochs=1000,\
-              decay_step=25, decay_rate=1.0, staleness=5, num_samples_factor=10, shuffle_data = True):
+    def train(self, data_np, base_lr=1e-3, batch_size=256, num_epochs=1000,\
+              decay_step=25, decay_rate=1.0, staleness=5, num_samples_factor=10):
 
         # define metric
         loss_fn = nn.MSELoss().cuda()
@@ -106,7 +106,7 @@ class IMLE():
 
                 # save the mock sample
                 if epoch % 100 == 0:
-                    np.savez("../results_2D.npz", data_np=data_np,\
+                    np.savez("../results_2D_batch_size.npz", data_np=data_np,\
                             samples_np=samples_np, nearest_indices=nearest_indices)
 
                 # delete to save Hyperparameters
