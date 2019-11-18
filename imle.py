@@ -21,16 +21,16 @@ class ConvolutionalImplicitModel(nn.Module):
         self.bn1 = nn.BatchNorm2d(1024)
         self.tconv2 = nn.ConvTranspose2d(1024, 128, 7, 1, bias=False)
         self.bn2 = nn.BatchNorm2d(128)
-        self.tconv3 = nn.ConvTranspose2d(128, 64, 4, 2, padding=1, bias=False)
+        self.tconv3 = nn.ConvTranspose2d(128, 64, 4, 3, padding=0, bias=False)
         self.bn3 = nn.BatchNorm2d(64)
-        self.tconv4 = nn.ConvTranspose2d(64, 1, 4, 2, padding=1, bias=False)
+        self.tconv4 = nn.ConvTranspose2d(64, 1, 4, 3, padding=2, output_padding=1, bias=False)
         self.relu = nn.ReLU(True)
 
     def forward(self, z):
         z = self.relu(self.bn1(self.tconv1(z)))
         z = self.relu(self.bn2(self.tconv2(z)))
         z = self.relu(self.bn3(self.tconv3(z)))
-        z = self.relu(self.tconv4(z))
+        z = torch.sigmoid(self.tconv4(z))
         return z
 
 
@@ -148,7 +148,7 @@ def main(*args):
     temp = np.load("../Zeldovich_Approximation.npz")
     sim_z0 = temp["sim_z0"] + 1.
     sim_z0 = sim_z0.reshape(sim_z0.shape[0]*sim_z0.shape[1],1,sim_z0.shape[2],sim_z0.shape[3])
-    train_data = sim_z0[:,:,::2,::2][::100,:,2:-2,2:-2]
+    train_data = sim_z0[:,:,::2,::2][::100,:,:,:]
 
 #---------------------------------------------------------------------------------------------
     # initiate network
