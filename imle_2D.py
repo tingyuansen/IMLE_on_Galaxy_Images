@@ -43,7 +43,7 @@ class IMLE():
         self.dci_db = None
 
 #-----------------------------------------------------------------------------------------------------------
-    def train(self, data_np, base_lr=1e-3, batch_size=64, num_epochs=10000,\
+    def train(self, data_np, base_lr=1e-3, batch_size=64, num_epochs=1000,\
               decay_step=25, decay_rate=1.0, staleness=5, num_samples_factor=10, shuffle_data = True):
 
         # define metric
