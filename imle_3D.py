@@ -147,8 +147,7 @@ def main(*args):
     # restore data
     temp = np.load("../Zeldovich_Approximation.npz")
     sim_z0 = temp["sim_z0"] + 1.
-    sim_z0 = sim_z0[:,None,:,:,:]
-    train_data = sim_z0[::100,:,:,:]
+    train_data = sim_z0[:,None,:,:,:]
     print(train_data.shape)
 
 #---------------------------------------------------------------------------------------------
