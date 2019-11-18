@@ -30,7 +30,7 @@ class ConvolutionalImplicitModel(nn.Module):
         z = self.relu(self.bn1(self.tconv1(z)))
         z = self.relu(self.bn2(self.tconv2(z)))
         z = self.relu(self.bn3(self.tconv3(z)))
-        z = torch.sigmoid(self.tconv4(z))
+        z = torch.relu(self.tconv4(z))
         return z
 
 
@@ -43,7 +43,7 @@ class IMLE():
         self.dci_db = None
 
 #-----------------------------------------------------------------------------------------------------------
-    def train(self, data_np, base_lr=1e-3, batch_size=64, num_epochs=2000,\
+    def train(self, data_np, base_lr=1e-3, batch_size=64, num_epochs=500,\
               decay_step=25, decay_rate=1.0, staleness=5, num_samples_factor=10, shuffle_data = True):
 
         # define metric
@@ -150,12 +150,11 @@ def main(*args):
     sim_z0 = sim_z0.reshape(sim_z0.shape[0]*sim_z0.shape[1],1,sim_z0.shape[2],sim_z0.shape[3])
     train_data = sim_z0[::100,:,:,:]
     print(train_data.shape)
-    
+
 #---------------------------------------------------------------------------------------------
     # initiate network
     z_dim = 64
     imle = IMLE(z_dim)
-
 
     # train the network
     imle.train(train_data)
