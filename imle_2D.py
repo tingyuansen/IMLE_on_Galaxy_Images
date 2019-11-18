@@ -43,7 +43,7 @@ class IMLE():
         self.dci_db = None
 
 #-----------------------------------------------------------------------------------------------------------
-    def train(self, data_np, base_lr=1e-3, batch_size=64, num_epochs=500,\
+    def train(self, data_np, base_lr=1e-3, batch_size=64, num_epochs=10000,\
               decay_step=25, decay_rate=1.0, staleness=5, num_samples_factor=10, shuffle_data = True):
 
         # define metric
@@ -144,7 +144,13 @@ class IMLE():
 def main(*args):
 
     # restore data
-    train_data = np.load("../training_set_des.npy")[::100,:,:,:]
+    train_data = np.load("../training_set_des.npy")
+
+    # permutate the data
+    ind_shuffle = np.arange(train_data.shape[0])
+    np.random.shuffle(ind_shuffle)
+    train_data = train_data[ind_shuffle]
+
     print(train_data.shape)
 
 #---------------------------------------------------------------------------------------------
