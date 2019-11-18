@@ -102,7 +102,7 @@ class IMLE():
                 z_np = z_np[nearest_indices]
 
                 # add random noise to the latent space to faciliate training
-                z_np += 0.01*np.random.randn(*z_np.shape)
+                z_np += 0.0001*np.random.randn(*z_np.shape)
 
                 # save the mock sample
                 if epoch % 100 == 0:
