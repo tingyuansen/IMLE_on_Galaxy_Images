@@ -30,7 +30,7 @@ class ConvolutionalImplicitModel(nn.Module):
         z = self.relu(self.bn1(self.tconv1(z)))
         z = self.relu(self.bn2(self.tconv2(z)))
         z = self.relu(self.bn3(self.tconv3(z)))
-        z = torch.relu(self.tconv4(z))
+        z = self.relu(self.tconv4(z))
         return z
 
 
@@ -143,12 +143,8 @@ class IMLE():
 # run the codes
 def main(*args):
 
-    # train_data is of shape N x C x H x W
-    #train_data = np.random.rand(128, 1, 28, 28)
-
     # restore data
-    train_data = np.load("../DES_DR1.npy")[::100,::2,::2,0]
-    train_data = train_data[:,None,:,:]
+    train_data = np.load("../training_set_des.npy")[::100,0:1,:,:]
     print(train_data.shape)
 
 #---------------------------------------------------------------------------------------------
