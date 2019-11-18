@@ -149,7 +149,7 @@ def main(*args):
     # permutate the data
     ind_shuffle = np.arange(train_data.shape[0])
     np.random.shuffle(ind_shuffle)
-    train_data = train_data[ind_shuffle]
+    train_data = train_data[ind_shuffle][::10]
 
     print(train_data.shape)
 
@@ -160,7 +160,7 @@ def main(*args):
 
     # train the network
     imle.train(train_data)
-    torch.save(imle.model.state_dict(), 'net_weights_2D.pth')
+    torch.save(imle.model.state_dict(), '../net_weights_2D.pth')
 
 #---------------------------------------------------------------------------------------------
 if __name__ == '__main__':
