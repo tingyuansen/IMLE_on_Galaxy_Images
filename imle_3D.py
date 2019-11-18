@@ -80,12 +80,12 @@ class IMLE():
             if epoch % staleness == 0:
 
                 # initiate numpy array to store latent draws and the associate sample
-                z_np = np.empty((num_samples * batch_size, self.z_dim, 1, 1))
+                z_np = np.empty((num_samples * batch_size, self.z_dim, 1, 1, 1))
                 samples_np = np.empty((num_samples * batch_size,)+data_np.shape[1:])
 
                 # make sample (in batch to avoid GPU memory problem)
                 for i in range(num_samples):
-                    z = torch.randn(batch_size, self.z_dim, 1, 1).cuda()
+                    z = torch.randn(batch_size, self.z_dim, 1, 1, 1).cuda()
                     samples = self.model(z)
                     z_np[i*batch_size:(i+1)*batch_size] = z.cpu().data.numpy()
                     samples_np[i*batch_size:(i+1)*batch_size] = samples.cpu().data.numpy()
