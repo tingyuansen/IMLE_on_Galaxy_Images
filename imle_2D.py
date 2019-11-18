@@ -17,7 +17,7 @@ class ConvolutionalImplicitModel(nn.Module):
     def __init__(self, z_dim):
         super(ConvolutionalImplicitModel, self).__init__()
         self.z_dim = z_dim
-        self.tconv1 = nn.ConvTranspose2d(64, 1024, 1, 1, bias=False)
+        self.tconv1 = nn.ConvTranspose2d(z_dim, 1024, 1, 1, bias=False)
         self.bn1 = nn.BatchNorm2d(1024)
         self.tconv2 = nn.ConvTranspose2d(1024, 128, 7, 1, bias=False)
         self.bn2 = nn.BatchNorm2d(128)
@@ -44,7 +44,7 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
     def train(self, data_np, base_lr=1e-3, batch_size=64, num_epochs=1000,\
-              decay_step=25, decay_rate=1.0, staleness=5, num_samples_factor=100):
+              decay_step=25, decay_rate=1.0, staleness=5, num_samples_factor=10):
 
         # define metric
         loss_fn = nn.MSELoss().cuda()
@@ -106,7 +106,7 @@ class IMLE():
 
                 # save the mock sample
                 if epoch % 100 == 0:
-                    np.savez("../results_2D_num_samples_factor.npz", data_np=data_np,\
+                    np.savez("../results_2D_z_dim.npz", data_np=data_np,\
                             samples_np=samples_np, nearest_indices=nearest_indices)
 
                 # delete to save Hyperparameters
@@ -155,7 +155,7 @@ def main(*args):
 
 #---------------------------------------------------------------------------------------------
     # initiate network
-    z_dim = 64
+    z_dim = 256
     imle = IMLE(z_dim)
 
     # train the network
