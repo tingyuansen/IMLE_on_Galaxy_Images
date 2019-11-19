@@ -135,7 +135,7 @@ class IMLE():
 
             # save the mock sample
             if (epoch+1) % 500 == 0:
-                np.savez("../results_2D.npz", data_np=data_np,\
+                np.savez("../results_2D_batch_size.npz", data_np=data_np,\
                         samples_np=self.model(torch.from_numpy(z_np).float().cuda()).cpu().data.numpy())
 
 
@@ -149,7 +149,7 @@ def main(*args):
     # permutate the data
     ind_shuffle = np.arange(train_data.shape[0])
     np.random.shuffle(ind_shuffle)
-    train_data = train_data[ind_shuffle][::3]
+    train_data = train_data[ind_shuffle][::10]
 
     print(train_data.shape)
 
