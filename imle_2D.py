@@ -44,7 +44,7 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
     def train(self, data_np, base_lr=1e-3, batch_size=512, num_epochs=5000,\
-              decay_step=25, decay_rate=1.0, staleness=500, num_samples_factor=100):
+              decay_step=25, decay_rate=1.0, staleness=500, num_samples_factor=500):
 
         # define metric
         loss_fn = nn.MSELoss().cuda()
