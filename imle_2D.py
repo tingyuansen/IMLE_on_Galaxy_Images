@@ -43,7 +43,7 @@ class IMLE():
         self.dci_db = None
 
 #-----------------------------------------------------------------------------------------------------------
-    def train(self, data_np, base_lr=1e-3, batch_size=256, num_epochs=5000,\
+    def train(self, data_np, base_lr=1e-3, batch_size=512, num_epochs=5000,\
               decay_step=25, decay_rate=1.0, staleness=500, num_samples_factor=100):
 
         # define metric
@@ -134,7 +134,7 @@ class IMLE():
             print("Epoch %d: Error: %f" % (epoch, err / num_batches))
 
             # save the mock sample
-            if (epoch+1) % 500 == 0:
+            if (epoch+1) % staleness == 0:
                 np.savez("../results_2D_batch_size.npz", data_np=data_np,\
                         samples_np=self.model(torch.from_numpy(z_np).float().cuda()).cpu().data.numpy())
 
