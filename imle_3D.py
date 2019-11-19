@@ -17,7 +17,7 @@ class ConvolutionalImplicitModel(nn.Module):
     def __init__(self, z_dim):
         super(ConvolutionalImplicitModel, self).__init__()
         self.z_dim = z_dim
-        self.tconv1 = nn.ConvTranspose3d(64, 1024, 1, 1, bias=False)
+        self.tconv1 = nn.ConvTranspose3d(z_dim, 1024, 1, 1, bias=False)
         self.bn1 = nn.BatchNorm3d(1024)
         self.tconv2 = nn.ConvTranspose3d(1024, 128, 7, 1, bias=False)
         self.bn2 = nn.BatchNorm3d(128)
@@ -48,7 +48,7 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
     def train(self, data_np, data_np2, base_lr=1e-3, batch_size=64, num_epochs=10000,\
-              decay_step=25, decay_rate=1.0, staleness=5, num_samples_factor=10, shuffle_data = True):
+              decay_step=25, decay_rate=1.0, staleness=500, num_samples_factor=100):
 
         # define metric
         loss_fn = nn.MSELoss().cuda()
@@ -66,7 +66,6 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
         # make it in 1D data image for DCI
         data_flat_np = np.reshape(data_np, (data_np.shape[0], np.prod(data_np.shape[1:])))
-        data_flat_np2 = np.reshape(data_np2, (data_np2.shape[0], np.prod(data_np2.shape[1:])))
 
         # initiate dci
         if self.dci_db is None:
@@ -120,18 +119,22 @@ class IMLE():
                 # add random noise to the latent space to faciliate training
                 z_np += 0.01*np.random.randn(*z_np.shape)
 
-                # save the mock sample
-                if epoch %100 == 0:
-                    np.savez("../results.npz", data_np=data_np,\
-                                               samples_np=samples_np,\
-                                               samples_np2=samples_np2,\
-                                               nearest_indices=nearest_indices)
-
                 # delete to save Hyperparameters
-                del samples_np, samples_flat_np
+                del samples_np, samples_np2, samples_flat_np
 
 
 #=============================================================================================================
+            # permute data
+            data_ordering = np.random.permutation(data_np.shape[0])
+
+            data_np = data_np[data_ordering]
+            data_np2 = data_np2[data_ordering]
+
+            data_flat_np = np.reshape(data_np, (data_np.shape[0], np.prod(data_np.shape[1:])))
+
+            z_np = z_np[data_ordering]
+
+#-----------------------------------------------------------------------------------------------------------
             # gradient descent
             err = 0.
 
@@ -161,6 +164,13 @@ class IMLE():
 
             print("Epoch %d: Error: %f" % (epoch, err / num_batches))
 
+            # save the mock sample
+            if (epoch+1) % staleness == 0:
+                np.savez("../results_3D.npz",
+                        data_np=data_np,\
+                        data_np2=data_np2,\
+                        samples_np=self.model(torch.from_numpy(z_np).float().cuda()).cpu().data.numpy(),\
+                        samples_np2=self.model2(torch.from_numpy(z_np).float().cuda()).cpu().data.numpy())
 
 #=============================================================================================================
 # run the codes
@@ -183,8 +193,8 @@ def main(*args):
 
     # train the network
     imle.train(train_data, train_data2)
-    torch.save(imle.model.state_dict(), 'net_weights.pth')
-    torch.save(imle.model2.state_dict(), 'net_weights2.pth')
+    torch.save(imle.model.state_dict(), 'net_weights_3D.pth')
+    torch.save(imle.model2.state_dict(), 'net_weights2_3D.pth')
 
 #---------------------------------------------------------------------------------------------
 if __name__ == '__main__':
