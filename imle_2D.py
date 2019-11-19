@@ -110,9 +110,10 @@ class IMLE():
 
 #=============================================================================================================
             # permute data
-            #data_ordering = np.random.permutation(data_np.shape[0])
-            #data_np = data_np[data_ordering]
-            #z_np = z_np[data_ordering]
+            data_ordering = np.random.permutation(data_np.shape[0])
+            print(data_np.shape, z_np.shape)
+            data_np = data_np[data_ordering]
+            z_np = z_np[data_ordering]
 
 #-----------------------------------------------------------------------------------------------------------
             # gradient descent
@@ -141,7 +142,7 @@ class IMLE():
 
             # save the mock sample
             if (epoch+1) % staleness == 0:
-                np.savez("../results_2D_batch_size.npz", data_np=data_np,\
+                np.savez("../results_2D.npz", data_np=data_np,\
                         samples_np=self.model(torch.from_numpy(z_np).float().cuda()).cpu().data.numpy())
 
 
