@@ -38,12 +38,10 @@ CC=gcc
 BLAS=openblas
 OPENBLAS_DIR=/usr/lib64/libopenblas64.so
 
-PYTHON_DIR=/home/ting/anaconda2/include/python2.7/
-NUMPY_DIR=/home/ting/anaconda2/lib/python2.7/site-packages/
-#PYTHON_DIR=/opt/sns/anaconda2/2019.3/include/python2.7/
-#NUMPY_DIR=/opt/sns/anaconda2/2019.3/lib/python2.7/site-packages/
-#PYTHON_DIR=/home/ting/anaconda3/include/python3.7m/
-#NUMPY_DIR=/home/ting/anaconda3/lib/python3.7/site-packages
+#PYTHON_DIR=/home/ting/anaconda2/include/python2.7/
+#NUMPY_DIR=/home/ting/anaconda2/lib/python2.7/site-packages/
+PYTHON_DIR=/home/ting/anaconda3/include/python3.7m/
+NUMPY_DIR=/home/ting/anaconda3/lib/python3.7/site-packages
 
 SRC_DIR=src
 INCL_DIR=include
