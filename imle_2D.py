@@ -151,7 +151,7 @@ class IMLE():
 def main(*args):
 
     # restore data
-    train_data = np.load("../training_set_des.npy")
+    train_data = np.load("../training_set_des.npy")[::10]
     print(train_data.shape)
 
 #---------------------------------------------------------------------------------------------
