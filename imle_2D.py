@@ -44,7 +44,7 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
     def train(self, data_np, base_lr=1e-3, batch_size=512, num_epochs=5000,\
-              decay_step=25, decay_rate=1.0, staleness=500, num_samples_factor=500):
+              decay_step=25, decay_rate=1.0, staleness=500, num_samples_factor=100):
 
         # define metric
         loss_fn = nn.MSELoss().cuda()
@@ -152,12 +152,6 @@ def main(*args):
 
     # restore data
     train_data = np.load("../training_set_des.npy")
-
-    # permutate the data
-    ind_shuffle = np.arange(train_data.shape[0])
-    np.random.shuffle(ind_shuffle)
-    train_data = train_data[ind_shuffle][::10]
-
     print(train_data.shape)
 
 #---------------------------------------------------------------------------------------------
