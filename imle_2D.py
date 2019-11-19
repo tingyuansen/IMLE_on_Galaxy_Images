@@ -18,19 +18,24 @@ class ConvolutionalImplicitModel(nn.Module):
         super(ConvolutionalImplicitModel, self).__init__()
         self.z_dim = z_dim
         self.tconv1 = nn.ConvTranspose2d(z_dim, 1024, 1, 1, bias=False)
-        self.bn1 = nn.BatchNorm2d(1024)
+        # self.bn1 = nn.BatchNorm2d(1024)
         self.tconv2 = nn.ConvTranspose2d(1024, 128, 7, 1, bias=False)
-        self.bn2 = nn.BatchNorm2d(128)
+        # self.bn2 = nn.BatchNorm2d(128)
         self.tconv3 = nn.ConvTranspose2d(128, 64, 4, 3, padding=0, bias=False)
-        self.bn3 = nn.BatchNorm2d(64)
+        # self.bn3 = nn.BatchNorm2d(64)
         self.tconv4 = nn.ConvTranspose2d(64, 3, 4, 3, padding=2, output_padding=1, bias=False)
         self.relu = nn.ReLU(True)
 
     def forward(self, z):
-        z = self.relu(self.bn1(self.tconv1(z)))
-        z = self.relu(self.bn2(self.tconv2(z)))
-        z = self.relu(self.bn3(self.tconv3(z)))
+        # z = self.relu(self.bn1(self.tconv1(z)))
+        # z = self.relu(self.bn2(self.tconv2(z)))
+        # z = self.relu(self.bn3(self.tconv3(z)))
+        # z = self.relu(self.tconv4(z))
+        z = self.relu(self.tconv1(z))
+        z = self.relu(self.tconv2(z))
+        z = self.relu(self.tconv3(z))
         z = self.relu(self.tconv4(z))
+
         return z
 
 
