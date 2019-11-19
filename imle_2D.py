@@ -134,7 +134,7 @@ class IMLE():
             print("Epoch %d: Error: %f" % (epoch, err / num_batches))
 
             # save the mock sample
-            if epoch % 500 == 0:
+            if (epoch+1) % 500 == 0:
                 np.savez("../results_2D.npz", data_np=data_np,\
                         samples_np=self.model(torch.from_numpy(z_np).float().cuda()).cpu().data.numpy())
 
