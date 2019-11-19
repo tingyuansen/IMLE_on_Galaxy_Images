@@ -105,9 +105,9 @@ class IMLE():
                 z_np += 0.01*np.random.randn(*z_np.shape)
 
                 # save the mock sample
-                if epoch % 100 == 0:
+                if epoch % 500 == 0:
                     np.savez("../results_2D.npz", data_np=data_np,\
-                            samples_np=samples_np, nearest_indices=nearest_indices)
+                            samples_np=samples_np[nearest_indices], nearest_indices=nearest_indices)
 
                 # delete to save Hyperparameters
                 del samples_np, samples_flat_np
