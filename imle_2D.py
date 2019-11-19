@@ -111,7 +111,6 @@ class IMLE():
 #=============================================================================================================
             # permute data
             data_ordering = np.random.permutation(data_np.shape[0])
-            print(data_np.shape, z_np.shape)
             data_np = data_np[data_ordering]
             z_np = z_np[data_ordering]
 
