@@ -110,9 +110,9 @@ class IMLE():
 
 #=============================================================================================================
             # permute data
-            data_ordering = np.random.permutation(data_np.shape[0])
-            data_np = data_np[data_ordering]
-            z_np = z_np[data_ordering]
+            #data_ordering = np.random.permutation(data_np.shape[0])
+            #data_np = data_np[data_ordering]
+            #z_np = z_np[data_ordering]
 
 #-----------------------------------------------------------------------------------------------------------
             # gradient descent
@@ -155,7 +155,7 @@ def main(*args):
     # permutate the data
     ind_shuffle = np.arange(train_data.shape[0])
     np.random.shuffle(ind_shuffle)
-    train_data = train_data[ind_shuffle][::10]
+    train_data = train_data[ind_shuffle][::10][:1024]
 
     print(train_data.shape)
 
