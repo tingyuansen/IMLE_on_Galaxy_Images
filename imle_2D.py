@@ -138,6 +138,7 @@ class IMLE():
                 np.savez("../results_2D.npz", data_np=data_np,\
                         samples_np=self.model(torch.from_numpy(z_np).float().cuda()).cpu().data.numpy())
 
+
 #=============================================================================================================
 # run the codes
 def main(*args):
