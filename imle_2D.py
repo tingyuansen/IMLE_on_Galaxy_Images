@@ -86,7 +86,7 @@ class IMLE():
 
                 # make sample (in batch to avoid GPU memory problem)
                 for i in range(num_samples):
-                    z = torch.rand(batch_size, self.z_dim, 1, 1).cuda()
+                    z = torch.randn(batch_size, self.z_dim, 1, 1).cuda()
                     samples = self.model(z)
                     z_np[i*batch_size:(i+1)*batch_size] = z.cpu().data.numpy()
                     samples_np[i*batch_size:(i+1)*batch_size] = samples.cpu().data.numpy()
@@ -143,11 +143,11 @@ class IMLE():
 
             # save the mock sample
             if (epoch+1) % staleness == 0:
-                np.savez("../results_2D.npz", data_np=data_np,\
+                np.savez("../results_2D_randn.npz", data_np=data_np,\
                         samples_np=self.model(torch.from_numpy(z_np).float().cuda()).cpu().data.numpy())
 
-                z_random = torch.rand(10**3, self.z_dim, 1, 1).cuda()
-                np.savez("../results_2D_random.npz",
+                z_random = torch.randn(10**3, self.z_dim, 1, 1).cuda()
+                np.savez("../results_2D_random_randn.npz",
                         samples_np=self.model(z_random).cpu().data.numpy())
 
 
