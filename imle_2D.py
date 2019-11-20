@@ -79,7 +79,7 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
             # re-evaluate the closest models routinely
             if epoch % staleness == 0:
-
+                
                 # initiate numpy array to store latent draws and the associate sample
                 z_np = np.empty((num_samples*batch_size, self.z_dim, 1, 1))
                 samples_np = np.empty((num_samples*batch_size,)+data_np.shape[1:])
