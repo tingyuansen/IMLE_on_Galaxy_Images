@@ -9,7 +9,7 @@ import sys
 sys.path.append('./dci_code')
 from dci import DCI
 
-from . import radam
+import radam
 
 
 #=============================================================================================================
