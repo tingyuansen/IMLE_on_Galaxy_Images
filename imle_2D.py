@@ -45,7 +45,7 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
     def train(self, data_np, base_lr=1e-3, batch_size=2048, num_epochs=30000,\
-              decay_step=25, decay_rate=1.0, staleness=300, num_samples_factor=100):
+              decay_step=25, decay_rate=1.0, staleness=300, num_samples_factor=300):
 
         # define metric
         loss_fn = nn.MSELoss().cuda()
@@ -143,7 +143,7 @@ class IMLE():
 
             # save the mock sample
             if (epoch+1) % staleness == 0:
-                np.savez("../results_2D_num_samples.npz", data_np=data_np,\
+                np.savez("../results_2D.npz", data_np=data_np,\
                         samples_np=self.model(torch.from_numpy(z_np).float().cuda()).cpu().data.numpy())
 
 
@@ -152,7 +152,7 @@ class IMLE():
 def main(*args):
 
     # restore data
-    train_data = np.load("../training_set_des.npy")[::3]
+    train_data = np.load("../training_set_des.npy")[::10]
     print(train_data.shape)
 
 #---------------------------------------------------------------------------------------------
@@ -162,7 +162,7 @@ def main(*args):
 
     # train the network
     imle.train(train_data)
-    torch.save(imle.model.state_dict(), '../net_weights_2D_num_samples.pth')
+    torch.save(imle.model.state_dict(), '../net_weights_2D.pth')
 
 #---------------------------------------------------------------------------------------------
 if __name__ == '__main__':
