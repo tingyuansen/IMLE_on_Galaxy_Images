@@ -13,9 +13,6 @@ from dci import DCI
 
 #=============================================================================================================
 # define network
-def mish(x):
-    return (x*torch.tanh(F.softplus(x)))
-
 class ConvolutionalImplicitModel(nn.Module):
     def __init__(self, z_dim):
         super(ConvolutionalImplicitModel, self).__init__()
@@ -28,8 +25,7 @@ class ConvolutionalImplicitModel(nn.Module):
         self.bn3 = nn.BatchNorm2d(64)
         self.tconv4 = nn.ConvTranspose2d(64, 3, 4, 3, padding=2, output_padding=1, bias=False)
         self.bn4 = nn.BatchNorm2d(3)
-        # self.relu = nn.ReLU(True)
-        self.relu = mish
+        self.relu = nn.Leaky_ReLU(True)
 
     def forward(self, z):
         z = self.relu(self.bn1(self.tconv1(z)))
