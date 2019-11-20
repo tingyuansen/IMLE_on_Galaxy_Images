@@ -44,8 +44,8 @@ class IMLE():
         self.dci_db = None
 
 #-----------------------------------------------------------------------------------------------------------
-    def train(self, data_np, base_lr=1e-3, batch_size=512, num_epochs=30000,\
-              decay_step=25, decay_rate=1.0, staleness=300, num_samples_factor=30):
+    def train(self, data_np, base_lr=1e-3, batch_size=1024, num_epochs=6000,\
+              decay_step=25, decay_rate=1.0, staleness=300, num_samples_factor=100):
 
         # define metric
         loss_fn = nn.MSELoss().cuda()
@@ -155,8 +155,11 @@ class IMLE():
 def main(*args):
 
     # restore data
-    train_data = np.load("../training_set_des.npy")
-    print(train_data.shape)
+    #train_data = np.load("../training_set_des.npy")
+    #print(train_data.shape)
+
+    temp = np.load("../Illustris_Images.npz")
+    training_data = temp["training_data"][::3,None,32:-32,32:-32]
 
 #---------------------------------------------------------------------------------------------
     # initiate network
