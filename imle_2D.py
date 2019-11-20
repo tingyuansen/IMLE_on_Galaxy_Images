@@ -45,7 +45,7 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
     def train(self, data_np, base_lr=1e-3, batch_size=512, num_epochs=6000,\
-              decay_step=25, decay_rate=1.0, staleness=300, num_samples_factor=300):
+              decay_step=25, decay_rate=1.0, staleness=300, num_samples_factor=100):
 
         # define metric
         loss_fn = nn.MSELoss().cuda()
@@ -143,11 +143,11 @@ class IMLE():
 
             # save the mock sample
             if (epoch+1) % staleness == 0:
-                np.savez("../results_2D.npz", data_np=data_np,\
+                np.savez("../results_2D_all.npz", data_np=data_np,\
                         samples_np=self.model(torch.from_numpy(z_np).float().cuda()).cpu().data.numpy())
 
                 z_random = torch.randn(10**3, self.z_dim, 1, 1).cuda()
-                np.savez("../results_2D_random.npz",
+                np.savez("../results_2D_random_all.npz",
                         samples_np=self.model(z_random).cpu().data.numpy())
 
 #=============================================================================================================
@@ -159,7 +159,7 @@ def main(*args):
     #print(train_data.shape)
 
     temp = np.load("../Illustris_Images.npz")
-    train_data = temp["training_data"][::3,None,32:-32,32:-32]
+    train_data = temp["training_data"][:,None,32:-32,32:-32]
     train_data = np.clip(np.arcsinh(train_data)+0.05,0,5)/5
     train_data = np.log(train_data) + 5.
     print(train_data.shape)
@@ -171,7 +171,7 @@ def main(*args):
 
     # train the network
     imle.train(train_data)
-    torch.save(imle.model.state_dict(), '../net_weights_2D.pth')
+    torch.save(imle.model.state_dict(), '../net_weights_2D_all.pth')
 
 #---------------------------------------------------------------------------------------------
 if __name__ == '__main__':
