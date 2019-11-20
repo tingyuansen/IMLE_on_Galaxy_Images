@@ -42,7 +42,7 @@ class IMLE():
         self.dci_db = None
 
 #-----------------------------------------------------------------------------------------------------------
-    def train(self, data_np, base_lr=1e-2, batch_size=512, num_epochs=1800,\
+    def train(self, data_np, base_lr=1e-3, batch_size=512, num_epochs=1800,\
               decay_step=25, decay_rate=1.0, staleness=300, num_samples_factor=30):
 
         # define metric
@@ -70,9 +70,10 @@ class IMLE():
         for epoch in range(num_epochs):
 
             # decay the learning rate
-            if epoch % decay_step == 0:
-                lr = base_lr * decay_rate ** (epoch // decay_step)
-                optimizer = optim.Adam(self.model.parameters(), lr=lr, betas=(0.5, 0.999), weight_decay=1e-5)
+            #if epoch % decay_step == 0:
+            #    lr = base_lr * decay_rate ** (epoch // decay_step)
+            #    optimizer = optim.Adam(self.model.parameters(), lr=lr, betas=(0.5, 0.999), weight_decay=1e-5)
+            optimizer = optim.Adam(self.model.parameters(), lr=lr)
 
 #-----------------------------------------------------------------------------------------------------------
             # re-evaluate the closest models routinely
