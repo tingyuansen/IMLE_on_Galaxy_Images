@@ -76,7 +76,7 @@ class IMLE():
             #    lr = base_lr * decay_rate ** (epoch // decay_step)
             #    optimizer = optim.Adam(self.model.parameters(), lr=lr, betas=(0.5, 0.999), weight_decay=1e-5)
 
-            optimizer = radam.RAdam(self.model.parameters(), lr=base_lr)
+            optimizer = radam.RAdam(self.model.parameters(), lr=base_lr, betas=(0.5, 0.999), weight_decay=1e-5)
 
 #-----------------------------------------------------------------------------------------------------------
             # re-evaluate the closest models routinely
