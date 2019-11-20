@@ -45,7 +45,7 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
     def train(self, data_np, base_lr=1e-3, batch_size=2048, num_epochs=30000,\
-              decay_step=25, decay_rate=1.0, staleness=300, num_samples_factor=300):
+              decay_step=25, decay_rate=1.0, staleness=300, num_samples_factor=30):
 
         # define metric
         loss_fn = nn.MSELoss().cuda()
@@ -79,7 +79,7 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
             # re-evaluate the closest models routinely
             if epoch % staleness == 0:
-                
+
                 # initiate numpy array to store latent draws and the associate sample
                 z_np = np.empty((num_samples*batch_size, self.z_dim, 1, 1))
                 samples_np = np.empty((num_samples*batch_size,)+data_np.shape[1:])
@@ -143,7 +143,7 @@ class IMLE():
 
             # save the mock sample
             if (epoch+1) % staleness == 0:
-                np.savez("../results_2D.npz", data_np=data_np,\
+                np.savez("../results_2D_z_dim.npz", data_np=data_np,\
                         samples_np=self.model(torch.from_numpy(z_np).float().cuda()).cpu().data.numpy())
 
 
@@ -157,12 +157,12 @@ def main(*args):
 
 #---------------------------------------------------------------------------------------------
     # initiate network
-    z_dim = 64
+    z_dim = 256
     imle = IMLE(z_dim)
 
     # train the network
     imle.train(train_data)
-    torch.save(imle.model.state_dict(), '../net_weights_2D.pth')
+    torch.save(imle.model.state_dict(), '../net_weights_2D_z_dim.pth')
 
 #---------------------------------------------------------------------------------------------
 if __name__ == '__main__':
