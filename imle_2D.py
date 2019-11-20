@@ -134,7 +134,7 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
                 # calculate MSE loss of the two images
-                loss = loss_fn(cur_samples.log(), cur_data.log())
+                loss = loss_fn(cur_samples, cur_data)
                 loss.backward()
                 err += loss.item()
                 optimizer.step()
@@ -161,6 +161,7 @@ def main(*args):
     temp = np.load("../Illustris_Images.npz")
     train_data = temp["training_data"][::10,None,32:-32,32:-32]
     train_data = np.clip(np.arcsinh(train_data)+0.05,0,5)/5
+    train_data = train_data.log() + 5.
     print(train_data.shape)
 
 #---------------------------------------------------------------------------------------------
