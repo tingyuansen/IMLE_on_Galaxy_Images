@@ -148,7 +148,7 @@ class IMLE():
 
                 z_random = torch.randn(10**3, self.z_dim, 1, 1).cuda()
                 np.savez("../results_2D_random.npz",
-                        samples_np=self.model(torch.from_numpy(z_random).float().cuda()).cpu().data.numpy())
+                        samples_np=self.model(z_random).cpu().data.numpy())
 
 #=============================================================================================================
 # run the codes
