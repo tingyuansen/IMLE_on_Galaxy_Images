@@ -9,8 +9,6 @@ import sys
 sys.path.append('./dci_code')
 from dci import DCI
 
-import radam
-
 
 #=============================================================================================================
 # define network
@@ -25,13 +23,14 @@ class ConvolutionalImplicitModel(nn.Module):
         self.tconv3 = nn.ConvTranspose2d(128, 64, 4, 3, padding=0, bias=False)
         self.bn3 = nn.BatchNorm2d(64)
         self.tconv4 = nn.ConvTranspose2d(64, 3, 4, 3, padding=2, output_padding=1, bias=False)
+        self.bn4 = nn.BatchNorm2d(3)
         self.relu = nn.ReLU(True)
 
     def forward(self, z):
         z = self.relu(self.bn1(self.tconv1(z)))
         z = self.relu(self.bn2(self.tconv2(z)))
         z = self.relu(self.bn3(self.tconv3(z)))
-        z = self.relu(self.tconv4(z))
+        z = self.relu(self.bn4(self.tconv4(z)))
         return z
 
 
@@ -44,7 +43,7 @@ class IMLE():
         self.dci_db = None
 
 #-----------------------------------------------------------------------------------------------------------
-    def train(self, data_np, base_lr=1e-2, batch_size=512, num_epochs=1800,\
+    def train(self, data_np, base_lr=1e-3, batch_size=512, num_epochs=1800,\
               decay_step=25, decay_rate=1.0, staleness=300, num_samples_factor=30):
 
         # define metric
@@ -72,11 +71,9 @@ class IMLE():
         for epoch in range(num_epochs):
 
             # decay the learning rate
-            #if epoch % decay_step == 0:
-            #    lr = base_lr * decay_rate ** (epoch // decay_step)
-            #    optimizer = optim.Adam(self.model.parameters(), lr=lr, betas=(0.5, 0.999), weight_decay=1e-5)
-
-            optimizer = radam.RAdam(self.model.parameters(), lr=base_lr)
+            if epoch % decay_step == 0:
+                lr = base_lr * decay_rate ** (epoch // decay_step)
+                optimizer = optim.Adam(self.model.parameters(), lr=lr, betas=(0.5, 0.999), weight_decay=1e-5)
 
 #-----------------------------------------------------------------------------------------------------------
             # re-evaluate the closest models routinely
