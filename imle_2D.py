@@ -17,13 +17,13 @@ class ConvolutionalImplicitModel(nn.Module):
     def __init__(self, z_dim):
         super(ConvolutionalImplicitModel, self).__init__()
         self.z_dim = z_dim
-        self.tconv1 = nn.ConvTranspose2d(z_dim, 1024, 1, 1, bias=False)
+        self.tconv1 = nn.ConvTranspose2d(z_dim, 1024, 8, 4, bias=False)
         self.bn1 = nn.BatchNorm2d(1024)
-        self.tconv2 = nn.ConvTranspose2d(1024, 128, 7, 1, bias=False)
+        self.tconv2 = nn.ConvTranspose2d(1024, 128, 8, 3, bias=False)
         self.bn2 = nn.BatchNorm2d(128)
-        self.tconv3 = nn.ConvTranspose2d(128, 64, 4, 3, padding=0, bias=False)
+        self.tconv3 = nn.ConvTranspose2d(128, 64, 4, 2, output_padding=1, bias=False)
         self.bn3 = nn.BatchNorm2d(64)
-        self.tconv4 = nn.ConvTranspose2d(64, 1, 4, 3, padding=2, output_padding=1, bias=False)
+        self.tconv4 = nn.ConvTranspose2d(64, 1, 4, 1, bias=False)
         self.bn4 = nn.BatchNorm2d(1)
         self.relu = nn.LeakyReLU()
 
@@ -86,7 +86,7 @@ class IMLE():
 
                 # make sample (in batch to avoid GPU memory problem)
                 for i in range(num_samples):
-                    z = torch.randn(batch_size, self.z_dim, 1, 1).cuda()
+                    z = torch.rand(batch_size, self.z_dim, 1, 1).cuda()
                     samples = self.model(z)
                     z_np[i*batch_size:(i+1)*batch_size] = z.cpu().data.numpy()
                     samples_np[i*batch_size:(i+1)*batch_size] = samples.cpu().data.numpy()
@@ -103,7 +103,7 @@ class IMLE():
                 z_np = z_np[nearest_indices]
 
                 # add random noise to the latent space to faciliate training
-                z_np += 0.01*np.random.randn(*z_np.shape)
+                #z_np += 0.01*np.random.randn(*z_np.shape)
 
                 # delete to save Hyperparameters
                 del samples_np, samples_flat_np
@@ -143,12 +143,13 @@ class IMLE():
 
             # save the mock sample
             if (epoch+1) % staleness == 0:
-                np.savez("../results_2D_small_zdim.npz", data_np=data_np,\
+                np.savez("../results_2D.npz", data_np=data_np,\
                         samples_np=self.model(torch.from_numpy(z_np).float().cuda()).cpu().data.numpy())
 
-                z_random = torch.randn(10**3, self.z_dim, 1, 1).cuda()
-                np.savez("../results_2D_random_small_zdim.npz",
+                z_random = torch.rand(10**3, self.z_dim, 1, 1).cuda()
+                np.savez("../results_2D_random.npz",
                         samples_np=self.model(z_random).cpu().data.numpy())
+
 
 #=============================================================================================================
 # run the codes
@@ -166,12 +167,12 @@ def main(*args):
 
 #---------------------------------------------------------------------------------------------
     # initiate network
-    z_dim = 8
+    z_dim = 64
     imle = IMLE(z_dim)
 
     # train the network
     imle.train(train_data)
-    torch.save(imle.model.state_dict(), '../net_weights_2D_small_zdim.pth')
+    torch.save(imle.model.state_dict(), '../net_weights_2D.pth')
 
 #---------------------------------------------------------------------------------------------
 if __name__ == '__main__':
