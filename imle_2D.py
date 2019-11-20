@@ -159,7 +159,7 @@ def main(*args):
 
 #---------------------------------------------------------------------------------------------
     # initiate network
-    z_dim = 128
+    z_dim = 64
     imle = IMLE(z_dim)
 
     # train the network
