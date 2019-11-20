@@ -4,7 +4,6 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from torch.autograd import Variable
 
 import sys
 sys.path.append('./dci_code')
@@ -71,17 +70,18 @@ class IMLE():
         for epoch in range(num_epochs):
 
             # decay the learning rate
-            if epoch % decay_step == 0:
-                lr = base_lr * decay_rate ** (epoch // decay_step)
-                optimizer = optim.Adam(self.model.parameters(), lr=lr, betas=(0.5, 0.999), weight_decay=1e-5)
+            # if epoch % decay_step == 0:
+                # lr = base_lr * decay_rate ** (epoch // decay_step)
+                # optimizer = optim.Adam(self.model.parameters(), lr=lr, betas=(0.5, 0.999), weight_decay=1e-5)
+            optimizer = optim.Adam(self.model.parameters(), lr=lr)
 
 #-----------------------------------------------------------------------------------------------------------
             # re-evaluate the closest models routinely
             if epoch % staleness == 0:
 
                 # initiate numpy array to store latent draws and the associate sample
-                z_np = np.empty((num_samples * batch_size, self.z_dim, 1, 1))
-                samples_np = np.empty((num_samples * batch_size,)+data_np.shape[1:])
+                z_np = np.empty((num_samples*batch_size, self.z_dim, 1, 1))
+                samples_np = np.empty((num_samples*batch_size,)+data_np.shape[1:])
 
                 # make sample (in batch to avoid GPU memory problem)
                 for i in range(num_samples):
@@ -156,7 +156,7 @@ def main(*args):
 
 #---------------------------------------------------------------------------------------------
     # initiate network
-    z_dim = 64
+    z_dim = 128
     imle = IMLE(z_dim)
 
     # train the network
