@@ -44,8 +44,8 @@ class IMLE():
         self.dci_db = None
 
 #-----------------------------------------------------------------------------------------------------------
-    def train(self, data_np, base_lr=1e-3, batch_size=1024, num_epochs=6000,\
-              decay_step=25, decay_rate=1.0, staleness=300, num_samples_factor=100):
+    def train(self, data_np, base_lr=1e-3, batch_size=512, num_epochs=6000,\
+              decay_step=25, decay_rate=1.0, staleness=300, num_samples_factor=300):
 
         # define metric
         loss_fn = nn.MSELoss().cuda()
@@ -134,7 +134,7 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
                 # calculate MSE loss of the two images
-                loss = loss_fn(cur_samples, cur_data)
+                loss = loss_fn(cur_samples.log(), cur_data.log())
                 loss.backward()
                 err += loss.item()
                 optimizer.step()
