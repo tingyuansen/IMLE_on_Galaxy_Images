@@ -25,7 +25,7 @@ class ConvolutionalImplicitModel(nn.Module):
         self.bn3 = nn.BatchNorm2d(64)
         self.tconv4 = nn.ConvTranspose2d(64, 3, 4, 3, padding=2, output_padding=1, bias=False)
         self.bn4 = nn.BatchNorm2d(3)
-        self.relu = nn.Leaky_ReLU(True)
+        self.relu = nn.LeakyReLU(True)
 
     def forward(self, z):
         z = self.relu(self.bn1(self.tconv1(z)))
