@@ -45,7 +45,7 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
     def train(self, data_np, base_lr=1e-3, batch_size=512, num_epochs=30000,\
-              decay_step=25, decay_rate=1.0, staleness=300, num_samples_factor=300):
+              decay_step=25, decay_rate=1.0, staleness=300, num_samples_factor=30):
 
         # define metric
         loss_fn = nn.MSELoss().cuda()
@@ -155,7 +155,7 @@ class IMLE():
 def main(*args):
 
     # restore data
-    train_data = np.load("../training_set_des.npy")[::10]
+    train_data = np.load("../training_set_des.npy")
     print(train_data.shape)
 
 #---------------------------------------------------------------------------------------------
