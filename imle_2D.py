@@ -70,10 +70,10 @@ class IMLE():
         for epoch in range(num_epochs):
 
             # decay the learning rate
-            # if epoch % decay_step == 0:
-                # lr = base_lr * decay_rate ** (epoch // decay_step)
-                # optimizer = optim.Adam(self.model.parameters(), lr=lr, betas=(0.5, 0.999), weight_decay=1e-5)
-            optimizer = optim.Adam(self.model.parameters(), lr=lr)
+            if epoch % decay_step == 0:
+                lr = base_lr * decay_rate ** (epoch // decay_step)
+                optimizer = optim.Adam(self.model.parameters(), lr=lr, betas=(0.5, 0.999), weight_decay=1e-5)
+            # optimizer = optim.Adam(self.model.parameters(), lr=lr)
 
 #-----------------------------------------------------------------------------------------------------------
             # re-evaluate the closest models routinely
