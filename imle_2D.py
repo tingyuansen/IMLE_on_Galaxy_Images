@@ -147,7 +147,7 @@ class IMLE():
                         samples_np=self.model(torch.from_numpy(z_np).float().cuda()).cpu().data.numpy())
 
                 z_random = torch.randn(10**3, self.z_dim, 1, 1).cuda()
-                np.savez("../results_2D_random.npz", 
+                np.savez("../results_2D_random.npz",
                         samples_np=self.model(torch.from_numpy(z_random).float().cuda()).cpu().data.numpy())
 
 #=============================================================================================================
@@ -155,7 +155,7 @@ class IMLE():
 def main(*args):
 
     # restore data
-    train_data = np.load("../training_set_des.npy")[::3]
+    train_data = np.load("../training_set_des.npy")[::10]
     print(train_data.shape)
 
 #---------------------------------------------------------------------------------------------
