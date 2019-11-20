@@ -159,7 +159,8 @@ def main(*args):
     #print(train_data.shape)
 
     temp = np.load("../Illustris_Images.npz")
-    training_data = temp["training_data"][::3,None,32:-32,32:-32]
+    train_data = temp["training_data"][::3,None,32:-32,32:-32]
+    print(train_data.shape)
 
 #---------------------------------------------------------------------------------------------
     # initiate network
