@@ -143,7 +143,7 @@ class IMLE():
 
             # save the mock sample
             if (epoch+1) % staleness == 0:
-                np.savez("../results_2D_small_zdim.npz", data_np=data_np,\
+                np.savez("../results_2D_large_zdim.npz", data_np=data_np,\
                         samples_np=self.model(torch.from_numpy(z_np).float().cuda()).cpu().data.numpy())
 
 
@@ -157,12 +157,12 @@ def main(*args):
 
 #---------------------------------------------------------------------------------------------
     # initiate network
-    z_dim = 16
+    z_dim = 256
     imle = IMLE(z_dim)
 
     # train the network
     imle.train(train_data)
-    torch.save(imle.model.state_dict(), '../net_weights_2D_small_zdim.pth')
+    torch.save(imle.model.state_dict(), '../net_weights_2D_large_zdim.pth')
 
 #---------------------------------------------------------------------------------------------
 if __name__ == '__main__':
