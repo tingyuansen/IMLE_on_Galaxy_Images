@@ -146,11 +146,13 @@ class IMLE():
             # save the mock sample
             if (epoch+1) % staleness == 0:
                 np.savez("../results_2D.npz", data_np=data_np,\
-                        samples_np=self.model(torch.from_numpy(z_np).float().cuda()).cpu().data.numpy())
+                        samples_np=self.model(torch.from_numpy(np.concatenate((z_np,data_Sx)))\
+                                                .float().cuda()).cpu().data.numpy())
 
                 z_random = torch.randn(10**3, self.z_dim, 1, 1).cuda()
+                Sx_pick = torch.from_numpy(data_Sx[:z_random.shape[0]]).float().cuda()
                 np.savez("../results_2D_random.npz",
-                        samples_np=self.model(z_random).cpu().data.numpy())
+                        samples_np=self.model(torch.cat(z_random,Sx_pick)).cpu().data.numpy())
 
 #=============================================================================================================
 # run the codes
@@ -166,7 +168,7 @@ def main(*args):
     # restore scattering coefficients
     train_Sx = np.load("../Sx_Illustris_Images.npy")[::10,1:]
     print(train_Sx.shape)
-    
+
 #---------------------------------------------------------------------------------------------
     # initiate network
     z_dim = 64 + train_Sx.shape[1]
