@@ -132,7 +132,7 @@ class IMLE():
                 cur_z = torch.from_numpy(z_np[i*batch_size:(i+1)*batch_size]).float().cuda()
                 cur_data = torch.from_numpy(data_np[i*batch_size:(i+1)*batch_size]).float().cuda()
                 cur_Sx = torch.from_numpy(data_Sx[i*batch_size:(i+1)*batch_size]).float().cuda()
-                cur_samples = self.model(torch.cat((cur_z,cur_Sx)))
+                cur_samples = self.model(torch.cat((cur_z,cur_Sx), axis=1))
 
 #-----------------------------------------------------------------------------------------------------------
                 # calculate MSE loss of the two images
@@ -146,13 +146,13 @@ class IMLE():
             # save the mock sample
             if (epoch+1) % staleness == 0:
                 np.savez("../results_2D.npz", data_np=data_np,\
-                        samples_np=self.model(torch.from_numpy(np.concatenate((z_np,data_Sx)))\
+                        samples_np=self.model(torch.from_numpy(np.concatenate((z_np,data_Sx), axis=1))\
                                                 .float().cuda()).cpu().data.numpy())
 
                 z_random = torch.randn(10**3, self.z_dim, 1, 1).cuda()
                 Sx_pick = torch.from_numpy(data_Sx[:z_random.shape[0]]).float().cuda()
                 np.savez("../results_2D_random.npz",
-                        samples_np=self.model(torch.cat(z_random,Sx_pick)).cpu().data.numpy())
+                        samples_np=self.model(torch.cat(z_random,Sx_pick), axis=1).cpu().data.numpy())
 
 #=============================================================================================================
 # run the codes
