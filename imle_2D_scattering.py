@@ -43,8 +43,7 @@ class ConvolutionalImplicitModel(nn.Module):
         layers = []
 
         for i in range(5):
-
-            for j in range(5):
+            for j in range(2):
 
                 if i == 0 and j == 0:
                     layers.append(torch.nn.ConvTranspose2d(z_dim, 512, 4, stride=1, padding=0))
@@ -123,7 +122,7 @@ class IMLE():
                 for i in range(num_samples):
 
                     print(i)
-                    
+
                     # draw random z
                     z = torch.randn(batch_size, self.z_dim, 1, 1).cuda()
 
