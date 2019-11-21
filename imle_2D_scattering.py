@@ -117,7 +117,6 @@ class IMLE():
 
                 # self.dci_db.add(np.copy(samples_flat_np), num_levels = 2, field_of_view = 10, prop_to_retrieve = 0.002)
                 # nearest_indices, _ = self.dci_db.query(data_flat_np, num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
-
                 self.dci_db.add(np.copy(samples_combined_np), num_levels = 2, field_of_view = 10, prop_to_retrieve = 0.002)
                 nearest_indices, _ = self.dci_db.query(data_flat_combined_np, num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
 
