@@ -165,7 +165,7 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
                 # make random mock
                 # loop over all batches
-                sample_random = np.empty(data_np.shape)
+                samples_random = np.empty(data_np.shape)
 
                 for i in range(num_batches):
                     z = torch.randn(batch_size, self.z_dim, 1, 1).cuda()
@@ -176,7 +176,7 @@ class IMLE():
                     samples_random[i*batch_size:(i+1)*batch_size] = samples.cpu().data.numpy()
 
                 np.savez("../results_2D_random.npz",
-                        samples_np=sample_random)
+                        samples_np=samples_random)
 
 #=============================================================================================================
 # run the codes
