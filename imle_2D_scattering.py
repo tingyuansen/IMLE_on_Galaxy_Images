@@ -171,7 +171,7 @@ def main(*args):
 
 #---------------------------------------------------------------------------------------------
     # initiate network
-    z_dim = 64 + train_Sx.shape[1]
+    z_dim = 32 + train_Sx.shape[1]
     imle = IMLE(z_dim)
 
     # train the network
