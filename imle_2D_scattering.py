@@ -45,7 +45,7 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
     def train(self, data_np, data_Sx, base_lr=1e-3, batch_size=512, num_epochs=6000,\
-              decay_step=25, decay_rate=1.0, staleness=300, num_samples_factor=100):
+              decay_step=25, decay_rate=1.0, staleness=300, num_samples_factor=300):
 
         # define metric
         loss_fn = nn.MSELoss().cuda()
@@ -184,7 +184,7 @@ def main(*args):
 
     # restore data
     temp = np.load("../Illustris_Images.npz")
-    train_data = temp["training_data"][::3,None,32:-32,32:-32]
+    train_data = temp["training_data"][::10,None,32:-32,32:-32]
     train_data = np.clip(np.arcsinh(train_data)+0.05,0,5)/5
     print(train_data.shape)
 
@@ -194,7 +194,7 @@ def main(*args):
 
 #---------------------------------------------------------------------------------------------
     # initiate network
-    z_dim = 32
+    z_dim = 4
     Sx_dim = train_Sx.shape[1]
     imle = IMLE(z_dim, Sx_dim)
 
