@@ -33,6 +33,40 @@ class ConvolutionalImplicitModel(nn.Module):
         z = self.relu(self.bn4(self.tconv4(z)))
         return z
 
+#-----------------------------------------------------------------------------------------------------------
+# define network
+class ConvolutionalImplicitModel(nn.Module):
+    def __init__(self, z_dim):
+        super( ConvolutionalImplicitModel, self).__init__()
+        self.z_dim = z_dim
+
+        layers = []
+
+        for i in range(5):
+
+            for j in range(5):
+
+                if i == 0 and j == 0:
+                    layers.append(torch.nn.ConvTranspose2d(z_dim, 512, 4, stride=1, padding=0))
+                    layers.append(torch.nn.BatchNorm2d(512, momentum=0.001, affine=False))
+                    layers.append(torch.nn.LeakyReLU(0.2, inplace=True))
+                else:
+                    layers.append(torch.nn.Conv2d(512, 512, 5, stride=1, padding=2))
+                    layers.append(torch.nn.BatchNorm2d(512, momentum=0.001, affine=False))
+                    layers.append(torch.nn.LeakyReLU(0.2, inplace=True))
+
+            if i < 4:
+                layers.append(torch.nn.Upsample(scale_factor=2, mode='bilinear', align_corners = False))
+            else:
+                layers.append(torch.nn.Conv2d(512, 3, 5, stride=1, padding=2))
+                layers.append(torch.nn.Sigmoid())
+
+        self.model = torch.nn.Sequential(*layers)
+        self.add_module("model", self.model)
+
+    def forward(self, z):
+        return self.model(z)
+
 
 #=============================================================================================================
 # define class
@@ -44,8 +78,8 @@ class IMLE():
         self.dci_db = None
 
 #-----------------------------------------------------------------------------------------------------------
-    def train(self, data_np, data_Sx, base_lr=1e-3, batch_size=2048, num_epochs=30000,\
-              decay_step=25, decay_rate=1.0, staleness=1000, num_samples_factor=100):
+    def train(self, data_np, data_Sx, base_lr=1e-3, batch_size=2048, num_epochs=6000,\
+              decay_step=25, decay_rate=1.0, staleness=1000, num_samples_factor=300):
 
         # define metric
         loss_fn = nn.MSELoss().cuda()
@@ -187,12 +221,12 @@ def main(*args):
 
     # restore data
     temp = np.load("../Illustris_Images.npz")
-    train_data = temp["training_data"][:,None,32:-32,32:-32]
+    train_data = temp["training_data"][::10,None,32:-32,32:-32]
     train_data = np.clip(np.arcsinh(train_data)+0.05,0,5)/5
     print(train_data.shape)
 
     # restore scattering coefficients
-    train_Sx = np.load("../Sx_Illustris_Images.npy")[:,:,None,None]
+    train_Sx = np.load("../Sx_Illustris_Images.npy")[::10,:,None,None]
     print(train_Sx.shape)
 
 #---------------------------------------------------------------------------------------------
