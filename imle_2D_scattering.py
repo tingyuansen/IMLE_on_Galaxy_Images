@@ -143,10 +143,10 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
                 # find the nearest neighbours
                 self.dci_db.reset()
-
-                self.dci_db.add(np.copy(samples_flat_np), num_levels = 2, field_of_view = 10, prop_to_retrieve = 0.002)
-                nearest_indices, _ = self.dci_db.query(data_flat_np, num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
-
+                self.dci_db.add(np.copy(samples_flat_np),\
+                                num_levels = 2, field_of_view = 10, prop_to_retrieve = 0.002)
+                nearest_indices, _ = self.dci_db.query(data_flat_np,\
+                                        num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
                 nearest_indices = np.array(nearest_indices)[:,0]
                 z_np = z_np[nearest_indices]
                 Sx_np = Sx_np[nearest_indices]
@@ -200,7 +200,6 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
                 # make random mock
-                # loop over all batches
                 samples_random = np.empty(data_np.shape)
 
                 for i in range(num_batches):
@@ -231,7 +230,7 @@ def main(*args):
 
 #---------------------------------------------------------------------------------------------
     # initiate network
-    z_dim = 16
+    z_dim = 32
     Sx_dim = train_Sx.shape[1]
     imle = IMLE(z_dim, Sx_dim)
 
