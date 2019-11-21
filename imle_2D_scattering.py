@@ -169,7 +169,7 @@ def main(*args):
     print(train_data.shape)
 
     # restore scattering coefficients
-    train_Sx = np.load("../Sx_Illustris_Images.npy")[::10,1:]
+    train_Sx = np.load("../Sx_Illustris_Images.npy")[::10,:,None,None]
     print(train_Sx.shape)
 
 #---------------------------------------------------------------------------------------------
