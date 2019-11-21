@@ -44,8 +44,8 @@ class IMLE():
         self.dci_db = None
 
 #-----------------------------------------------------------------------------------------------------------
-    def train(self, data_np, data_Sx, base_lr=1e-3, batch_size=512, num_epochs=30000,\
-              decay_step=25, decay_rate=1.0, staleness=300, num_samples_factor=300):
+    def train(self, data_np, data_Sx, base_lr=1e-3, batch_size=2048, num_epochs=30000,\
+              decay_step=25, decay_rate=1.0, staleness=300, num_samples_factor=100):
 
         # define metric
         loss_fn = nn.MSELoss().cuda()
@@ -105,7 +105,7 @@ class IMLE():
 
                 # make 1D images
                 samples_flat_np = np.reshape(samples_np, (samples_np.shape[0], np.prod(samples_np.shape[1:])))
-                
+
 #-----------------------------------------------------------------------------------------------------------
                 # find the nearest neighbours
                 self.dci_db.reset()
