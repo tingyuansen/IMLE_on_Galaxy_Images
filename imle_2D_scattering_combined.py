@@ -44,8 +44,8 @@ class IMLE():
         self.dci_db = None
 
 #-----------------------------------------------------------------------------------------------------------
-    def train(self, data_np, data_Sx, base_lr=1e-3, batch_size=512, num_epochs=30000,\
-              decay_step=25, decay_rate=1.0, staleness=300, num_samples_factor=300):
+    def train(self, data_np, data_Sx, base_lr=1e-3, batch_size=512, num_epochs=6000,\
+              decay_step=25, decay_rate=1.0, staleness=300, num_samples_factor=30):
 
         # define metric
         loss_fn = nn.MSELoss().cuda()
@@ -62,11 +62,14 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
         # make it in 1D data image for DCI
         data_flat_np = np.reshape(data_np, (data_np.shape[0], np.prod(data_np.shape[1:])))
+        data_Sx_flat_np = np.reshape(data_Sx, (data_Sx.shape[0], np.prod(data_Sx.shape[1:])))
+        data_flat_combined_np = np.concatenate((data_flat_np, data_Sx_flat_np),axis=1)
 
 #-----------------------------------------------------------------------------------------------------------
         # initiate dci
         if self.dci_db is None:
-            self.dci_db = DCI(np.prod(data_np.shape[1:]), num_comp_indices = 2, num_simp_indices = 7)
+            #self.dci_db = DCI(np.prod(data_np.shape[1:]), num_comp_indices = 2, num_simp_indices = 7)
+            self.dci_db = DCI(np.prod(data_flat_combined_np.shape[1:]), num_comp_indices = 2, num_simp_indices = 7)
 
         # train through various epochs
         for epoch in range(num_epochs):
@@ -103,12 +106,19 @@ class IMLE():
                     samples_np[i*batch_size:(i+1)*batch_size] = samples.cpu().data.numpy()
                     Sx_np[i*batch_size:(i+1)*batch_size] = np.copy(Sx)
 
+                # make 1D images
+                samples_flat_np = np.reshape(samples_np, (samples_np.shape[0], np.prod(samples_np.shape[1:])))
+                Sx_flat_np = np.reshape(Sx_np, (Sx_np.shape[0], np.prod(Sx_np.shape[1:])))
+                samples_combined_np = np.concatenate((samples_flat_np, Sx_flat_np),axis=1)
+
 #-----------------------------------------------------------------------------------------------------------
                 # find the nearest neighbours
                 self.dci_db.reset()
 
-                self.dci_db.add(np.copy(samples_flat_np), num_levels = 2, field_of_view = 10, prop_to_retrieve = 0.002)
-                nearest_indices, _ = self.dci_db.query(data_flat_np, num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
+                # self.dci_db.add(np.copy(samples_flat_np), num_levels = 2, field_of_view = 10, prop_to_retrieve = 0.002)
+                # nearest_indices, _ = self.dci_db.query(data_flat_np, num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
+                self.dci_db.add(np.copy(samples_combined_np), num_levels = 2, field_of_view = 10, prop_to_retrieve = 0.002)
+                nearest_indices, _ = self.dci_db.query(data_flat_combined_np, num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
 
                 nearest_indices = np.array(nearest_indices)[:,0]
                 z_np = z_np[nearest_indices]
@@ -158,7 +168,7 @@ class IMLE():
 
             # save the mock sample
             if (epoch+1) % staleness == 0:
-                np.savez("../results_2D_zdim=32.npz", data_np=data_np, Sx_np=Sx_np,\
+                np.savez("../results_2D_combined.npz", data_np=data_np,\
                         samples_np=self.model(torch.from_numpy(np.concatenate((z_np,Sx_np), axis=1))\
                                                 .float().cuda()).cpu().data.numpy())
 
@@ -175,7 +185,7 @@ class IMLE():
                     samples = self.model(torch.cat((z, torch.from_numpy(Sx).float().cuda()), axis=1))
                     samples_random[i*batch_size:(i+1)*batch_size] = samples.cpu().data.numpy()
 
-                np.savez("../results_2D_random_zdim=32.npz",
+                np.savez("../results_2D_random_combined.npz",
                         samples_np=samples_random)
 
 
@@ -185,12 +195,12 @@ def main(*args):
 
     # restore data
     temp = np.load("../Illustris_Images.npz")
-    train_data = temp["training_data"][::10,None,32:-32,32:-32]
+    train_data = temp["training_data"][:,None,32:-32,32:-32]
     train_data = np.clip(np.arcsinh(train_data)+0.05,0,5)/5
     print(train_data.shape)
 
     # restore scattering coefficients
-    train_Sx = np.load("../Sx_Illustris_Images.npy")[::10,:,None,None]
+    train_Sx = np.load("../Sx_Illustris_Images.npy")[:,:,None,None]
     print(train_Sx.shape)
 
 #---------------------------------------------------------------------------------------------
@@ -201,7 +211,7 @@ def main(*args):
 
     # train the network
     imle.train(train_data, train_Sx)
-    torch.save(imle.model.state_dict(), '../net_weights_2D_zdim=32.pth')
+    torch.save(imle.model.state_dict(), '../net_weights_2D_combined.pth')
 
 #---------------------------------------------------------------------------------------------
 if __name__ == '__main__':
