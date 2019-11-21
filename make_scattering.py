@@ -22,7 +22,7 @@ def main():
     train_data = temp["training_data"]
 
     # define scattering
-    scattering = Scattering2D(J=5, shape=(training_data[0,:,:].shape), L=4, max_order=2)
+    scattering = Scattering2D(J=5, shape=(train_data[0,:,:].shape), L=4, max_order=2)
     scattering.cuda()
 
     # transform to torch tensors
