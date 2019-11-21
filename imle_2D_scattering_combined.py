@@ -68,7 +68,6 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
         # initiate dci
         if self.dci_db is None:
-            #self.dci_db = DCI(np.prod(data_np.shape[1:]), num_comp_indices = 2, num_simp_indices = 7)
             self.dci_db = DCI(np.prod(data_flat_combined_np.shape[1:]), num_comp_indices = 2, num_simp_indices = 7)
 
         # train through various epochs
@@ -115,8 +114,6 @@ class IMLE():
                 # find the nearest neighbours
                 self.dci_db.reset()
 
-                # self.dci_db.add(np.copy(samples_flat_np), num_levels = 2, field_of_view = 10, prop_to_retrieve = 0.002)
-                # nearest_indices, _ = self.dci_db.query(data_flat_np, num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
                 self.dci_db.add(np.copy(samples_combined_np), num_levels = 2, field_of_view = 10, prop_to_retrieve = 0.002)
                 nearest_indices, _ = self.dci_db.query(data_flat_combined_np, num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
 

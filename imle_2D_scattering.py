@@ -103,6 +103,9 @@ class IMLE():
                     samples_np[i*batch_size:(i+1)*batch_size] = samples.cpu().data.numpy()
                     Sx_np[i*batch_size:(i+1)*batch_size] = np.copy(Sx)
 
+                # make 1D images
+                samples_flat_np = np.reshape(samples_np, (samples_np.shape[0], np.prod(samples_np.shape[1:])))
+                
 #-----------------------------------------------------------------------------------------------------------
                 # find the nearest neighbours
                 self.dci_db.reset()
@@ -185,12 +188,12 @@ def main(*args):
 
     # restore data
     temp = np.load("../Illustris_Images.npz")
-    train_data = temp["training_data"][::10,None,32:-32,32:-32]
+    train_data = temp["training_data"][:,None,32:-32,32:-32]
     train_data = np.clip(np.arcsinh(train_data)+0.05,0,5)/5
     print(train_data.shape)
 
     # restore scattering coefficients
-    train_Sx = np.load("../Sx_Illustris_Images.npy")[::10,:,None,None]
+    train_Sx = np.load("../Sx_Illustris_Images.npy")[:,:,None,None]
     print(train_Sx.shape)
 
 #---------------------------------------------------------------------------------------------
