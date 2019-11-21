@@ -65,11 +65,12 @@ class IMLE():
         data_Sx_flat_np = np.reshape(data_Sx, (data_Sx.shape[0], np.prod(data_Sx.shape[1:])))
         data_flat_combined_np = np.concatenate((data_flat_np, data_Sx_flat_np),axis=1)
 
+#-----------------------------------------------------------------------------------------------------------
         # initiate dci
         if self.dci_db is None:
-            self.dci_db = DCI(np.prod(data_np.shape[1:]), num_comp_indices = 2, num_simp_indices = 7)
+            #self.dci_db = DCI(np.prod(data_np.shape[1:]), num_comp_indices = 2, num_simp_indices = 7)
+            self.dci_db = DCI(np.prod(data_flat_combined_np.shape[1:]), num_comp_indices = 2, num_simp_indices = 7)
 
-#-----------------------------------------------------------------------------------------------------------
         # train through various epochs
         for epoch in range(num_epochs):
 
