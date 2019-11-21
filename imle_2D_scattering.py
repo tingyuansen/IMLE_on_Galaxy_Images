@@ -38,9 +38,10 @@ class ConvolutionalImplicitModel(nn.Module):
 #=============================================================================================================
 # define class
 class IMLE():
-    def __init__(self, z_dim):
+    def __init__(self, z_dim, Sx_dim):
         self.z_dim = z_dim
-        self.model = ConvolutionalImplicitModel(z_dim).cuda()
+        self.Sx_dim = Sx_dim
+        self.model = ConvolutionalImplicitModel(z_dim+Sx_dim).cuda()
         self.dci_db = None
 
 #-----------------------------------------------------------------------------------------------------------
@@ -83,13 +84,25 @@ class IMLE():
                 # initiate numpy array to store latent draws and the associate sample
                 z_np = np.empty((num_samples*batch_size, self.z_dim, 1, 1))
                 samples_np = np.empty((num_samples*batch_size,)+data_np.shape[1:])
+                Sx_np = np.empty((num_samples*batch_size, self.Sx_dim, 1, 1))
 
                 # make sample (in batch to avoid GPU memory problem)
                 for i in range(num_samples):
+
+                    # draw random z
                     z = torch.randn(batch_size, self.z_dim, 1, 1).cuda()
-                    samples = self.model(z)
+
+                    # draw scattering coefficients from real data
+                    ind_Sx = np.random.permutation(data_Sx.shape[0])
+                    Sx = data_Sx[ind_Sx[:batch_size]]
+
+                    # predict sample
+                    samples = self.model(torch.cat((z, torch.from_numpy(Sx).float().cuda()),axis=1))
+
+                    # store the draws
                     z_np[i*batch_size:(i+1)*batch_size] = z.cpu().data.numpy()
                     samples_np[i*batch_size:(i+1)*batch_size] = samples.cpu().data.numpy()
+                    Sx_np[i*batch_size:(i+1)*batch_size] = np.copy(Sx)
 
                 # make 1D images
                 samples_flat_np = np.reshape(samples_np, (samples_np.shape[0], np.prod(samples_np.shape[1:])))
@@ -101,6 +114,7 @@ class IMLE():
                 nearest_indices, _ = self.dci_db.query(data_flat_np, num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
                 nearest_indices = np.array(nearest_indices)[:,0]
                 z_np = z_np[nearest_indices]
+                Sx_np = Sx_np[nearest_indices]
 
                 # add random noise to the latent space to faciliate training
                 z_np += 0.01*np.random.randn(*z_np.shape)
@@ -111,11 +125,11 @@ class IMLE():
 
 #=============================================================================================================
             # permute data
-            data_ordering = np.random.permutation(data_np.shape[0])
-            data_np = data_np[data_ordering]
-            data_flat_np = np.reshape(data_np, (data_np.shape[0], np.prod(data_np.shape[1:])))
-            z_np = z_np[data_ordering]
-            data_Sx = data_Sx[data_ordering]
+            # data_ordering = np.random.permutation(data_np.shape[0])
+            # data_np = data_np[data_ordering]
+            # data_flat_np = np.reshape(data_np, (data_np.shape[0], np.prod(data_np.shape[1:])))
+            # z_np = z_np[data_ordering]
+            # Sx_np = Sx_np[data_ordering]
 
 #-----------------------------------------------------------------------------------------------------------
             # gradient descent
@@ -131,10 +145,7 @@ class IMLE():
                 # evaluate the models
                 cur_z = torch.from_numpy(z_np[i*batch_size:(i+1)*batch_size]).float().cuda()
                 cur_data = torch.from_numpy(data_np[i*batch_size:(i+1)*batch_size]).float().cuda()
-                cur_Sx = torch.from_numpy(data_Sx[i*batch_size:(i+1)*batch_size]).float().cuda()
-                print(cur_z.shape)
-                print(cur_Sx.shape)
-                print(torch.cat((cur_z,cur_Sx), axis=1).shape)
+                cur_Sx = torch.from_numpy(Sx_np[i*batch_size:(i+1)*batch_size]).float().cuda()
                 cur_samples = self.model(torch.cat((cur_z,cur_Sx), axis=1))
 
 #-----------------------------------------------------------------------------------------------------------
@@ -174,8 +185,9 @@ def main(*args):
 
 #---------------------------------------------------------------------------------------------
     # initiate network
-    z_dim = 32 + train_Sx.shape[1]
-    imle = IMLE(z_dim)
+    z_dim = 32
+    Sx_dim = train_Sx.shape[1]
+    imle = IMLE(z_dim, Sx_dim)
 
     # train the network
     imle.train(train_data, train_Sx)
