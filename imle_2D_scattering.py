@@ -45,7 +45,7 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
     def train(self, data_np, data_Sx, base_lr=1e-3, batch_size=2048, num_epochs=30000,\
-              decay_step=25, decay_rate=1.0, staleness=300, num_samples_factor=100):
+              decay_step=25, decay_rate=1.0, staleness=1000, num_samples_factor=100):
 
         # define metric
         loss_fn = nn.MSELoss().cuda()
@@ -204,7 +204,7 @@ def main(*args):
 
     # train the network
     imle.train(train_data, train_Sx)
-    torch.save(imle.model.state_dict(), '../net_weights_2D_zdim=32.pth')
+    torch.save(imle.model.state_dict(), '../net_weights_2D_zdim=4.pth')
 
 #---------------------------------------------------------------------------------------------
 if __name__ == '__main__':
