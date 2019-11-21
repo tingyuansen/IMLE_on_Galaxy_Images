@@ -126,12 +126,11 @@ class IMLE():
 
 #=============================================================================================================
             # permute data
-            #data_ordering = np.random.permutation(data_np.shape[0])
-            #data_np = data_np[data_ordering]
-            #data_flat_np = np.reshape(data_np, (data_np.shape[0], np.prod(data_np.shape[1:])))
-            #z_np = z_np[data_ordering]
-            #Sx_np = Sx_np[data_ordering]
-            #data_flat_combined_np = data_flat_combined_np[data_ordering]
+            data_ordering = np.random.permutation(data_np.shape[0])
+            data_np = data_np[data_ordering]
+            data_flat_np = np.reshape(data_np, (data_np.shape[0], np.prod(data_np.shape[1:])))
+            z_np = z_np[data_ordering]
+            Sx_np = Sx_np[data_ordering]
 
 #-----------------------------------------------------------------------------------------------------------
             # gradient descent
@@ -161,7 +160,7 @@ class IMLE():
 
             # save the mock sample
             if (epoch+1) % staleness == 0:
-                np.savez("../results_2D_zdim=4.npz", data_np=data_np, Sx_np=Sx_np,\
+                np.savez("../results_2D_zdim=32.npz", data_np=data_np, Sx_np=Sx_np,\
                         samples_np=self.model(torch.from_numpy(np.concatenate((z_np,Sx_np), axis=1))\
                                                 .float().cuda()).cpu().data.numpy())
 
@@ -178,7 +177,7 @@ class IMLE():
                     samples = self.model(torch.cat((z, torch.from_numpy(Sx).float().cuda()), axis=1))
                     samples_random[i*batch_size:(i+1)*batch_size] = samples.cpu().data.numpy()
 
-                np.savez("../results_2D_random_zdim=4.npz",
+                np.savez("../results_2D_random_zdim=32.npz",
                         samples_np=samples_random)
 
 
@@ -198,13 +197,13 @@ def main(*args):
 
 #---------------------------------------------------------------------------------------------
     # initiate network
-    z_dim = 4
+    z_dim = 32
     Sx_dim = train_Sx.shape[1]
     imle = IMLE(z_dim, Sx_dim)
 
     # train the network
     imle.train(train_data, train_Sx)
-    torch.save(imle.model.state_dict(), '../net_weights_2D_zdim=4.pth')
+    torch.save(imle.model.state_dict(), '../net_weights_2D_zdim=32.pth')
 
 #---------------------------------------------------------------------------------------------
 if __name__ == '__main__':
