@@ -4,7 +4,6 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import torch.nn.functional as F
 
 import sys
 sys.path.append('./dci_code')
@@ -97,7 +96,7 @@ class IMLE():
                     Sx = data_Sx[ind_Sx[:batch_size]]
 
                     # predict sample
-                    samples = self.model(torch.cat((z, torch.from_numpy(Sx).float().cuda()),axis=1))
+                    samples = self.model(torch.cat((z, torch.from_numpy(Sx).float().cuda()), axis=1))
 
                     # store the draws
                     z_np[i*batch_size:(i+1)*batch_size] = z.cpu().data.numpy()
@@ -125,11 +124,11 @@ class IMLE():
 
 #=============================================================================================================
             # permute data
-            # data_ordering = np.random.permutation(data_np.shape[0])
-            # data_np = data_np[data_ordering]
-            # data_flat_np = np.reshape(data_np, (data_np.shape[0], np.prod(data_np.shape[1:])))
-            # z_np = z_np[data_ordering]
-            # Sx_np = Sx_np[data_ordering]
+            data_ordering = np.random.permutation(data_np.shape[0])
+            data_np = data_np[data_ordering]
+            data_flat_np = np.reshape(data_np, (data_np.shape[0], np.prod(data_np.shape[1:])))
+            z_np = z_np[data_ordering]
+            Sx_np = Sx_np[data_ordering]
 
 #-----------------------------------------------------------------------------------------------------------
             # gradient descent
@@ -163,10 +162,21 @@ class IMLE():
                         samples_np=self.model(torch.from_numpy(np.concatenate((z_np,Sx_np), axis=1))\
                                                 .float().cuda()).cpu().data.numpy())
 
-                #z_random = torch.randn(10**3, self.z_dim, 1, 1).cuda()
-                #Sx_pick = torch.from_numpy(data_Sx[:z_random.shape[0]]).float().cuda()
-                #np.savez("../results_2D_random.npz",
-                #        samples_np=self.model(torch.cat(z_random,Sx_pick), axis=1).cpu().data.numpy())
+#-----------------------------------------------------------------------------------------------------------
+                # make random mock
+                # loop over all batches
+                sample_random = np.empty(data_np.shape)
+
+                for i in range(num_batches):
+                    z = torch.randn(batch_size, self.z_dim, 1, 1).cuda()
+                    Sx = data_Sx[i*batch_size:(i+1)*batch_size]
+
+                    # predict sample
+                    samples = self.model(torch.cat((z, torch.from_numpy(Sx).float().cuda()), axis=1))
+                    samples_random[i*batch_size:(i+1)*batch_size] = samples.cpu().data.numpy()
+
+                np.savez("../results_2D_random.npz",
+                        samples_np=sample_random)
 
 #=============================================================================================================
 # run the codes
