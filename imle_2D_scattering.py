@@ -195,7 +195,7 @@ def main(*args):
 
 #---------------------------------------------------------------------------------------------
     # initiate network
-    z_dim = 4
+    z_dim = 8
     Sx_dim = train_Sx.shape[1]
     imle = IMLE(z_dim, Sx_dim)
 
