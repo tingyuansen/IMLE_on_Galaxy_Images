@@ -19,20 +19,39 @@ def main():
 
     # load data
     temp = np.load("../Illustris_Images.npz")
-    train_data = temp["training_data"]
+    training_x = temp["training_data"]
 
     # define scattering
-    scattering = Scattering2D(J=5, shape=(train_data[0,:,:].shape), L=4, max_order=2)
+    scattering = Scattering2D(J=5, shape=(training_x[0,:,:].shape), L=4, max_order=2)
     scattering.cuda()
 
-    # transform to torch tensors
-    tensor_training_x = torch.from_numpy(train_data).type(torch.cuda.FloatTensor)
+    # initiate results array
+    Sx = []
 
-    # perform scattering
-    Sx = scattering(tensor_training_x).mean(dim=(2,3)).log().cpu().detach().numpy()
+#----------------------------------------------------------------------------------------------------------
+    # loop over batches of 500 objects
+    for i in range(training_x.shape[0]//100+1):
+        print(i)
 
-    # scattering coefficients
-    np.save("../Sx.npy", Sx)
+        # record time
+        start_time = time.time()
+
+        # transform to torch tensors
+        tensor_training_x = torch.from_numpy(training_x[100*i:100*(i+1),:,:]).type(torch.cuda.FloatTensor)
+
+        # perform scattering
+        Sx.append(scattering(tensor_training_x).mean(dim=(2,3)).log().cpu().detach().numpy())
+        print(time.time() - start_time)
+
+#----------------------------------------------------------------------------------------------------------
+    # save results
+    for i in range(len(Sx)):
+        try:
+            Sx_array = np.vstack([Sx_array,Sx[i]])
+        except:
+            Sx_array = Sx[i]
+        print(Sx_array.shape)
+    np.save("Sx_Illustris_Images.npy", Sx_array)
 
 
 #=========================================================================================================
