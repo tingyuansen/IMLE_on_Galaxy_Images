@@ -132,6 +132,9 @@ class IMLE():
                 cur_z = torch.from_numpy(z_np[i*batch_size:(i+1)*batch_size]).float().cuda()
                 cur_data = torch.from_numpy(data_np[i*batch_size:(i+1)*batch_size]).float().cuda()
                 cur_Sx = torch.from_numpy(data_Sx[i*batch_size:(i+1)*batch_size]).float().cuda()
+                print(cur_data.shape)
+                print(cur_Sx.shape)
+                print(torch.cat((cur_z,cur_Sx), axis=1))
                 cur_samples = self.model(torch.cat((cur_z,cur_Sx), axis=1))
 
 #-----------------------------------------------------------------------------------------------------------
