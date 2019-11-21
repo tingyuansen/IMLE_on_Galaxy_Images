@@ -45,7 +45,7 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
     def train(self, data_np, data_Sx, base_lr=1e-3, batch_size=512, num_epochs=6000,\
-              decay_step=25, decay_rate=1.0, staleness=300, num_samples_factor=300):
+              decay_step=25, decay_rate=1.0, staleness=300, num_samples_factor=30):
 
         # define metric
         loss_fn = nn.MSELoss().cuda()
@@ -178,18 +178,19 @@ class IMLE():
                 np.savez("../results_2D_random.npz",
                         samples_np=samples_random)
 
+
 #=============================================================================================================
 # run the codes
 def main(*args):
 
     # restore data
     temp = np.load("../Illustris_Images.npz")
-    train_data = temp["training_data"][::10,None,32:-32,32:-32]
+    train_data = temp["training_data"][:,None,32:-32,32:-32]
     train_data = np.clip(np.arcsinh(train_data)+0.05,0,5)/5
     print(train_data.shape)
 
     # restore scattering coefficients
-    train_Sx = np.load("../Sx_Illustris_Images.npy")[::10,:,None,None]
+    train_Sx = np.load("../Sx_Illustris_Images.npy")[:,:,None,None]
     print(train_Sx.shape)
 
 #---------------------------------------------------------------------------------------------
