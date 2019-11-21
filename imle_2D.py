@@ -17,13 +17,13 @@ class ConvolutionalImplicitModel(nn.Module):
     def __init__(self, z_dim):
         super(ConvolutionalImplicitModel, self).__init__()
         self.z_dim = z_dim
-        self.tconv1 = nn.ConvTranspose2d(z_dim, 1024, 8, 4, bias=False)
+        self.tconv1 = nn.ConvTranspose2d(z_dim, 1024, 1, 1, bias=False)
         self.bn1 = nn.BatchNorm2d(1024)
-        self.tconv2 = nn.ConvTranspose2d(1024, 128, 8, 3, bias=False)
+        self.tconv2 = nn.ConvTranspose2d(1024, 128, 7, 1, bias=False)
         self.bn2 = nn.BatchNorm2d(128)
-        self.tconv3 = nn.ConvTranspose2d(128, 64, 4, 2, output_padding=1, bias=False)
+        self.tconv3 = nn.ConvTranspose2d(128, 64, 4, 3, padding=0, bias=False)
         self.bn3 = nn.BatchNorm2d(64)
-        self.tconv4 = nn.ConvTranspose2d(64, 1, 4, 1, bias=False)
+        self.tconv4 = nn.ConvTranspose2d(64, 1, 4, 3, padding=2, output_padding=1, bias=False)
         self.bn4 = nn.BatchNorm2d(1)
         self.relu = nn.LeakyReLU()
 
@@ -45,7 +45,7 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
     def train(self, data_np, base_lr=1e-3, batch_size=512, num_epochs=6000,\
-              decay_step=25, decay_rate=1.0, staleness=300, num_samples_factor=100):
+              decay_step=25, decay_rate=1.0, staleness=300, num_samples_factor=300):
 
         # define metric
         loss_fn = nn.MSELoss().cuda()
@@ -103,7 +103,7 @@ class IMLE():
                 z_np = z_np[nearest_indices]
 
                 # add random noise to the latent space to faciliate training
-                #z_np += 0.01*np.random.randn(*z_np.shape)
+                z_np += 0.01*np.random.randn(*z_np.shape)
 
                 # delete to save Hyperparameters
                 del samples_np, samples_flat_np
@@ -150,15 +150,11 @@ class IMLE():
                 np.savez("../results_2D_random.npz",
                         samples_np=self.model(z_random).cpu().data.numpy())
 
-
 #=============================================================================================================
 # run the codes
 def main(*args):
 
     # restore data
-    #train_data = np.load("../training_set_des.npy")
-    #print(train_data.shape)
-
     temp = np.load("../Illustris_Images.npz")
     train_data = temp["training_data"][::3,None,32:-32,32:-32]
     train_data = np.clip(np.arcsinh(train_data)+0.05,0,5)/5
