@@ -12,26 +12,26 @@ from dci import DCI
 
 #=============================================================================================================
 # define network
-class ConvolutionalImplicitModel(nn.Module):
-    def __init__(self, z_dim):
-        super(ConvolutionalImplicitModel, self).__init__()
-        self.z_dim = z_dim
-        self.tconv1 = nn.ConvTranspose2d(z_dim, 1024, 1, 1, bias=False)
-        self.bn1 = nn.BatchNorm2d(1024)
-        self.tconv2 = nn.ConvTranspose2d(1024, 128, 7, 1, bias=False)
-        self.bn2 = nn.BatchNorm2d(128)
-        self.tconv3 = nn.ConvTranspose2d(128, 64, 4, 3, padding=0, bias=False)
-        self.bn3 = nn.BatchNorm2d(64)
-        self.tconv4 = nn.ConvTranspose2d(64, 1, 4, 3, padding=2, output_padding=1, bias=False)
-        self.bn4 = nn.BatchNorm2d(1)
-        self.relu = nn.LeakyReLU()
-
-    def forward(self, z):
-        z = self.relu(self.bn1(self.tconv1(z)))
-        z = self.relu(self.bn2(self.tconv2(z)))
-        z = self.relu(self.bn3(self.tconv3(z)))
-        z = self.relu(self.bn4(self.tconv4(z)))
-        return z
+# class ConvolutionalImplicitModel(nn.Module):
+#     def __init__(self, z_dim):
+#         super(ConvolutionalImplicitModel, self).__init__()
+#         self.z_dim = z_dim
+#         self.tconv1 = nn.ConvTranspose2d(z_dim, 1024, 1, 1, bias=False)
+#         self.bn1 = nn.BatchNorm2d(1024)
+#         self.tconv2 = nn.ConvTranspose2d(1024, 128, 7, 1, bias=False)
+#         self.bn2 = nn.BatchNorm2d(128)
+#         self.tconv3 = nn.ConvTranspose2d(128, 64, 4, 3, padding=0, bias=False)
+#         self.bn3 = nn.BatchNorm2d(64)
+#         self.tconv4 = nn.ConvTranspose2d(64, 1, 4, 3, padding=2, output_padding=1, bias=False)
+#         self.bn4 = nn.BatchNorm2d(1)
+#         self.relu = nn.LeakyReLU()
+#
+#     def forward(self, z):
+#         z = self.relu(self.bn1(self.tconv1(z)))
+#         z = self.relu(self.bn2(self.tconv2(z)))
+#         z = self.relu(self.bn3(self.tconv3(z)))
+#         z = self.relu(self.bn4(self.tconv4(z)))
+#         return z
 
 #-----------------------------------------------------------------------------------------------------------
 # define network
@@ -58,7 +58,7 @@ class ConvolutionalImplicitModel(nn.Module):
             if i < 4:
                 layers.append(torch.nn.Upsample(scale_factor=2, mode='bilinear', align_corners = False))
             else:
-                layers.append(torch.nn.Conv2d(512, 3, 5, stride=1, padding=2))
+                layers.append(torch.nn.Conv2d(512, 1, 5, stride=1, padding=2))
                 layers.append(torch.nn.Sigmoid())
 
         self.model = torch.nn.Sequential(*layers)
@@ -78,7 +78,7 @@ class IMLE():
         self.dci_db = None
 
 #-----------------------------------------------------------------------------------------------------------
-    def train(self, data_np, data_Sx, base_lr=1e-3, batch_size=64, num_epochs=6000,\
+    def train(self, data_np, data_Sx, base_lr=1e-3, batch_size=128, num_epochs=6000,\
               decay_step=25, decay_rate=1.0, staleness=1000, num_samples_factor=300):
 
         # define metric
