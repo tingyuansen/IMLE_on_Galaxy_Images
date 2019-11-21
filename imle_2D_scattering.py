@@ -103,6 +103,9 @@ class IMLE():
                     samples_np[i*batch_size:(i+1)*batch_size] = samples.cpu().data.numpy()
                     Sx_np[i*batch_size:(i+1)*batch_size] = np.copy(Sx)
 
+                print(samples_np.shape)
+                print(Sx_np.shape)
+
                 # make 1D images
                 samples_flat_np = np.reshape(samples_np, (samples_np.shape[0], np.prod(samples_np.shape[1:])))
 
