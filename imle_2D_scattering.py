@@ -122,6 +122,8 @@ class IMLE():
                 # make sample (in batch to avoid GPU memory problem)
                 for i in range(num_samples):
 
+                    print(i)
+                    
                     # draw random z
                     z = torch.randn(batch_size, self.z_dim, 1, 1).cuda()
 
