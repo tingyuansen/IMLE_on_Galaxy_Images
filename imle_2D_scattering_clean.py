@@ -77,8 +77,8 @@ class IMLE():
         self.dci_db = None
 
 #-----------------------------------------------------------------------------------------------------------
-    def train(self, data_np, data_Sx, base_lr=1e-3, batch_size=128, num_epochs=6000,\
-              decay_step=25, decay_rate=1.0, staleness=100, num_samples_factor=10):
+    def train(self, data_np, data_Sx, base_lr=1e-3, batch_size=512, num_epochs=6000,\
+              decay_step=25, decay_rate=1.0, staleness=100, num_samples_factor=100):
 
         # define metric
         loss_fn = nn.MSELoss().cuda()
@@ -170,7 +170,7 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
             # save the mock sample
             if (epoch+1) % staleness == 0:
-                np.savez("../results_2D_simple_clean.npz", data_np=data_np, Sx_np=Sx_np,\
+                np.savez("../results_2D_simple_clean.npz", data_np=data_np, z_Sx_np=z_Sx.cpu().data.numpy(),\
                                 samples_np=samples_predict)
 
                 # make random mock
