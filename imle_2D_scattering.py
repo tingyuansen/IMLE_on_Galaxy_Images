@@ -99,7 +99,7 @@ class IMLE():
         # draw random z
         z = torch.randn(batch_size*num_samples, self.z_dim, 1, 1).cuda()
         z_np_all = z.cpu().data.numpy()
-        Sx = torch.from_numpy(np.repeat(Sx,num_samples_factor,axis=0)).float().cuda()[:z.shape[0]]
+        Sx = torch.from_numpy(np.repeat(data_Sx,num_samples_factor,axis=0)).float().cuda()[:z.shape[0]]
         Sx_np_all = Sx.cpu().data.numpy()
         z_Sx_all = torch.cat((z, Sx), axis=1)
         data_np_all = torch.from_numpy(data_np).float().cuda()
