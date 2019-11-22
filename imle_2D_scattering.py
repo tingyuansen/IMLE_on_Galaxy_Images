@@ -43,7 +43,7 @@ class ConvolutionalImplicitModel(nn.Module):
         layers = []
 
         for i in range(5):
-            for j in range(1):
+            for j in range(2):
 
                 if i == 0 and j == 0:
                     layers.append(torch.nn.ConvTranspose2d(z_dim, 512, 4, stride=1, padding=0))
@@ -77,7 +77,7 @@ class IMLE():
         self.dci_db = None
 
 #-----------------------------------------------------------------------------------------------------------
-    def train(self, data_np, data_Sx, base_lr=1e-3, batch_size=128, num_epochs=6000,\
+    def train(self, data_np, data_Sx, base_lr=1e-3, batch_size=64, num_epochs=6000,\
               decay_step=25, decay_rate=1.0, staleness=100, num_samples_factor=10):
 
         # define metric
