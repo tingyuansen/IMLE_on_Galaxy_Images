@@ -92,9 +92,20 @@ class IMLE():
         # true data to mock sample
         num_samples = num_batches * num_samples_factor
 
-#-----------------------------------------------------------------------------------------------------------
         # make it in 1D data image for DCI
         data_flat_np = np.reshape(data_np, (data_np.shape[0], np.prod(data_np.shape[1:])))
+
+#-----------------------------------------------------------------------------------------------------------
+        # draw random z
+        z = torch.randn(batch_size*num_samples, self.z_dim, 1, 1).cuda()
+        z_np_all = z.cpu().data.numpy()
+        Sx = torch.from_numpy(np.repeat(Sx,num_samples_factor,axis=0)).float().cuda()[:z.shape[0]]
+        Sx_np_all = Sx.cpu().data.numpy()
+        z_Sx_all = torch.cat((z, Sx), axis=1)
+        data_np_all = torch.from_numpy(data_np).float().cuda()
+
+        print(z.shape, Sx.shape)
+        print(z_Sx_all.shape)
 
 #-----------------------------------------------------------------------------------------------------------
         # initiate dci
@@ -114,31 +125,30 @@ class IMLE():
             if epoch % staleness == 0:
 
                 # initiate numpy array to store latent draws and the associate sample
-                z_np = np.empty((num_samples*batch_size, self.z_dim, 1, 1))
+                #z_np = np.empty((num_samples*batch_size, self.z_dim, 1, 1))
+                #Sx_np = np.empty((num_samples*batch_size, self.Sx_dim, 1, 1))
                 samples_np = np.empty((num_samples*batch_size,)+data_np.shape[1:])
-                Sx_np = np.empty((num_samples*batch_size, self.Sx_dim, 1, 1))
 
-                # draw random z
-                #z = torch.randn(batch_size*num_samples, self.z_dim, 1, 1).cuda()
 
                 # make sample (in batch to avoid GPU memory problem)
                 for i in range(num_samples):
 
                     # draw random z
-                    z = torch.randn(batch_size, self.z_dim, 1, 1).cuda()
+                    #z = torch.randn(batch_size, self.z_dim, 1, 1).cuda()
 
                     # draw scattering coefficients from real data
-                    ind_Sx = np.random.permutation(data_Sx.shape[0])
-                    Sx = data_Sx[ind_Sx[:batch_size]]
+                    #ind_Sx = np.random.permutation(data_Sx.shape[0])
+                    #Sx = data_Sx[ind_Sx[:batch_size]]
 
 #-----------------------------------------------------------------------------------------------------------
                     # predict sample
-                    samples = self.model(torch.cat((z, torch.from_numpy(Sx).float().cuda()), axis=1))
+                    #samples = self.model(torch.cat((z, torch.from_numpy(Sx).float().cuda()), axis=1))
+                    samples = self.model(z_Sx_all[i*batch_size:(i+1)*batch_size])
 
                     # store the draws
-                    z_np[i*batch_size:(i+1)*batch_size] = z.cpu().data.numpy()
+                    #z_np[i*batch_size:(i+1)*batch_size] = z.cpu().data.numpy()
+                    #Sx_np[i*batch_size:(i+1)*batch_size] = np.copy(Sx)
                     samples_np[i*batch_size:(i+1)*batch_size] = samples.cpu().data.numpy()
-                    Sx_np[i*batch_size:(i+1)*batch_size] = np.copy(Sx)
 
                 # make 1D images
                 samples_flat_np = np.reshape(samples_np, (samples_np.shape[0], np.prod(samples_np.shape[1:])))
@@ -151,11 +161,13 @@ class IMLE():
                 nearest_indices, _ = self.dci_db.query(data_flat_np,\
                                         num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
                 nearest_indices = np.array(nearest_indices)[:,0]
-                z_np = z_np[nearest_indices]
-                Sx_np = Sx_np[nearest_indices]
+
+                #z_np = z_np[nearest_indices]
+                #Sx_np = Sx_np[nearest_indices]
+                z_Sx = z_Sx_all[nearest_indices]
 
                 # add random noise to the latent space to faciliate training
-                z_np += 0.01*np.random.randn(*z_np.shape)
+                #z_np += 0.01*np.random.randn(*z_np.shape)
 
                 # delete to save Hyperparameters
                 del samples_np, samples_flat_np
@@ -185,10 +197,12 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
                 # evaluate the models
-                cur_z = torch.from_numpy(z_np[i*batch_size:(i+1)*batch_size]).float().cuda()
-                cur_data = torch.from_numpy(data_np[i*batch_size:(i+1)*batch_size]).float().cuda()
-                cur_Sx = torch.from_numpy(Sx_np[i*batch_size:(i+1)*batch_size]).float().cuda()
-                cur_samples = self.model(torch.cat((cur_z,cur_Sx), axis=1))
+                #cur_z = torch.from_numpy(z_np[i*batch_size:(i+1)*batch_size]).float().cuda()
+                #cur_data = torch.from_numpy(data_np[i*batch_size:(i+1)*batch_size]).float().cuda()
+                #cur_Sx = torch.from_numpy(Sx_np[i*batch_size:(i+1)*batch_size]).float().cuda()
+                #cur_samples = self.model(torch.cat((cur_z,cur_Sx), axis=1))
+
+                cur_samples = self.model(z_Sx[i*batch_size:(i+1)*batch_size])
 
                 # save the mock sample
                 if (epoch+1) % staleness == 0:
@@ -196,7 +210,8 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
                 # calculate MSE loss of the two images
-                loss = loss_fn(cur_samples, cur_data)
+                #loss = loss_fn(cur_samples, cur_data)
+                loss = loss_fn(cur_samples, data_npl_all[i*batch_size:(i+1)*batch_size])
                 loss.backward()
                 err += loss.item()
                 optimizer.step()
@@ -206,21 +221,23 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
             # save the mock sample
             if (epoch+1) % staleness == 0:
-                np.savez("../results_2D_j=2_staleness=100.npz", data_np=data_np, Sx_np=Sx_np,\
+                np.savez("../results_2D_j=1_clean.npz", data_np=data_np, Sx_np=Sx_np,\
                                 samples_np=samples_predict)
 
                 # make random mock
                 samples_random = np.empty(data_np.shape)
 
                 for i in range(num_batches):
-                    z = torch.randn(batch_size, self.z_dim, 1, 1).cuda()
-                    Sx = data_Sx[i*batch_size:(i+1)*batch_size]
+                    #z = torch.randn(batch_size, self.z_dim, 1, 1).cuda()
+                    #Sx = data_Sx[i*batch_size:(i+1)*batch_size]
 
                     # predict sample
-                    samples = self.model(torch.cat((z, torch.from_numpy(Sx).float().cuda()), axis=1))
+                    #samples = self.model(torch.cat((z, torch.from_numpy(Sx).float().cuda()), axis=1))
+
+                    samples = self.model(z_Sx_all[i*batch_size:(i+1)*batch_size])
                     samples_random[i*batch_size:(i+1)*batch_size] = samples.cpu().data.numpy()
 
-                np.savez("../results_2D_random_j=2_staleness=100.npz", samples_np=samples_random)
+                np.savez("../results_2D_random_j=1_clean.npz", samples_np=samples_random)
 
 
 #=============================================================================================================
@@ -245,7 +262,7 @@ def main(*args):
 
     # train the network
     imle.train(train_data, train_Sx)
-    torch.save(imle.model.state_dict(), '../net_weights_2D_j=2_staleness=100.pth')
+    torch.save(imle.model.state_dict(), '../net_weights_2D_j=1_clean.pth')
 
 #---------------------------------------------------------------------------------------------
 if __name__ == '__main__':
