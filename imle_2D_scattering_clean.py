@@ -90,6 +90,8 @@ class IMLE():
         if self.dci_db is None:
             self.dci_db = DCI(np.prod(data_np.shape[1:]), num_comp_indices = 2, num_simp_indices = 7)
 
+
+#=============================================================================================================
         # train through various epochs
         for epoch in range(num_epochs):
 
