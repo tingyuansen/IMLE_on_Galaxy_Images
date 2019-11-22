@@ -43,7 +43,7 @@ class ConvolutionalImplicitModel(nn.Module):
         layers = []
 
         for i in range(5):
-            for j in range(2):
+            for j in range(1):
 
                 if i == 0 and j == 0:
                     layers.append(torch.nn.ConvTranspose2d(z_dim, 512, 4, stride=1, padding=0))
