@@ -78,7 +78,7 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
     def train(self, data_np, data_Sx, base_lr=1e-3, batch_size=128, num_epochs=6000,\
-              decay_step=25, decay_rate=1.0, staleness=1000, num_samples_factor=100):
+              decay_step=25, decay_rate=1.0, staleness=100, num_samples_factor=10):
 
         # define metric
         loss_fn = nn.MSELoss().cuda()
@@ -168,6 +168,10 @@ class IMLE():
             # gradient descent
             err = 0.
 
+            # save the mock sample
+            if (epoch+1) % staleness == 0:
+                samples_predict = np.empty(data_np.shape)
+
             # loop over all batches
             for i in range(num_batches):
 
@@ -181,6 +185,9 @@ class IMLE():
                 cur_Sx = torch.from_numpy(Sx_np[i*batch_size:(i+1)*batch_size]).float().cuda()
                 cur_samples = self.model(torch.cat((cur_z,cur_Sx), axis=1))
 
+                # save the mock sample
+                if (epoch+1) % staleness == 0:
+                    samples_predict[i*batch_size:(i+1)*batch_size] = curl_samples.cpu().data.numpy()
 #-----------------------------------------------------------------------------------------------------------
                 # calculate MSE loss of the two images
                 loss = loss_fn(cur_samples, cur_data)
@@ -192,9 +199,8 @@ class IMLE():
 
             # save the mock sample
             if (epoch+1) % staleness == 0:
-                np.savez("../results_2D_zdim=32.npz", data_np=data_np, Sx_np=Sx_np,\
-                        samples_np=self.model(torch.from_numpy(np.concatenate((z_np,Sx_np), axis=1))\
-                                                .float().cuda()).cpu().data.numpy())
+                np.savez("../results_2D_j=2.npz", data_np=data_np, Sx_np=Sx_np,\
+                                samples_np=samples_predict)
 
 #-----------------------------------------------------------------------------------------------------------
                 # make random mock
@@ -208,7 +214,7 @@ class IMLE():
                     samples = self.model(torch.cat((z, torch.from_numpy(Sx).float().cuda()), axis=1))
                     samples_random[i*batch_size:(i+1)*batch_size] = samples.cpu().data.numpy()
 
-                np.savez("../results_2D_random_zdim=32.npz",
+                np.savez("../results_2D_random_j=2.npz",
                         samples_np=samples_random)
 
 
@@ -218,12 +224,12 @@ def main(*args):
 
     # restore data
     temp = np.load("../Illustris_Images.npz")
-    train_data = temp["training_data"][::10,None,32:-32,32:-32]
+    train_data = temp["training_data"][:,None,32:-32,32:-32]
     train_data = np.clip(np.arcsinh(train_data)+0.05,0,5)/5
     print(train_data.shape)
 
     # restore scattering coefficients
-    train_Sx = np.load("../Sx_Illustris_Images.npy")[::10,:,None,None]
+    train_Sx = np.load("../Sx_Illustris_Images.npy")[:,:,None,None]
     print(train_Sx.shape)
 
 #---------------------------------------------------------------------------------------------
@@ -234,7 +240,7 @@ def main(*args):
 
     # train the network
     imle.train(train_data, train_Sx)
-    torch.save(imle.model.state_dict(), '../net_weights_2D_zdim=32.pth')
+    torch.save(imle.model.state_dict(), '../net_weights_2D_j=2.pth')
 
 #---------------------------------------------------------------------------------------------
 if __name__ == '__main__':
