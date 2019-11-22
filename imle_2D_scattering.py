@@ -43,7 +43,7 @@ class ConvolutionalImplicitModel(nn.Module):
         layers = []
 
         for i in range(5):
-            for j in range(2):
+            for j in range(1):
 
                 if i == 0 and j == 0:
                     layers.append(torch.nn.ConvTranspose2d(z_dim, 512, 4, stride=1, padding=0))
@@ -77,7 +77,7 @@ class IMLE():
         self.dci_db = None
 
 #-----------------------------------------------------------------------------------------------------------
-    def train(self, data_np, data_Sx, base_lr=1e-3, batch_size=128, num_epochs=6000,\
+    def train(self, data_np, data_Sx, base_lr=1e-3, batch_size=256, num_epochs=6000,\
               decay_step=25, decay_rate=1.0, staleness=100, num_samples_factor=10):
 
         # define metric
@@ -120,6 +120,7 @@ class IMLE():
 
                 # make sample (in batch to avoid GPU memory problem)
                 for i in range(num_samples):
+
                     # draw random z
                     z = torch.randn(batch_size, self.z_dim, 1, 1).cuda()
 
@@ -127,6 +128,7 @@ class IMLE():
                     ind_Sx = np.random.permutation(data_Sx.shape[0])
                     Sx = data_Sx[ind_Sx[:batch_size]]
 
+#-----------------------------------------------------------------------------------------------------------
                     # predict sample
                     samples = self.model(torch.cat((z, torch.from_numpy(Sx).float().cuda()), axis=1))
 
@@ -158,11 +160,11 @@ class IMLE():
 
 #=============================================================================================================
             # permute data
-            data_ordering = np.random.permutation(data_np.shape[0])
-            data_np = data_np[data_ordering]
-            data_flat_np = np.reshape(data_np, (data_np.shape[0], np.prod(data_np.shape[1:])))
-            z_np = z_np[data_ordering]
-            Sx_np = Sx_np[data_ordering]
+            #data_ordering = np.random.permutation(data_np.shape[0])
+            #data_np = data_np[data_ordering]
+            #data_flat_np = np.reshape(data_np, (data_np.shape[0], np.prod(data_np.shape[1:])))
+            #z_np = z_np[data_ordering]
+            #Sx_np = Sx_np[data_ordering]
 
 #-----------------------------------------------------------------------------------------------------------
             # gradient descent
@@ -188,6 +190,7 @@ class IMLE():
                 # save the mock sample
                 if (epoch+1) % staleness == 0:
                     samples_predict[i*batch_size:(i+1)*batch_size] = curl_samples.cpu().data.numpy()
+
 #-----------------------------------------------------------------------------------------------------------
                 # calculate MSE loss of the two images
                 loss = loss_fn(cur_samples, cur_data)
@@ -197,12 +200,12 @@ class IMLE():
 
             print("Epoch %d: Error: %f" % (epoch, err / num_batches))
 
+#-----------------------------------------------------------------------------------------------------------
             # save the mock sample
             if (epoch+1) % staleness == 0:
-                np.savez("../results_2D_j=2.npz", data_np=data_np, Sx_np=Sx_np,\
+                np.savez("../results_2D_j=1.npz", data_np=data_np, Sx_np=Sx_np,\
                                 samples_np=samples_predict)
 
-#-----------------------------------------------------------------------------------------------------------
                 # make random mock
                 samples_random = np.empty(data_np.shape)
 
@@ -214,8 +217,7 @@ class IMLE():
                     samples = self.model(torch.cat((z, torch.from_numpy(Sx).float().cuda()), axis=1))
                     samples_random[i*batch_size:(i+1)*batch_size] = samples.cpu().data.numpy()
 
-                np.savez("../results_2D_random_j=2.npz",
-                        samples_np=samples_random)
+                np.savez("../results_2D_random_j=1.npz", samples_np=samples_random)
 
 
 #=============================================================================================================
@@ -240,7 +242,7 @@ def main(*args):
 
     # train the network
     imle.train(train_data, train_Sx)
-    torch.save(imle.model.state_dict(), '../net_weights_2D_j=2.pth')
+    torch.save(imle.model.state_dict(), '../net_weights_2D_j=1.pth')
 
 #---------------------------------------------------------------------------------------------
 if __name__ == '__main__':
