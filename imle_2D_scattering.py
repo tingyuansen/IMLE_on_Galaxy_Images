@@ -58,7 +58,7 @@ class ConvolutionalImplicitModel(nn.Module):
                 layers.append(torch.nn.Upsample(scale_factor=2, mode='bilinear', align_corners = False))
             else:
                 layers.append(torch.nn.Conv2d(512, 1, 5, stride=1, padding=2))
-                layers.append(torch.nn.Sigmoid())
+                layers.append(torch.nn.LeakyReLU())
 
         self.model = torch.nn.Sequential(*layers)
         self.add_module("model", self.model)
