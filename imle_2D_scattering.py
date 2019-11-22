@@ -118,6 +118,9 @@ class IMLE():
                 samples_np = np.empty((num_samples*batch_size,)+data_np.shape[1:])
                 Sx_np = np.empty((num_samples*batch_size, self.Sx_dim, 1, 1))
 
+                # draw random z
+                #z = torch.randn(batch_size*num_samples, self.z_dim, 1, 1).cuda()
+
                 # make sample (in batch to avoid GPU memory problem)
                 for i in range(num_samples):
 
@@ -189,7 +192,7 @@ class IMLE():
 
                 # save the mock sample
                 if (epoch+1) % staleness == 0:
-                    samples_predict[i*batch_size:(i+1)*batch_size] = curl_samples.cpu().data.numpy()
+                    samples_predict[i*batch_size:(i+1)*batch_size] = cur_samples.cpu().data.numpy()
 
 #-----------------------------------------------------------------------------------------------------------
                 # calculate MSE loss of the two images
