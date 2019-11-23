@@ -42,22 +42,23 @@ class ConvolutionalImplicitModel(nn.Module):
 
         layers = []
 
+        channel = 64
         for i in range(5):
             for j in range(1):
 
                 if i == 0 and j == 0:
-                    layers.append(torch.nn.ConvTranspose2d(z_dim, 512, 4, stride=1, padding=0))
-                    layers.append(torch.nn.BatchNorm2d(512, momentum=0.001, affine=False))
+                    layers.append(torch.nn.ConvTranspose2d(z_dim, channel, 4, stride=1, padding=0))
+                    layers.append(torch.nn.BatchNorm2d(channel, momentum=0.001, affine=False))
                     layers.append(torch.nn.LeakyReLU(0.2, inplace=True))
                 else:
-                    layers.append(torch.nn.Conv2d(512, 512, 5, stride=1, padding=2))
-                    layers.append(torch.nn.BatchNorm2d(512, momentum=0.001, affine=False))
+                    layers.append(torch.nn.Conv2d(channel, channel, 5, stride=1, padding=2))
+                    layers.append(torch.nn.BatchNorm2d(channel, momentum=0.001, affine=False))
                     layers.append(torch.nn.LeakyReLU(0.2, inplace=True))
 
             if i < 4:
                 layers.append(torch.nn.Upsample(scale_factor=2, mode='bilinear', align_corners = False))
             else:
-                layers.append(torch.nn.Conv2d(512, 1, 5, stride=1, padding=2))
+                layers.append(torch.nn.Conv2d(channel, 1, 5, stride=1, padding=2))
                 layers.append(torch.nn.LeakyReLU())
 
         self.model = torch.nn.Sequential(*layers)
@@ -77,8 +78,8 @@ class IMLE():
         self.dci_db = None
 
 #-----------------------------------------------------------------------------------------------------------
-    def train(self, data_np, data_Sx, base_lr=1e-3, batch_size=128, num_epochs=6000,\
-              decay_step=25, decay_rate=1.0, staleness=100, num_samples_factor=10):
+    def train(self, data_np, data_Sx, base_lr=1e-3, batch_size=512, num_epochs=6000,\
+              decay_step=25, decay_rate=1.0, staleness=100, num_samples_factor=100):
 
         # define metric
         loss_fn = nn.MSELoss().cuda()
@@ -170,12 +171,12 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
             # save the mock sample
             if (epoch+1) % staleness == 0:
-                np.savez("../results_2D_j=1_clean.npz", data_np=data_np, z_Sx_np=z_Sx.cpu().data.numpy(),\
+                np.savez("../results_2D_j=2_channel=64_clean.npz", data_np=data_np, z_Sx_np=z_Sx.cpu().data.numpy(),\
                                 samples_np=samples_predict)
 
                 # make random mock
                 samples_random = self.model(z_Sx_all[:10**3]).cpu().data.numpy()
-                np.savez("../results_2D_random_j=1_clean.npz", samples_np=samples_random)
+                np.savez("../results_2D_random_j=2_channel=64_clean.npz", samples_np=samples_random)
 
 
 #=============================================================================================================
@@ -200,7 +201,7 @@ def main(*args):
 
     # train the network
     imle.train(train_data, train_Sx)
-    torch.save(imle.model.state_dict(), '../net_weights_2D_j=1_clean.pth')
+    torch.save(imle.model.state_dict(), '../net_weights_2D_j=2_channel=64_clean.pth')
 
 #---------------------------------------------------------------------------------------------
 if __name__ == '__main__':
