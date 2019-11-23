@@ -19,7 +19,7 @@ class ConvolutionalImplicitModel(nn.Module):
         self.tconv1 = nn.ConvTranspose2d(z_dim, 1024, 1, 1, bias=False)
         self.bn1 = nn.BatchNorm2d(1024)
         self.tconv2 = nn.ConvTranspose2d(1024, 512, 7, 1, bias=False)
-        self.bn2 = nn.BatchNorm2d(128)
+        self.bn2 = nn.BatchNorm2d(512)
         self.tconv3 = nn.ConvTranspose2d(512, 64, 4, 3, padding=0, bias=False)
         self.bn3 = nn.BatchNorm2d(64)
         self.tconv4 = nn.ConvTranspose2d(64, 1, 4, 3, padding=2, output_padding=1, bias=False)
