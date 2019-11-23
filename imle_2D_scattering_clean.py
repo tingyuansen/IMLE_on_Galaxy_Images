@@ -96,7 +96,7 @@ class IMLE():
         # make empty array to store results
         samples_predict = np.empty(data_np.shape)
         samples_np = np.empty((num_samples*batch_size,)+data_np.shape[1:])
-        samples_random = np.empty((10**3,)+data_np.shape[1:])
+        samples_random = np.empty((10**2,)+data_np.shape[1:])
 
 #-----------------------------------------------------------------------------------------------------------
         # draw random z
@@ -175,7 +175,7 @@ class IMLE():
                                 samples_np=samples_predict)
 
                 # make random mock
-                samples_random = self.model(z_Sx_all[:10**3]).cpu().data.numpy()
+                samples_random = self.model(z_Sx_all[:10**3][::10]).cpu().data.numpy()
                 np.savez("../results_2D_random_channel=128.npz", samples_np=samples_random)
 
 
