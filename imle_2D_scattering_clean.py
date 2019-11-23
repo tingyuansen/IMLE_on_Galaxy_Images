@@ -42,7 +42,7 @@ class ConvolutionalImplicitModel(nn.Module):
 
         layers = []
 
-        channel = 128
+        channel = 64
         for i in range(5):
             for j in range(2):
 
@@ -79,7 +79,7 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
     def train(self, data_np, data_Sx, base_lr=1e-3, batch_size=256, num_epochs=6000,\
-              decay_step=25, decay_rate=0.95, staleness=100, num_samples_factor=100):
+              decay_step=25, decay_rate=0.9, staleness=100, num_samples_factor=30):
 
         # define metric
         loss_fn = nn.MSELoss().cuda()
@@ -171,12 +171,12 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
             # save the mock sample
             if (epoch+1) % staleness == 0:
-                np.savez("../results_2D_channel=128.npz", data_np=data_np, z_Sx_np=z_Sx.cpu().data.numpy(),\
+                np.savez("../results_2D_decay=0.9.npz", data_np=data_np, z_Sx_np=z_Sx.cpu().data.numpy(),\
                                 samples_np=samples_predict)
 
                 # make random mock
                 samples_random = self.model(z_Sx_all[:10**3][::10]).cpu().data.numpy()
-                np.savez("../results_2D_random_channel=128.npz", samples_np=samples_random)
+                np.savez("../results_2D_random_decay=0.9.npz", samples_np=samples_random)
 
 
 #=============================================================================================================
@@ -201,7 +201,7 @@ def main(*args):
 
     # train the network
     imle.train(train_data, train_Sx)
-    torch.save(imle.model.state_dict(), '../net_weights_2D_channel=128.pth')
+    torch.save(imle.model.state_dict(), '../net_weights_2D_decay=0.9.pth')
 
 #---------------------------------------------------------------------------------------------
 if __name__ == '__main__':
