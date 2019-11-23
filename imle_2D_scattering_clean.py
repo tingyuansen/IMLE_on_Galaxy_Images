@@ -12,60 +12,60 @@ from dci import DCI
 
 #=============================================================================================================
 # define network
-# class ConvolutionalImplicitModel(nn.Module):
-#     def __init__(self, z_dim):
-#         super(ConvolutionalImplicitModel, self).__init__()
-#         self.z_dim = z_dim
-#         self.tconv1 = nn.ConvTranspose2d(z_dim, 1024, 1, 1, bias=False)
-#         self.bn1 = nn.BatchNorm2d(1024)
-#         self.tconv2 = nn.ConvTranspose2d(1024, 128, 7, 1, bias=False)
-#         self.bn2 = nn.BatchNorm2d(128)
-#         self.tconv3 = nn.ConvTranspose2d(128, 64, 4, 3, padding=0, bias=False)
-#         self.bn3 = nn.BatchNorm2d(64)
-#         self.tconv4 = nn.ConvTranspose2d(64, 1, 4, 3, padding=2, output_padding=1, bias=False)
-#         self.bn4 = nn.BatchNorm2d(1)
-#         self.relu = nn.LeakyReLU()
-#
-#     def forward(self, z):
-#         z = self.relu(self.bn1(self.tconv1(z)))
-#         z = self.relu(self.bn2(self.tconv2(z)))
-#         z = self.relu(self.bn3(self.tconv3(z)))
-#         z = self.relu(self.bn4(self.tconv4(z)))
-#         return z
-
-#-----------------------------------------------------------------------------------------------------------
-# # define network
 class ConvolutionalImplicitModel(nn.Module):
     def __init__(self, z_dim):
-        super( ConvolutionalImplicitModel, self).__init__()
+        super(ConvolutionalImplicitModel, self).__init__()
         self.z_dim = z_dim
-
-        layers = []
-
-        channel = 64
-        for i in range(5):
-            for j in range(1):
-
-                if i == 0 and j == 0:
-                    layers.append(torch.nn.ConvTranspose2d(z_dim, channel, 4, stride=1, padding=0))
-                    layers.append(torch.nn.BatchNorm2d(channel, momentum=0.001, affine=False))
-                    layers.append(torch.nn.LeakyReLU(0.2, inplace=True))
-                else:
-                    layers.append(torch.nn.Conv2d(channel, channel, 5, stride=1, padding=2))
-                    layers.append(torch.nn.BatchNorm2d(channel, momentum=0.001, affine=False))
-                    layers.append(torch.nn.LeakyReLU(0.2, inplace=True))
-
-            if i < 4:
-                layers.append(torch.nn.Upsample(scale_factor=2, mode='bilinear', align_corners = False))
-            else:
-                layers.append(torch.nn.Conv2d(channel, 1, 5, stride=1, padding=2))
-                layers.append(torch.nn.LeakyReLU())
-
-        self.model = torch.nn.Sequential(*layers)
-        self.add_module("model", self.model)
+        self.tconv1 = nn.ConvTranspose2d(z_dim, 1024, 1, 1, bias=False)
+        self.bn1 = nn.BatchNorm2d(1024)
+        self.tconv2 = nn.ConvTranspose2d(1024, 512, 7, 1, bias=False)
+        self.bn2 = nn.BatchNorm2d(128)
+        self.tconv3 = nn.ConvTranspose2d(512, 64, 4, 3, padding=0, bias=False)
+        self.bn3 = nn.BatchNorm2d(64)
+        self.tconv4 = nn.ConvTranspose2d(64, 1, 4, 3, padding=2, output_padding=1, bias=False)
+        self.bn4 = nn.BatchNorm2d(1)
+        self.relu = nn.LeakyReLU()
 
     def forward(self, z):
-        return self.model(z)
+        z = self.relu(self.bn1(self.tconv1(z)))
+        z = self.relu(self.bn2(self.tconv2(z)))
+        z = self.relu(self.bn3(self.tconv3(z)))
+        z = self.relu(self.bn4(self.tconv4(z)))
+        return z
+
+#-----------------------------------------------------------------------------------------------------------
+# # # define network
+# class ConvolutionalImplicitModel(nn.Module):
+#     def __init__(self, z_dim):
+#         super( ConvolutionalImplicitModel, self).__init__()
+#         self.z_dim = z_dim
+#
+#         layers = []
+#
+#         channel = 64
+#         for i in range(5):
+#             for j in range(1):
+#
+#                 if i == 0 and j == 0:
+#                     layers.append(torch.nn.ConvTranspose2d(z_dim, channel, 4, stride=1, padding=0))
+#                     layers.append(torch.nn.BatchNorm2d(channel, momentum=0.001, affine=False))
+#                     layers.append(torch.nn.LeakyReLU(0.2, inplace=True))
+#                 else:
+#                     layers.append(torch.nn.Conv2d(channel, channel, 5, stride=1, padding=2))
+#                     layers.append(torch.nn.BatchNorm2d(channel, momentum=0.001, affine=False))
+#                     layers.append(torch.nn.LeakyReLU(0.2, inplace=True))
+#
+#             if i < 4:
+#                 layers.append(torch.nn.Upsample(scale_factor=2, mode='bilinear', align_corners = False))
+#             else:
+#                 layers.append(torch.nn.Conv2d(channel, 1, 5, stride=1, padding=2))
+#                 layers.append(torch.nn.LeakyReLU())
+#
+#         self.model = torch.nn.Sequential(*layers)
+#         self.add_module("model", self.model)
+#
+#     def forward(self, z):
+#         return self.model(z)
 
 
 #=============================================================================================================
@@ -171,12 +171,12 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
             # save the mock sample
             if (epoch+1) % staleness == 0:
-                np.savez("../results_2D_j=2_channel=64_clean.npz", data_np=data_np, z_Sx_np=z_Sx.cpu().data.numpy(),\
+                np.savez("../results_2D_simple_add.npz", data_np=data_np, z_Sx_np=z_Sx.cpu().data.numpy(),\
                                 samples_np=samples_predict)
 
                 # make random mock
                 samples_random = self.model(z_Sx_all[:10**3]).cpu().data.numpy()
-                np.savez("../results_2D_random_j=2_channel=64_clean.npz", samples_np=samples_random)
+                np.savez("../results_2D_random_simple_add.npz", samples_np=samples_random)
 
 
 #=============================================================================================================
@@ -201,7 +201,7 @@ def main(*args):
 
     # train the network
     imle.train(train_data, train_Sx)
-    torch.save(imle.model.state_dict(), '../net_weights_2D_j=2_channel=64_clean.pth')
+    torch.save(imle.model.state_dict(), '../net_weights_2D_simple_add.pth')
 
 #---------------------------------------------------------------------------------------------
 if __name__ == '__main__':
