@@ -98,7 +98,6 @@ class IMLE():
 
         # train in batch
         num_batches = data_np.shape[0] // batch_size
-        num_samples = num_batches * num_samples_factor
 
         # truncate data to fit the batch size
         num_data = num_batches * batch_size
@@ -115,7 +114,7 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
         # draw random z
-        z = torch.randn(batch_size*num_samples, self.z_dim, 1, 1).cuda()
+        z = torch.randn(num_data*num_samples_factor, self.z_dim, 1, 1).cuda()
         z_np_all = z.cpu().data.numpy()
 
         Sx = torch.from_numpy(np.repeat(data_Sx,num_samples_factor,axis=0)).float()[:z.shape[0]].cuda()
