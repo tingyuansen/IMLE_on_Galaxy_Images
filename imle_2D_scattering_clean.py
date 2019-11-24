@@ -36,7 +36,7 @@ from dci import DCI
 #-----------------------------------------------------------------------------------------------------------
 # # # define network
 class ConvolutionalImplicitModel(nn.Module):
-    def __init__(self, z_dim, init_weight_factor = 0.3):
+    def __init__(self, z_dim, init_weight_factor = 1.):
         super( ConvolutionalImplicitModel, self).__init__()
         self.z_dim = z_dim
         self.init_weight_factor = init_weight_factor
@@ -84,7 +84,7 @@ class IMLE():
     def __init__(self, z_dim, Sx_dim):
         self.z_dim = z_dim
         self.Sx_dim = Sx_dim
-        self.model = ConvolutionalImplicitModel(z_dim+Sx_dim).cuda()
+        self.model = ConvolutionalImplicitModel(z_dim+Sx_dim, 0.5).cuda()
         self.model.apply(self.model.get_initializer())
         self.dci_db = None
 
