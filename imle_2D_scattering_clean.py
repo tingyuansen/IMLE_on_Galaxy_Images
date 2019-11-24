@@ -43,7 +43,7 @@ class ConvolutionalImplicitModel(nn.Module):
 
         layers = []
 
-        channel = 128
+        channel = 256
 
         for i in range(5):
             for j in range(2):
@@ -84,7 +84,7 @@ class IMLE():
     def __init__(self, z_dim, Sx_dim):
         self.z_dim = z_dim
         self.Sx_dim = Sx_dim
-        self.model = ConvolutionalImplicitModel(z_dim+Sx_dim, 0.4).cuda()
+        self.model = ConvolutionalImplicitModel(z_dim+Sx_dim, 0.5).cuda()
         self.model.apply(self.model.get_initializer())
         self.dci_db = None
 
