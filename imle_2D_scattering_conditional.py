@@ -150,6 +150,7 @@ class IMLE():
                     samples_np = samples.cpu().data.numpy()
                     samples_flat_np = np.reshape(samples_np, (samples_np.shape[0], np.prod(samples_np.shape[1:])))
                     print(samples_flat_np)
+                    print(data_flat_np[i:i+1,:])
 
 #-----------------------------------------------------------------------------------------------------------
                     # find the nearest neighbours
