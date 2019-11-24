@@ -187,7 +187,7 @@ class IMLE():
                                 samples_np=samples_predict)
 
                 # make random mock
-                samples_random = self.model(z_Sx_all[:10**3][::10]).cpu().data.numpy()
+                samples_random = self.model(z_Sx_all[:10**4][::100]).cpu().data.numpy()
                 np.savez("../results_2D_random.npz", samples_np=samples_random)
 
 
