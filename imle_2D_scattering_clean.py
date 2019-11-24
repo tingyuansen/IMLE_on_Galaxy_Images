@@ -85,11 +85,12 @@ class IMLE():
         self.z_dim = z_dim
         self.Sx_dim = Sx_dim
         self.model = ConvolutionalImplicitModel(z_dim+Sx_dim).cuda()
+        self.model.apply(self.model.get_initializer())
         self.dci_db = None
 
 #-----------------------------------------------------------------------------------------------------------
     def train(self, data_np, data_Sx, base_lr=1e-3, batch_size=256, num_epochs=6000,\
-              decay_step=25, decay_rate=0.95, staleness=100, num_samples_factor=30):
+              decay_step=25, decay_rate=0.98, staleness=100, num_samples_factor=30):
 
         # define metric
         loss_fn = nn.MSELoss().cuda()
@@ -181,12 +182,12 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
             # save the mock sample
             if (epoch+1) % staleness == 0:
-                np.savez("../results_2D_log.npz", data_np=data_np, z_Sx_np=z_Sx.cpu().data.numpy(),\
+                np.savez("../results_2D_log_decay=0.98_initialize.npz", data_np=data_np, z_Sx_np=z_Sx.cpu().data.numpy(),\
                                 samples_np=samples_predict)
 
                 # make random mock
                 samples_random = self.model(z_Sx_all[:10**3][::10]).cpu().data.numpy()
-                np.savez("../results_2D_random_log.npz", samples_np=samples_random)
+                np.savez("../results_2D_random_log_decay=0.98_initialize.npz", samples_np=samples_random)
 
 
 #=============================================================================================================
@@ -197,7 +198,7 @@ def main(*args):
     temp = np.load("../Illustris_Images.npz")
     train_data = temp["training_data"][:,None,32:-32,32:-32]
     train_data = np.clip(np.arcsinh(train_data)+0.05,0,5)/5
-    train_data = np.log(train_data) + 5.
+    #train_data = np.log(train_data) + 5.
     print(train_data.shape)
 
     # restore scattering coefficients
@@ -212,7 +213,7 @@ def main(*args):
 
     # train the network
     imle.train(train_data, train_Sx)
-    torch.save(imle.model.state_dict(), '../net_weights_2D_log.pth')
+    torch.save(imle.model.state_dict(), '../net_weights_2D_log_decay=0.98_initialize.pth')
 
 #---------------------------------------------------------------------------------------------
 if __name__ == '__main__':
