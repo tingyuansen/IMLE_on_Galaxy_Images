@@ -100,7 +100,7 @@ class IMLE():
         num_batches = data_np.shape[0] // batch_size
 
         # truncate data to fit the batch size
-        num_data = num_batches * batch_size
+        num_data = num_batches*batch_size
         data_np = data_np[:num_data]
 
         # make it in 1D data image for DCI
@@ -109,8 +109,8 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
         # make empty array to store results
         samples_predict = np.empty(data_np.shape)
-        samples_random = np.empty((10**2,)+data_np.shape[1:])
         samples_np = np.empty((num_samples_factor,)+data_np.shape[1:])
+        samples_random = np.empty((10**2,)+data_np.shape[1:])
 
 #-----------------------------------------------------------------------------------------------------------
         # draw random z
@@ -158,9 +158,6 @@ class IMLE():
                     nearest_indices_temp, _ = self.dci_db.query(data_flat_np[i:i+1],\
                                         num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
                     nearest_indices[i] = nearest_indices_temp[0][0] + i*num_samples_factor
-
-                # check initialization
-                print(np.sort(np.bincount(nearest_indices))[::-1][:50])
 
                 if epoch == 0:
                     print(np.percentile(data_flat_np, 25), np.percentile(data_flat_np, 50), np.percentile(data_flat_np, 75))
