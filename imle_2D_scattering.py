@@ -179,7 +179,7 @@ class IMLE():
             # loop over all batches
             ind_shuffle = np.arange(num_data)
             np.random.shuffle(ind_shuffle)
-            ind_shuffle = ind_shuffle.cuda()
+            ind_shuffle = torch.from_numpy(ind_shuffle).int().cuda()
 
             for i in range(num_batches):
                 self.model.zero_grad()
