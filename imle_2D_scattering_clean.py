@@ -69,13 +69,13 @@ class ConvolutionalImplicitModel(nn.Module):
     def forward(self, z):
         return self.model(z)
 
-    def get_initializer(self):
-        def initializer(m):
-            if type(m) == nn.Conv2d or type(m) == nn.ConvTranspose2d:
-                with torch.no_grad():
-                    m.weight *= self.init_weight_factor
-                    m.bias *= self.init_weight_factor
-        return initializer
+    # def get_initializer(self):
+    #     def initializer(m):
+    #         if type(m) == nn.Conv2d or type(m) == nn.ConvTranspose2d:
+    #             with torch.no_grad():
+    #                 m.weight *= self.init_weight_factor
+    #                 m.bias *= self.init_weight_factor
+    #     return initializer
 
 
 #=============================================================================================================
