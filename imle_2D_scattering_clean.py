@@ -46,7 +46,7 @@ class ConvolutionalImplicitModel(nn.Module):
         channel = 256
 
         for i in range(5):
-            for j in range(4):
+            for j in range(2):
 
                 if i == 0 and j == 0:
                     layers.append(torch.nn.ConvTranspose2d(z_dim, channel, 4, stride=1, padding=0))
@@ -89,7 +89,7 @@ class IMLE():
         self.dci_db = None
 
 #-----------------------------------------------------------------------------------------------------------
-    def train(self, data_np, data_Sx, base_lr=1e-3, batch_size=128, num_epochs=30000,\
+    def train(self, data_np, data_Sx, base_lr=1e-3, batch_size=128, num_epochs=6000,\
               decay_step=25, decay_rate=0.95, staleness=100, num_samples_factor=100):
 
         # define metric
@@ -164,6 +164,9 @@ class IMLE():
                 # restrict latent parameters to the nearest neighbour
                 z_Sx = z_Sx_all[nearest_indices]
 
+                # add random noise to avoid over memorizing
+                z_np += 0.05*np.random.randn(*z_np.shape)
+
 
 #=============================================================================================================
             # gradient descent
@@ -189,12 +192,12 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
             # save the mock sample
             if (epoch+1) % staleness == 0:
-                np.savez("../results_2D_zdim=4_depth=4.npz", data_np=data_np, z_Sx_np=z_Sx.cpu().data.numpy(),\
+                np.savez("../results_2D_zdim=4_add_z_noise.npz", data_np=data_np, z_Sx_np=z_Sx.cpu().data.numpy(),\
                                 samples_np=samples_predict)
 
                 # make random mock
                 samples_random = self.model(z_Sx_all[:10**4][::100]).cpu().data.numpy()
-                np.savez("../results_2D_random_zdim=4_depth=4.npz", samples_np=samples_random)
+                np.savez("../results_2D_random_zdim=4_add_z_noise.npz", samples_np=samples_random)
 
 
 #=============================================================================================================
@@ -219,7 +222,7 @@ def main(*args):
 
     # train the network
     imle.train(train_data, train_Sx)
-    torch.save(imle.model.state_dict(), '../net_weights_2D_zdim=4_depth=4.pth')
+    torch.save(imle.model.state_dict(), '../net_weights_2D_zdim=4_add_z_noise.pth')
 
 #---------------------------------------------------------------------------------------------
 if __name__ == '__main__':
