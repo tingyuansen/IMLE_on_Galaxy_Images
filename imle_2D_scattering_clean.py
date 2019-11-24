@@ -36,7 +36,7 @@ from dci import DCI
 #-----------------------------------------------------------------------------------------------------------
 # # # define network
 class ConvolutionalImplicitModel(nn.Module):
-    def __init__(self, z_dim, init_weight_factor = 0.5):
+    def __init__(self, z_dim, init_weight_factor = 0.3):
         super( ConvolutionalImplicitModel, self).__init__()
         self.z_dim = z_dim
         self.init_weight_factor = init_weight_factor
@@ -155,9 +155,9 @@ class IMLE():
                 nearest_indices = np.array(nearest_indices)[:,0]
 
                 # check initialization
-                print(np.sort(np.bincount(nearest_indices))[::-1][:20])
+                print(np.sort(np.bincount(nearest_indices))[::-1][:50])
                 print(np.percentile(data_flat_np, 25), np.percentile(data_flat_np, 50), np.percentile(data_flat_np, 75))
-                print(np.percentile(sample_flat_np, 25), np.percentile(sample_flat_np, 50), np.percentile(sample_flat_np, 75))
+                print(np.percentile(samples_flat_np, 25), np.percentile(samples_flat_np, 50), np.percentile(samples_flat_np, 75))
 
                 # restrict latent parameters to the nearest neighbour
                 z_Sx = z_Sx_all[nearest_indices]
