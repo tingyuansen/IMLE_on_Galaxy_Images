@@ -146,7 +146,7 @@ class IMLE():
                 nearest_indices = np.empty((num_data))
 
                 for i in range(num_data):
-                    samples = self.model(z_Sx_all[i*num_sample_factor:(i+1)*num_sample_factor])
+                    samples = self.model(z_Sx_all[i*num_samples_factor:(i+1)*num_samples_factor])
                     samples_np = samples.cpu().data.numpy()
                     samples_flat_np = np.reshape(samples_np, (samples_np.shape[0], np.prod(samples_np.shape[1:])))
 
