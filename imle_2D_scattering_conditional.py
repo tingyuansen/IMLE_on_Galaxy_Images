@@ -111,6 +111,7 @@ class IMLE():
         # make empty array to store results
         samples_predict = np.empty(data_np.shape)
         samples_random = np.empty((10**2,)+data_np.shape[1:])
+        samples_np = np.empty((num_samples_factor,)+data_np.shape[1:])
 
 #-----------------------------------------------------------------------------------------------------------
         # draw random z
@@ -147,20 +148,17 @@ class IMLE():
 
                 for i in range(num_data):
                     samples = self.model(z_Sx_all[i*num_samples_factor:(i+1)*num_samples_factor])
-                    samples_np = samples.cpu().data.numpy()
+                    samples_np[:] = samples.cpu().data.numpy()
                     samples_flat_np = np.reshape(samples_np, (samples_np.shape[0], np.prod(samples_np.shape[1:])))
-                    print(samples_flat_np.shape)
-                    print(data_flat_np[i:i+1,:].shape)
-                    print(data_flat_np.shape)
 
 #-----------------------------------------------------------------------------------------------------------
                     # find the nearest neighbours
                     self.dci_db.reset()
                     self.dci_db.add(np.copy(samples_flat_np),\
                                     num_levels = 2, field_of_view = 10, prop_to_retrieve = 0.002)
-                    nearest_indices_temp, _ = self.dci_db.query(data_flat_np,\
+                    nearest_indices_temp, _ = self.dci_db.query(data_flat_np[i:i+1],\
                                         num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
-                    nearest_indices[i] = nearest_indices_temp[0,0] + i*num_sample_factor
+                    nearest_indices[i] = nearest_indices_temp.ravel() + i*num_sample_factor
 
                 # check initialization
                 print(np.sort(np.bincount(nearest_indices))[::-1][:50])
