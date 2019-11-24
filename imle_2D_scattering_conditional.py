@@ -110,15 +110,13 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
         # make empty array to store results
         samples_predict = np.empty(data_np.shape)
-        samples_np = np.empty((num_samples_factor,)+data_np.shape[1:])
         samples_random = np.empty((10**2,)+data_np.shape[1:])
+        samples_np = np.empty((num_samples_factor,)+data_np.shape[1:])
 
 #-----------------------------------------------------------------------------------------------------------
         # make global torch variables
         data_all = torch.from_numpy(data_np).float().cuda()
-
         Sx = torch.from_numpy(np.repeat(data_Sx,num_samples_factor,axis=0)).float().cuda()
-        Sx_np_all = Sx.cpu().data.numpy()
 
 #-----------------------------------------------------------------------------------------------------------
         # initiate dci
@@ -141,7 +139,6 @@ class IMLE():
 
                 # draw random z
                 z = torch.randn(num_data*num_samples_factor, self.z_dim, 1, 1).cuda()
-                z_np_all = z.cpu().data.numpy()
                 z_Sx_all = torch.cat((z, Sx), axis=1)
 
                 # find the closest object for individual data
@@ -193,7 +190,8 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
             # save the mock sample
             if (epoch+1) % staleness == 0:
-                np.savez("../results_2D_conditional.npz", data_np=data_np, z_Sx_np=z_Sx.cpu().data.numpy(),\
+                np.savez("../results_2D_conditional.npz", data_np=data_np,\
+                                z_Sx_np=z_Sx.cpu().data.numpy(),\
                                 samples_np=samples_predict)
 
                 # make random mock
