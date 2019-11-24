@@ -165,7 +165,7 @@ class IMLE():
                 z_Sx = z_Sx_all[nearest_indices]
 
                 # add random noise to avoid over memorizing
-                z_Sx += 0.05*torch.randn(*z_Sx.shape)
+                z_Sx += 0.05*torch.randn(*z_Sx.shape).cuda()
 
 
 #=============================================================================================================
