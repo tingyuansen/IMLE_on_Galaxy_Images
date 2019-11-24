@@ -100,6 +100,10 @@ class IMLE():
         num_batches = data_np.shape[0] // batch_size
         num_samples = num_batches * num_samples_factor
 
+        # truncate data to fit the batch size
+        num_data = num_batches * batch_size
+        data_np = data_np[:num_data]
+
         # make it in 1D data image for DCI
         data_flat_np = np.reshape(data_np, (data_np.shape[0], np.prod(data_np.shape[1:])))
 
@@ -111,7 +115,7 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
         # draw random z
-        z = torch.randn(batch_size*num_samples, self.z_dim, 1, 1).cuda()
+        z = torch.randn(num_samples*batch_size, self.z_dim, 1, 1).cuda()
         z_np_all = z.cpu().data.numpy()
 
         Sx = torch.from_numpy(np.repeat(data_Sx,num_samples_factor,axis=0)).float()[:z.shape[0]].cuda()
@@ -165,7 +169,7 @@ class IMLE():
                 z_Sx = z_Sx_all[nearest_indices]
 
                 # add random noise to avoid over memorizing
-                z_Sx += 0.05*torch.randn(*z_Sx.shape).cuda()
+                #z_Sx += 0.01*torch.randn(*z_Sx.shape).cuda()
 
 
 #=============================================================================================================
@@ -173,16 +177,20 @@ class IMLE():
             err = 0.
 
             # loop over all batches
+            ind_shuffle = np.arange(num_data)
+            np.random.shuffle(ind_shuffle)
+            ind_shuffle = ind_shuffle.cuda()
+
             for i in range(num_batches):
                 self.model.zero_grad()
-                cur_samples = self.model(z_Sx[i*batch_size:(i+1)*batch_size])
+                cur_samples = self.model(z_Sx[ind_shuffle[i*batch_size:(i+1)*batch_size]])
 
                 # save the mock sample
                 if (epoch+1) % staleness == 0:
                     samples_predict[i*batch_size:(i+1)*batch_size] = cur_samples.cpu().data.numpy()
 
                 # gradient descent
-                loss = loss_fn(cur_samples, data_all[i*batch_size:(i+1)*batch_size])
+                loss = loss_fn(cur_samples, data_all[ind_shuffle[i*batch_size:(i+1)*batch_size]])
                 loss.backward()
                 err += loss.item()
                 optimizer.step()
@@ -192,12 +200,12 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
             # save the mock sample
             if (epoch+1) % staleness == 0:
-                np.savez("../results_2D_zdim=4_add_z_noise.npz", data_np=data_np, z_Sx_np=z_Sx.cpu().data.numpy(),\
+                np.savez("../results_2D_zdim=4_random_batch.npz", data_np=data_np, z_Sx_np=z_Sx.cpu().data.numpy(),\
                                 samples_np=samples_predict)
 
                 # make random mock
                 samples_random = self.model(z_Sx_all[:10**4][::100]).cpu().data.numpy()
-                np.savez("../results_2D_random_zdim=4_add_z_noise.npz", samples_np=samples_random)
+                np.savez("../results_2D_random_zdim=4_random_batch.npz", samples_np=samples_random)
 
 
 #=============================================================================================================
@@ -222,7 +230,7 @@ def main(*args):
 
     # train the network
     imle.train(train_data, train_Sx)
-    torch.save(imle.model.state_dict(), '../net_weights_2D_zdim=4_add_z_noise.pth')
+    torch.save(imle.model.state_dict(), '../net_weights_2D_zdim=4_random_batch.pth')
 
 #---------------------------------------------------------------------------------------------
 if __name__ == '__main__':
