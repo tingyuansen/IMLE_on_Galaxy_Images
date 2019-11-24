@@ -144,7 +144,7 @@ class IMLE():
             if epoch % staleness == 0:
 
                 # find the closest object for individual data
-                nearest_indices = np.empty((num_data))
+                nearest_indices = np.empty((num_data)).astype("int")
 
                 for i in range(num_data):
                     samples = self.model(z_Sx_all[i*num_samples_factor:(i+1)*num_samples_factor])
