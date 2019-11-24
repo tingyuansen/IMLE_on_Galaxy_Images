@@ -84,12 +84,12 @@ class IMLE():
     def __init__(self, z_dim, Sx_dim):
         self.z_dim = z_dim
         self.Sx_dim = Sx_dim
-        self.model = ConvolutionalImplicitModel(z_dim+Sx_dim, 0.3).cuda()
+        self.model = ConvolutionalImplicitModel(z_dim+Sx_dim, 0.5).cuda()
         self.model.apply(self.model.get_initializer())
         self.dci_db = None
 
 #-----------------------------------------------------------------------------------------------------------
-    def train(self, data_np, data_Sx, base_lr=1e-3, batch_size=128, num_epochs=6000,\
+    def train(self, data_np, data_Sx, base_lr=1e-3, batch_size=128, num_epochs=30000,\
               decay_step=25, decay_rate=0.95, staleness=100, num_samples_factor=30):
 
         # define metric
@@ -189,12 +189,12 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
             # save the mock sample
             if (epoch+1) % staleness == 0:
-                np.savez("../results_2D_channel=256_initiate.npz", data_np=data_np, z_Sx_np=z_Sx.cpu().data.numpy(),\
+                np.savez("../results_2D_channel=256_initiate_small.npz", data_np=data_np, z_Sx_np=z_Sx.cpu().data.numpy(),\
                                 samples_np=samples_predict)
 
                 # make random mock
                 samples_random = self.model(z_Sx_all[:10**4][::100]).cpu().data.numpy()
-                np.savez("../results_2D_random_channel=256_initiate.npz", samples_np=samples_random)
+                np.savez("../results_2D_random_channel=256_initiate_small.npz", samples_np=samples_random)
 
 
 #=============================================================================================================
@@ -203,13 +203,12 @@ def main(*args):
 
     # restore data
     temp = np.load("../Illustris_Images.npz")
-    train_data = temp["training_data"][:,None,32:-32,32:-32]
+    train_data = temp["training_data"][::10,None,32:-32,32:-32]
     train_data = np.clip(np.arcsinh(train_data)+0.05,0,5)/5
-    #train_data = np.log(train_data) + 5.
     print(train_data.shape)
 
     # restore scattering coefficients
-    train_Sx = np.load("../Sx_Illustris_Images.npy")[:,:,None,None]
+    train_Sx = np.load("../Sx_Illustris_Images.npy")[::10,:,None,None]
     print(train_Sx.shape)
 
 #---------------------------------------------------------------------------------------------
@@ -220,7 +219,7 @@ def main(*args):
 
     # train the network
     imle.train(train_data, train_Sx)
-    torch.save(imle.model.state_dict(), '../net_weights_2D_channel=256_initiate.pth')
+    torch.save(imle.model.state_dict(), '../net_weights_2D_channel=256_initiate_small.pth')
 
 #---------------------------------------------------------------------------------------------
 if __name__ == '__main__':
