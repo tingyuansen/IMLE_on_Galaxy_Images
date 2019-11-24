@@ -43,7 +43,7 @@ class ConvolutionalImplicitModel(nn.Module):
 
         layers = []
 
-        channel = 64
+        channel = 256
 
         for i in range(5):
             for j in range(2):
@@ -89,7 +89,7 @@ class IMLE():
         self.dci_db = None
 
 #-----------------------------------------------------------------------------------------------------------
-    def train(self, data_np, data_Sx, base_lr=1e-3, batch_size=256, num_epochs=6000,\
+    def train(self, data_np, data_Sx, base_lr=1e-3, batch_size=64, num_epochs=6000,\
               decay_step=25, decay_rate=0.98, staleness=100, num_samples_factor=30):
 
         # define metric
@@ -153,6 +153,7 @@ class IMLE():
                 nearest_indices, _ = self.dci_db.query(data_flat_np,\
                                         num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
                 nearest_indices = np.array(nearest_indices)[:,0]
+                print(np.bincount(nearest_indices))
 
                 # restrict latent parameters to the nearest neighbour
                 z_Sx = z_Sx_all[nearest_indices]
