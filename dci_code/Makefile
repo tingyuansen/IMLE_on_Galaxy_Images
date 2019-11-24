@@ -34,6 +34,7 @@
 #OPENBLAS_DIR=/usr/lib64/libblas.so.3.2.1
 #MKL_DIR=/opt/intel/compilers_and_libraries_2019.2.187/linux/mkl
 
+
 CC=gcc
 BLAS=openblas
 #OPENBLAS_DIR=/usr/lib64/libopenblas64.so
