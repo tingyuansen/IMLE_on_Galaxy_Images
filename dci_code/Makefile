@@ -37,11 +37,12 @@
 CC=gcc
 BLAS=openblas
 #OPENBLAS_DIR=/usr/lib64/libopenblas64.so
-OPENBLAS_DIR=/usr/local/opt/openblas/lib/libopenblas.0.dylib
-#OPENBLAS_DIR=/home/yting/openblas/lib/libopenblas.so
+OPENBLAS_DIR=/home/yting/openblas/lib/libopenblas.so
 
-PYTHON_DIR=/home/ting/anaconda3/include/python3.7m/
-NUMPY_DIR=/home/ting/anaconda3/lib/python3.7/site-packages
+#PYTHON_DIR=/home/ting/anaconda3/include/python3.7m/
+#NUMPY_DIR=/home/ting/anaconda3/lib/python3.7/site-packages
+PYTHON_DIR=/home/yting/anaconda3/include/python3.7m/
+NUMPY_DIR=/home/yting/anaconda3/lib/python3.7/site-packages
 
 SRC_DIR=src
 INCL_DIR=include
