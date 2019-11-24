@@ -46,7 +46,7 @@ class ConvolutionalImplicitModel(nn.Module):
         channel = 256
 
         for i in range(5):
-            for j in range(3):
+            for j in range(4):
 
                 if i == 0 and j == 0:
                     layers.append(torch.nn.ConvTranspose2d(z_dim, channel, 4, stride=1, padding=0))
@@ -189,12 +189,12 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
             # save the mock sample
             if (epoch+1) % staleness == 0:
-                np.savez("../results_2D_zdim=4_depth=3.npz", data_np=data_np, z_Sx_np=z_Sx.cpu().data.numpy(),\
+                np.savez("../results_2D_zdim=4_depth=4.npz", data_np=data_np, z_Sx_np=z_Sx.cpu().data.numpy(),\
                                 samples_np=samples_predict)
 
                 # make random mock
                 samples_random = self.model(z_Sx_all[:10**4][::100]).cpu().data.numpy()
-                np.savez("../results_2D_random_zdim=4_depth=3.npz", samples_np=samples_random)
+                np.savez("../results_2D_random_zdim=4_depth=4.npz", samples_np=samples_random)
 
 
 #=============================================================================================================
@@ -219,7 +219,7 @@ def main(*args):
 
     # train the network
     imle.train(train_data, train_Sx)
-    torch.save(imle.model.state_dict(), '../net_weights_2D_zdim=4_depth=3.pth')
+    torch.save(imle.model.state_dict(), '../net_weights_2D_zdim=4_depth=4.pth')
 
 #---------------------------------------------------------------------------------------------
 if __name__ == '__main__':
