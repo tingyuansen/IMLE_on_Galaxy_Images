@@ -36,7 +36,7 @@ from dci import DCI
 #-----------------------------------------------------------------------------------------------------------
 # # # define network
 class ConvolutionalImplicitModel(nn.Module):
-    def __init__(self, z_dim, init_weight_factor = 1.):
+    def __init__(self, z_dim, init_weight_factor = 10000.):
         super( ConvolutionalImplicitModel, self).__init__()
         self.z_dim = z_dim
         self.init_weight_factor = init_weight_factor
@@ -69,13 +69,13 @@ class ConvolutionalImplicitModel(nn.Module):
     def forward(self, z):
         return self.model(z)
 
-    # def get_initializer(self):
-    #     def initializer(m):
-    #         if type(m) == nn.Conv2d or type(m) == nn.ConvTranspose2d:
-    #             with torch.no_grad():
-    #                 m.weight *= self.init_weight_factor
-    #                 m.bias *= self.init_weight_factor
-    #     return initializer
+    def get_initializer(self):
+        def initializer(m):
+            if type(m) == nn.Conv2d or type(m) == nn.ConvTranspose2d:
+                with torch.no_grad():
+                    m.weight *= self.init_weight_factor
+                    m.bias *= self.init_weight_factor
+        return initializer
 
 
 #=============================================================================================================
@@ -85,7 +85,7 @@ class IMLE():
         self.z_dim = z_dim
         self.Sx_dim = Sx_dim
         self.model = ConvolutionalImplicitModel(z_dim+Sx_dim).cuda()
-        #self.model.apply(self.model.get_initializer())
+        self.model.apply(self.model.get_initializer())
         self.dci_db = None
 
 #-----------------------------------------------------------------------------------------------------------
