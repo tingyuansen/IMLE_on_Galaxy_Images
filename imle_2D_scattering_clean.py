@@ -75,6 +75,7 @@ class ConvolutionalImplicitModel(nn.Module):
                 with torch.no_grad():
                     m.weight *= self.init_weight_factor
                     m.bias *= self.init_weight_factor
+                    print(m.weight)
         return initializer
 
 
