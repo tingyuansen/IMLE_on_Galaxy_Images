@@ -113,15 +113,11 @@ class IMLE():
         samples_random = np.empty((10**2,)+data_np.shape[1:])
 
 #-----------------------------------------------------------------------------------------------------------
-        # draw random z
-        z = torch.randn(num_data*num_samples_factor, self.z_dim, 1, 1).cuda()
-        z_np_all = z.cpu().data.numpy()
+        # make global torch variables
+        data_all = torch.from_numpy(data_np).float().cuda()
 
         Sx = torch.from_numpy(np.repeat(data_Sx,num_samples_factor,axis=0)).float()[:z.shape[0]].cuda()
         Sx_np_all = Sx.cpu().data.numpy()
-
-        z_Sx_all = torch.cat((z, Sx), axis=1)
-        data_all = torch.from_numpy(data_np).float().cuda()
 
 #-----------------------------------------------------------------------------------------------------------
         # initiate dci
@@ -141,6 +137,11 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
             # update the closest models routintely
             if epoch % staleness == 0:
+
+                # draw random z
+                z = torch.randn(num_data*num_samples_factor, self.z_dim, 1, 1).cuda()
+                z_np_all = z.cpu().data.numpy()
+                z_Sx_all = torch.cat((z, Sx), axis=1)
 
                 # find the closest object for individual data
                 nearest_indices = np.empty((num_data)).astype("int")
