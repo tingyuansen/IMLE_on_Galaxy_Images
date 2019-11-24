@@ -158,9 +158,9 @@ class IMLE():
                     self.dci_db.reset()
                     self.dci_db.add(np.copy(samples_flat_np),\
                                     num_levels = 2, field_of_view = 10, prop_to_retrieve = 0.002)
-                    nearest_indices_temp, _ = self.dci_db.query(data_flat_np[i:i+1,:],\
+                    nearest_indices_temp, _ = self.dci_db.query(data_flat_np[i:i+2,:],\
                                         num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
-                    nearest_indices[i] = nearest_indices_temp.ravel() + i*num_sample_factor
+                    nearest_indices[i] = nearest_indices_temp[0,0] + i*num_sample_factor
 
                 # check initialization
                 print(np.sort(np.bincount(nearest_indices))[::-1][:50])
