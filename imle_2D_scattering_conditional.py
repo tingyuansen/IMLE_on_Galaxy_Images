@@ -89,7 +89,7 @@ class IMLE():
         self.dci_db = None
 
 #-----------------------------------------------------------------------------------------------------------
-    def train(self, data_np, data_Sx, base_lr=1e-3, batch_size=128, num_epochs=6000,\
+    def train(self, data_np, data_Sx, base_lr=1e-3, batch_size=128, num_epochs=3000,\
               decay_step=25, decay_rate=0.95, staleness=100, num_samples_factor=100):
 
         # define metric
@@ -100,13 +100,16 @@ class IMLE():
         num_batches = data_np.shape[0] // batch_size
         num_samples = num_batches * num_samples_factor
 
+        # truncate data to fit the batch size
+        num_data = num_batches * batch_size
+        data_np = data_np[:num_data]
+
         # make it in 1D data image for DCI
         data_flat_np = np.reshape(data_np, (data_np.shape[0], np.prod(data_np.shape[1:])))
 
 #-----------------------------------------------------------------------------------------------------------
         # make empty array to store results
         samples_predict = np.empty(data_np.shape)
-        samples_np = np.empty((num_samples*batch_size,)+data_np.shape[1:])
         samples_random = np.empty((10**2,)+data_np.shape[1:])
 
 #-----------------------------------------------------------------------------------------------------------
@@ -136,23 +139,25 @@ class IMLE():
                 optimizer = optim.Adam(self.model.parameters(), lr=lr, betas=(0.5, 0.999), weight_decay=1e-5)
 
 #-----------------------------------------------------------------------------------------------------------
-            # find the closest models routintely
+            # update the closest models routintely
             if epoch % staleness == 0:
 
-                # make in batch to avoid GPU memory problem
-                for i in range(num_samples):
-                    samples = self.model(z_Sx_all[i*batch_size:(i+1)*batch_size])
-                    samples_np[i*batch_size:(i+1)*batch_size] = samples.cpu().data.numpy()
-                samples_flat_np = np.reshape(samples_np, (samples_np.shape[0], np.prod(samples_np.shape[1:])))
+                # find the closest object for individual data
+                nearest_indices = np.empty((num_data))
+
+                for i in range(num_data):
+                    samples = self.model(z_Sx_all[i*num_sample_factor:(i+1)*num_sample_factor])
+                    samples_np = samples.cpu().data.numpy()
+                    samples_flat_np = np.reshape(samples_np, (samples_np.shape[0], np.prod(samples_np.shape[1:])))
 
 #-----------------------------------------------------------------------------------------------------------
-                # find the nearest neighbours
-                self.dci_db.reset()
-                self.dci_db.add(np.copy(samples_flat_np),\
-                                num_levels = 2, field_of_view = 10, prop_to_retrieve = 0.002)
-                nearest_indices, _ = self.dci_db.query(data_flat_np,\
+                    # find the nearest neighbours
+                    self.dci_db.reset()
+                    self.dci_db.add(np.copy(samples_flat_np),\
+                                    num_levels = 2, field_of_view = 10, prop_to_retrieve = 0.002)
+                    nearest_indices_temp, _ = self.dci_db.query(data_flat_np[i:i+1,:],\
                                         num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
-                nearest_indices = np.array(nearest_indices)[:,0]
+                    nearest_indices[i] = nearest_indices_temp.ravel() + i*num_sample_factor
 
                 # check initialization
                 print(np.sort(np.bincount(nearest_indices))[::-1][:50])
@@ -163,9 +168,6 @@ class IMLE():
 
                 # restrict latent parameters to the nearest neighbour
                 z_Sx = z_Sx_all[nearest_indices]
-
-                # add random noise to avoid over memorizing
-                z_Sx += 0.05*torch.randn(*z_Sx.shape).cuda()
 
 
 #=============================================================================================================
@@ -192,12 +194,12 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
             # save the mock sample
             if (epoch+1) % staleness == 0:
-                np.savez("../results_2D_zdim=4_add_z_noise.npz", data_np=data_np, z_Sx_np=z_Sx.cpu().data.numpy(),\
+                np.savez("../results_2D_conditional.npz", data_np=data_np, z_Sx_np=z_Sx.cpu().data.numpy(),\
                                 samples_np=samples_predict)
 
                 # make random mock
                 samples_random = self.model(z_Sx_all[:10**4][::100]).cpu().data.numpy()
-                np.savez("../results_2D_random_zdim=4_add_z_noise.npz", samples_np=samples_random)
+                np.savez("../results_2D_random_conditional.npz", samples_np=samples_random)
 
 
 #=============================================================================================================
@@ -222,7 +224,7 @@ def main(*args):
 
     # train the network
     imle.train(train_data, train_Sx)
-    torch.save(imle.model.state_dict(), '../net_weights_2D_zdim=4_add_z_noise.pth')
+    torch.save(imle.model.state_dict(), '../net_weights_2D_conditional.pth')
 
 #---------------------------------------------------------------------------------------------
 if __name__ == '__main__':
