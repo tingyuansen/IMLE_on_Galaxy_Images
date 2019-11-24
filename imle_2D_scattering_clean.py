@@ -36,13 +36,15 @@ from dci import DCI
 #-----------------------------------------------------------------------------------------------------------
 # # # define network
 class ConvolutionalImplicitModel(nn.Module):
-    def __init__(self, z_dim):
+    def __init__(self, z_dim, init_weight_factor = 1.):
         super( ConvolutionalImplicitModel, self).__init__()
         self.z_dim = z_dim
+        self.init_weight_factor = init_weight_factor
 
         layers = []
 
         channel = 64
+
         for i in range(5):
             for j in range(2):
 
@@ -66,6 +68,14 @@ class ConvolutionalImplicitModel(nn.Module):
 
     def forward(self, z):
         return self.model(z)
+
+    def get_initializer(self):
+        def initializer(m):
+            if type(m) == nn.Conv2d or type(m) == nn.ConvTranspose2d:
+                with torch.no_grad():
+                    m.weight *= self.init_weight_factor
+                    m.bias *= self.init_weight_factor
+        return initializer
 
 
 #=============================================================================================================
