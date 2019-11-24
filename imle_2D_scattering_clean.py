@@ -189,12 +189,12 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
             # save the mock sample
             if (epoch+1) % staleness == 0:
-                np.savez("../results_2D_channel=256_initiate_small.npz", data_np=data_np, z_Sx_np=z_Sx.cpu().data.numpy(),\
+                np.savez("../results_2D_zdim=4.npz", data_np=data_np, z_Sx_np=z_Sx.cpu().data.numpy(),\
                                 samples_np=samples_predict)
 
                 # make random mock
                 samples_random = self.model(z_Sx_all[:10**4][::100]).cpu().data.numpy()
-                np.savez("../results_2D_random_channel=256_initiate_small.npz", samples_np=samples_random)
+                np.savez("../results_2D_random_zdim=4.npz", samples_np=samples_random)
 
 
 #=============================================================================================================
@@ -213,13 +213,13 @@ def main(*args):
 
 #---------------------------------------------------------------------------------------------
     # initiate network
-    z_dim = 32
+    z_dim = 4
     Sx_dim = train_Sx.shape[1]
     imle = IMLE(z_dim, Sx_dim)
 
     # train the network
     imle.train(train_data, train_Sx)
-    torch.save(imle.model.state_dict(), '../net_weights_2D_channel=256_initiate_small.pth')
+    torch.save(imle.model.state_dict(), '../net_weights_2D_zdim=4.pth')
 
 #---------------------------------------------------------------------------------------------
 if __name__ == '__main__':
