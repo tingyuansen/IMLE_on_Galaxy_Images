@@ -102,6 +102,7 @@ class IMLE():
         # truncate data to fit the batch size
         num_data = num_batches*batch_size
         data_np = data_np[:num_data]
+        data_Sx = data_Sx[:num_data]
 
         # make it in 1D data image for DCI
         data_flat_np = np.reshape(data_np, (data_np.shape[0], np.prod(data_np.shape[1:])))
@@ -116,7 +117,7 @@ class IMLE():
         # make global torch variables
         data_all = torch.from_numpy(data_np).float().cuda()
 
-        Sx = torch.from_numpy(np.repeat(data_Sx,num_samples_factor,axis=0)).float()[:z.shape[0]].cuda()
+        Sx = torch.from_numpy(np.repeat(data_Sx,num_samples_factor,axis=0)).float().cuda()
         Sx_np_all = Sx.cpu().data.numpy()
 
 #-----------------------------------------------------------------------------------------------------------
