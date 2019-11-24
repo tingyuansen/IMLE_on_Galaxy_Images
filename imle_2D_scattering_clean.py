@@ -156,8 +156,10 @@ class IMLE():
 
                 # check initialization
                 print(np.sort(np.bincount(nearest_indices))[::-1][:50])
-                print(np.percentile(data_flat_np, 25), np.percentile(data_flat_np, 50), np.percentile(data_flat_np, 75))
-                print(np.percentile(samples_flat_np, 25), np.percentile(samples_flat_np, 50), np.percentile(samples_flat_np, 75))
+
+                if epoch == 0:
+                    print(np.percentile(data_flat_np, 25), np.percentile(data_flat_np, 50), np.percentile(data_flat_np, 75))
+                    print(np.percentile(samples_flat_np, 25), np.percentile(samples_flat_np, 50), np.percentile(samples_flat_np, 75))
 
                 # restrict latent parameters to the nearest neighbour
                 z_Sx = z_Sx_all[nearest_indices]
