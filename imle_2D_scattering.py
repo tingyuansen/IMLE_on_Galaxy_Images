@@ -88,6 +88,7 @@ class IMLE():
         self.model.apply(self.model.get_initializer())
         self.dci_db = None
 
+#-----------------------------------------------------------------------------------------------------------
         # load pre-trained model
         state_dict = torch.load("../net_weights_2D_zdim=4_random_batch.pth")
         self.model.load_state_dict(state_dict)
