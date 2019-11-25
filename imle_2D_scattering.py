@@ -108,6 +108,7 @@ class IMLE():
         # truncate data to fit the batch size
         num_data = num_batches * batch_size
         data_np = data_np[:num_data]
+        data_Sx = data_Sx[:num_data]
 
         # make it in 1D data image for DCI
         data_flat_np = np.reshape(data_np, (data_np.shape[0], np.prod(data_np.shape[1:])))
@@ -115,19 +116,16 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
         # make empty array to store results
         samples_predict = np.empty(data_np.shape)
-        samples_np = np.empty((num_samples*batch_size,)+data_np.shape[1:])
         samples_random = np.empty((10**2,)+data_np.shape[1:])
+        samples_np = np.empty((num_data*num_samples_factor,)+data_np.shape[1:])
 
 #-----------------------------------------------------------------------------------------------------------
         # draw random z
-        z = torch.randn(num_samples*batch_size, self.z_dim, 1, 1).cuda()
-        z_np_all = z.cpu().data.numpy()
-
-        Sx = torch.from_numpy(np.repeat(data_Sx,num_samples_factor,axis=0)).float()[:z.shape[0]].cuda()
-        Sx_np_all = Sx.cpu().data.numpy()
-
-        z_Sx_all = torch.cat((z, Sx), axis=1)
         data_all = torch.from_numpy(data_np).float().cuda()
+        Sx = torch.from_numpy(np.repeat(data_Sx,num_samples_factor,axis=0)).float()[:z.shape[0]].cuda()
+
+        # z = torch.randn(num_samples*batch_size, self.z_dim, 1, 1).cuda()
+        # z_Sx_all = torch.cat((z, Sx), axis=1)
 
 #-----------------------------------------------------------------------------------------------------------
         # initiate dci
@@ -147,6 +145,10 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
             # find the closest models routintely
             if epoch % staleness == 0:
+
+                # make different z every iteration to avoid over fitting
+                z = torch.randn(num_samples*batch_size, self.z_dim, 1, 1).cuda()
+                z_Sx_all = torch.cat((z, Sx), axis=1)
 
                 # make in batch to avoid GPU memory problem
                 for i in range(num_samples):
@@ -205,16 +207,16 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
             # save the mock sample
             if (epoch+1) % staleness == 0:
-                np.savez("../results_2D_zdim=4_random_batch_cont_times3_epoch=" + str(epoch) + ".npz",\
+                np.savez("../results_2D_zdim=4_random_batch_randomize_times1_epoch=" + str(epoch) + ".npz",\
                          data_np=data_np, z_Sx_np=z_Sx.cpu().data.numpy(), samples_np=samples_predict)
 
                 # make random mock
                 samples_random = self.model(z_Sx_all[:10**4][::100]).cpu().data.numpy()
-                np.savez("../results_2D_random_zdim=4_random_batch_cont_times3_epoch=" + str(epoch) + ".npz",\
+                np.savez("../results_2D_random_zdim=4_random_batch_randomize_times1_epoch=" + str(epoch) + ".npz",\
                           samples_np=samples_random, mse_err=err / num_batches)
 
                 # save network
-                torch.save(self.model.state_dict(), '../net_weights_2D_zdim=4_random_batch_cont_times3_epoch=' \
+                torch.save(self.model.state_dict(), '../net_weights_2D_zdim=4_random_batch_randomize_times1_epoch=' \
                              + str(epoch) + '.pth')
 
 
@@ -224,12 +226,12 @@ def main(*args):
 
     # restore data
     temp = np.load("../Illustris_Images.npz")
-    train_data = temp["training_data"][::3,None,32:-32,32:-32]
+    train_data = temp["training_data"][::10,None,32:-32,32:-32]
     train_data = np.clip(np.arcsinh(train_data)+0.05,0,5)/5
     print(train_data.shape)
 
     # restore scattering coefficients
-    train_Sx = np.load("../Sx_Illustris_Images.npy")[::3,:,None,None]
+    train_Sx = np.load("../Sx_Illustris_Images.npy")[::10,:,None,None]
     print(train_Sx.shape)
 
 #---------------------------------------------------------------------------------------------
