@@ -88,6 +88,10 @@ class IMLE():
         self.model.apply(self.model.get_initializer())
         self.dci_db = None
 
+        # load pre-trained model
+        state_dict = torch.load("../net_weights_2D_zdim=4_random_batch.pth")
+        self.model.load_state_dict(state_dict)
+
 #-----------------------------------------------------------------------------------------------------------
     def train(self, data_np, data_Sx, base_lr=1e-3, batch_size=128, num_epochs=3000,\
               decay_step=25, decay_rate=0.95, staleness=100, num_samples_factor=100):
@@ -200,12 +204,12 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
             # save the mock sample
             if (epoch+1) % staleness == 0:
-                np.savez("../results_2D_zdim=4_random_batch.npz", data_np=data_np, z_Sx_np=z_Sx.cpu().data.numpy(),\
+                np.savez("../results_2D_zdim=4_random_batch_cont.npz", data_np=data_np, z_Sx_np=z_Sx.cpu().data.numpy(),\
                                 samples_np=samples_predict)
 
                 # make random mock
                 samples_random = self.model(z_Sx_all[:10**4][::100]).cpu().data.numpy()
-                np.savez("../results_2D_random_zdim=4_random_batch.npz", samples_np=samples_random)
+                np.savez("../results_2D_random_zdim=4_random_batch_cont.npz", samples_np=samples_random)
 
 
 #=============================================================================================================
@@ -230,7 +234,7 @@ def main(*args):
 
     # train the network
     imle.train(train_data, train_Sx)
-    torch.save(imle.model.state_dict(), '../net_weights_2D_zdim=4_random_batch.pth')
+    torch.save(imle.model.state_dict(), '../net_weights_2D_zdim=4_random_batch_cont.pth')
 
 #---------------------------------------------------------------------------------------------
 if __name__ == '__main__':
