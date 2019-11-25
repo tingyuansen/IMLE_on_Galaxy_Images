@@ -212,8 +212,7 @@ class IMLE():
                 np.savez("../results_2D_random_zdim=4_random_batch_cont_epoch=" + str(epoch) + ".npz",\
                           samples_np=samples_random, mse_err=err / num_batches)
 
-                # train the network
-                imle.train(train_data, train_Sx)
+                # save network
                 torch.save(imle.model.state_dict(), '../net_weights_2D_zdim=4_random_batch_cont_epoch=' \
                              + str(epoch) + '.pth')
 
@@ -238,6 +237,8 @@ def main(*args):
     Sx_dim = train_Sx.shape[1]
     imle = IMLE(z_dim, Sx_dim)
 
+    # train the network
+    imle.train(train_data, train_Sx)
 
 #---------------------------------------------------------------------------------------------
 if __name__ == '__main__':
