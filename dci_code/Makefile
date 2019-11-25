@@ -43,7 +43,7 @@ OPENBLAS_DIR=/home/yting/openblas/lib/libopenblas.so
 #PYTHON_DIR=/home/ting/anaconda3/include/python3.7m/
 #NUMPY_DIR=/home/ting/anaconda3/lib/python3.7/site-packages
 PYTHON_DIR=/home/yting/anaconda3/include/python3.7m/
-NUMPY_DIR=/home/yting/anaconda3/lib/python3.7/site-packages
+NUMPY_DIR=/home/yting/anaconda3/lib/python3.7/site-packages/numpy/core/include/
 
 SRC_DIR=src
 INCL_DIR=include
