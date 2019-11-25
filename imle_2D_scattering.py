@@ -204,12 +204,18 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
             # save the mock sample
             if (epoch+1) % staleness == 0:
-                np.savez("../results_2D_zdim=4_random_batch_cont.npz", data_np=data_np, z_Sx_np=z_Sx.cpu().data.numpy(),\
-                                samples_np=samples_predict)
+                np.savez("../results_2D_zdim=4_random_batch_cont_epoch=" + str(epoch) + ".npz",\
+                         data_np=data_np, z_Sx_np=z_Sx.cpu().data.numpy(), samples_np=samples_predict)
 
                 # make random mock
                 samples_random = self.model(z_Sx_all[:10**4][::100]).cpu().data.numpy()
-                np.savez("../results_2D_random_zdim=4_random_batch_cont.npz", samples_np=samples_random)
+                np.savez("../results_2D_random_zdim=4_random_batch_cont_epoch=" + str(epoch) + ".npz",\
+                          samples_np=samples_random, mse_err=err / num_batches)
+
+                # train the network
+                imle.train(train_data, train_Sx)
+                torch.save(imle.model.state_dict(), '../net_weights_2D_zdim=4_random_batch_cont_epoch=' \
+                             + str(epoch) + '.pth')
 
 
 #=============================================================================================================
@@ -218,12 +224,12 @@ def main(*args):
 
     # restore data
     temp = np.load("../Illustris_Images.npz")
-    train_data = temp["training_data"][::10,None,32:-32,32:-32]
+    train_data = temp["training_data"][::3,None,32:-32,32:-32]
     train_data = np.clip(np.arcsinh(train_data)+0.05,0,5)/5
     print(train_data.shape)
 
     # restore scattering coefficients
-    train_Sx = np.load("../Sx_Illustris_Images.npy")[::10,:,None,None]
+    train_Sx = np.load("../Sx_Illustris_Images.npy")[::3,:,None,None]
     print(train_Sx.shape)
 
 #---------------------------------------------------------------------------------------------
@@ -232,9 +238,6 @@ def main(*args):
     Sx_dim = train_Sx.shape[1]
     imle = IMLE(z_dim, Sx_dim)
 
-    # train the network
-    imle.train(train_data, train_Sx)
-    torch.save(imle.model.state_dict(), '../net_weights_2D_zdim=4_random_batch_cont.pth')
 
 #---------------------------------------------------------------------------------------------
 if __name__ == '__main__':
