@@ -116,7 +116,6 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
         # make empty array to store results
         samples_predict = np.empty(data_np.shape)
-        samples_random = np.empty((10**2,)+data_np.shape[1:])
         samples_np = np.empty((num_data*num_samples_factor,)+data_np.shape[1:])
 
 #-----------------------------------------------------------------------------------------------------------
