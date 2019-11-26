@@ -95,7 +95,7 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
     def train(self, data_np, data_Sx, base_lr=1e-3, batch_size=128, num_epochs=3000,\
-              decay_step=25, decay_rate=0.95, staleness=100, num_samples_factor=30):
+              decay_step=25, decay_rate=0.95, staleness=100, num_samples_factor=100):
 
         # define metric
         loss_fn = nn.MSELoss().cuda()
@@ -194,17 +194,17 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
             # save the mock sample
             if (epoch+1) % staleness == 0:
-                np.savez("../results_2D_conditional_times10_epoch=" + str(epoch) +  ".npz", data_np=data_np,\
+                np.savez("../results_2D_conditional_times3_trial1_epoch=" + str(epoch) +  ".npz", data_np=data_np,\
                                 z_Sx_np=z_Sx.cpu().data.numpy(),\
                                 samples_np=samples_predict)
 
                 # make random mock
                 samples_random = self.model(z_Sx_all[:10**4][::100]).cpu().data.numpy()
-                np.savez("../results_2D_random_conditional_times10_epoch=" + str(epoch) +  ".npz", samples_np=samples_random,
+                np.savez("../results_2D_random_conditional_times3_trial1_epoch=" + str(epoch) +  ".npz", samples_np=samples_random,
                           mse_err=err / num_batches)
 
                 # save network
-                torch.save(self.model.state_dict(), '../net_weights_2D_conditional_times10_epoch=' \
+                torch.save(self.model.state_dict(), '../net_weights_2D_conditional_times3_trial1_epoch=' \
                              + str(epoch) + '.pth')
 
 #=============================================================================================================
@@ -213,12 +213,12 @@ def main(*args):
 
     # restore data
     temp = np.load("../Illustris_Images.npz")
-    train_data = temp["training_data"][:,None,32:-32,32:-32]
+    train_data = temp["training_data"][::3,None,32:-32,32:-32]
     train_data = np.clip(np.arcsinh(train_data)+0.05,0,5)/5
     print(train_data.shape)
 
     # restore scattering coefficients
-    train_Sx = np.load("../Sx_Illustris_Images.npy")[:,:,None,None]
+    train_Sx = np.load("../Sx_Illustris_Images.npy")[::3,:,None,None]
     print(train_Sx.shape)
 
 #---------------------------------------------------------------------------------------------
