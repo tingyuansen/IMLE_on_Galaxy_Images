@@ -227,6 +227,9 @@ def main(*args):
     Sx_dim = train_Sx.shape[1]
     imle = IMLE(z_dim, Sx_dim)
 
+    # train the network
+    imle.train(train_data, train_Sx)
+    
 #---------------------------------------------------------------------------------------------
 if __name__ == '__main__':
     main(*sys.argv[1:])
