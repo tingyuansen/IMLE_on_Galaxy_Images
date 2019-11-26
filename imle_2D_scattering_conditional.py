@@ -90,7 +90,7 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
         # load pre-trained model
-        state_dict = torch.load("../net_weights_2D_conditional.pth")
+        state_dict = torch.load("../net_weights_2D_conditional_times3_trial2_epoch=2999.pth")
         self.model.load_state_dict(state_dict)
 
 #-----------------------------------------------------------------------------------------------------------
