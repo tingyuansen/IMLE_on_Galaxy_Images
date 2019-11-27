@@ -94,7 +94,7 @@ class IMLE():
         self.model.load_state_dict(state_dict)
 
 #-----------------------------------------------------------------------------------------------------------
-    def train(self, data_np, data_Sx, base_lr=1e-3, batch_size=128, num_epochs=5000,\
+    def train(self, data_np, data_Sx, base_lr=1e-5, batch_size=128, num_epochs=5000,\
               decay_step=25, decay_rate=0.95, staleness=100, num_samples_factor=100):
 
         # define metric
