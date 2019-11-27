@@ -135,9 +135,14 @@ class IMLE():
             nearest_indices[i] = nearest_indices_temp[0][0] + i*num_samples_factor
             samples_predict[i] = samples_np[nearest_indices_temp[0][0]]
 
+        # loop over all batches
+        for i in range(num_batches):
+            cur_samples = self.model(z_Sx[i*batch_size:(i+1)*batch_size])
+            samples_predict[i*batch_size:(i+1)*batch_size] = cur_samples.cpu().data.numpy()
+
         # save results
         np.savez("../samples_closest.npz",\
-                        data_np=data_np, samples_np=samples_predict)
+                 data_np=data_np, samples_np=samples_predict)
 
 
 #=============================================================================================================
