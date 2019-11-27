@@ -74,10 +74,12 @@ class IMLE():
     def predict(self, data_np, data_Sx, num_samples_factor=100):
 
         # initate result array
-        samples_np = np.empty((num_samples_factor*data_Sx.shape[0],)+data_np.shape[1:])
+        num_data = data_Sx.shape[0]
+        samples_np = np.empty((num_samples_factor*num_data,)+data_np.shape[1:])
 
         # repeat scattering scoefficients
         Sx = torch.from_numpy(np.repeat(data_Sx,num_samples_factor,axis=0)).float().cuda()
+        print(Sx[:50])
 
         # # draw random z
         z = torch.randn(Sx.shape[0], self.z_dim, 1, 1).cuda()
@@ -85,8 +87,8 @@ class IMLE():
 
         # make images in batch
         for i in range(num_samples_factor):
-            samples_np[i*num_samples_factor:(i+1)*num_samples_factor] \
-                    = self.model(z_Sx_all[i*num_samples_factor:(i+1)*num_samples_factor]).cpu().data.numpy()
+            samples_np[i*num_data:(i+1)*num_data] \
+                    = self.model(z_Sx_all[i*num_data:(i+1)*num_data]).cpu().data.numpy()
 
         # save results
         np.savez("../sample_closest.npz",\
