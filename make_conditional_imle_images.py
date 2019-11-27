@@ -87,66 +87,61 @@ class IMLE():
 
 #=============================================================================================================
         # # draw random z
-        # z = torch.randn(num_data*num_samples_factor, self.z_dim, 1, 1).cuda()
-        # z_Sx_all = torch.cat((z, Sx), axis=1)
-        #
-        # # make all different images of the same scattering coefficients
-        # #for i in range(num_data):
-        # for i in range(10):
-        #     print(i)
-        #     samples = self.model(z_Sx_all[i*num_samples_factor:(i+1)*num_samples_factor])
-        #     np.savez("../mock_images_" + str(i) + ".npz",\
-        #             data_np = data_np[i],\
-        #             samples_np = samples.cpu().data.numpy())
-
-
-#=============================================================================================================
-        # make it in 1D data image for DCI
-        data_flat_np = np.reshape(data_np, (data_np.shape[0], np.prod(data_np.shape[1:])))
-
-        # make empty array to store results
-        samples_predict = np.empty(data_np.shape)
-        samples_np = np.empty((num_samples_factor,)+data_np.shape[1:])
-
-        # initiate dci
-        if self.dci_db is None:
-            self.dci_db = DCI(np.prod(data_np.shape[1:]), num_comp_indices = 2, num_simp_indices = 7)
-
-        # draw random z
         z = torch.randn(num_data*num_samples_factor, self.z_dim, 1, 1).cuda()
         z_Sx_all = torch.cat((z, Sx), axis=1)
 
-#-----------------------------------------------------------------------------------------------------------
-        # find the closest object for individual data
-        nearest_indices = np.empty((num_data)).astype("int")
+        # # make images
+        np.savez("../sample_closest.npz",\
+                    data_np = data_np[i],\
+                    samples_np = self.model(z_Sx_all).cpu().data.numpy())
 
-        # find the cloest models
-        for i in range(num_data):
-            samples = self.model(z_Sx_all[i*num_samples_factor:(i+1)*num_samples_factor])
-            samples_np[:] = samples.cpu().data.numpy()
-            samples_flat_np = np.reshape(samples_np, (samples_np.shape[0], np.prod(samples_np.shape[1:])))
 
-            # find the nearest neighbours
-            self.dci_db.reset()
-            self.dci_db.add(np.copy(samples_flat_np),\
-                                    num_levels = 2, field_of_view = 10, prop_to_retrieve = 0.002)
-            nearest_indices_temp, _ = self.dci_db.query(data_flat_np[i:i+1],\
-                                    num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
-            nearest_indices[i] = nearest_indices_temp[0][0] + i*num_samples_factor
-            samples_predict[i] = samples_np[nearest_indices_temp[0][0]]
-
-#-----------------------------------------------------------------------------------------------------------
-        # # restrict latent parameters to the nearest neighbour
-        # z_Sx = z_Sx_all[nearest_indices]
-        #
-        # # loop over all batches
-        # for i in range(num_batches):
-        #     cur_samples = self.model(z_Sx[i*batch_size:(i+1)*batch_size])
-        #     samples_predict[i*batch_size:(i+1)*batch_size] = cur_samples.cpu().data.numpy()
-
-        # save results
-        np.savez("../samples_closest.npz",\
-                 data_np=data_np, samples_np=samples_predict)
+#=============================================================================================================
+#         # make it in 1D data image for DCI
+#         data_flat_np = np.reshape(data_np, (data_np.shape[0], np.prod(data_np.shape[1:])))
+#
+#         # make empty array to store results
+#         samples_predict = np.empty(data_np.shape)
+#         samples_np = np.empty((num_samples_factor,)+data_np.shape[1:])
+#
+#         # initiate dci
+#         if self.dci_db is None:
+#             self.dci_db = DCI(np.prod(data_np.shape[1:]), num_comp_indices = 2, num_simp_indices = 7)
+#
+#         # draw random z
+#         z = torch.randn(num_data*num_samples_factor, self.z_dim, 1, 1).cuda()
+#         z_Sx_all = torch.cat((z, Sx), axis=1)
+#
+# #-----------------------------------------------------------------------------------------------------------
+#         # find the closest object for individual data
+#         nearest_indices = np.empty((num_data)).astype("int")
+#
+#         # find the cloest models
+#         for i in range(num_data):
+#             samples = self.model(z_Sx_all[i*num_samples_factor:(i+1)*num_samples_factor])
+#             samples_np[:] = samples.cpu().data.numpy()
+#             samples_flat_np = np.reshape(samples_np, (samples_np.shape[0], np.prod(samples_np.shape[1:])))
+#
+#             # find the nearest neighbours
+#             self.dci_db.reset()
+#             self.dci_db.add(np.copy(samples_flat_np),\
+#                                     num_levels = 2, field_of_view = 10, prop_to_retrieve = 0.002)
+#             nearest_indices_temp, _ = self.dci_db.query(data_flat_np[i:i+1],\
+#                                     num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
+#             nearest_indices[i] = nearest_indices_temp[0][0] + i*num_samples_factor
+#
+# #-----------------------------------------------------------------------------------------------------------
+#         # restrict latent parameters to the nearest neighbour
+#         z_Sx = z_Sx_all[nearest_indices]
+#
+#         # loop over all batches
+#         for i in range(num_batches):
+#             cur_samples = self.model(z_Sx[i*batch_size:(i+1)*batch_size])
+#             samples_predict[i*batch_size:(i+1)*batch_size] = cur_samples.cpu().data.numpy()
+#
+#         # save results
+#         np.savez("../samples_closest.npz",\
+#                  data_np=data_np, samples_np=samples_predict)
 
 
 #=============================================================================================================
@@ -155,12 +150,12 @@ def main(*args):
 
     # restore data
     temp = np.load("../Illustris_Images.npz")
-    train_data = temp["training_data"][::30,None,32:-32,32:-32]
+    train_data = temp["training_data"][::100,None,32:-32,32:-32]
     train_data = np.clip(np.arcsinh(train_data)+0.05,0,5)/5
     print(train_data.shape)
 
     # restore scattering coefficients
-    train_Sx = np.load("../Sx_Illustris_Images.npy")[::30,:,None,None]
+    train_Sx = np.load("../Sx_Illustris_Images.npy")[::100,:,None,None]
     print(train_Sx.shape)
 
 #---------------------------------------------------------------------------------------------
