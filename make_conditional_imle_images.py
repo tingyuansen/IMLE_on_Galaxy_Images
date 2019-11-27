@@ -142,7 +142,6 @@ class IMLE():
                                     num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
             nearest_indices[i] = (nearest_indices_temp[0][0] + 50)%100 + i*num_samples_factor
 
-        print(nearest_indices)
 #-----------------------------------------------------------------------------------------------------------
         # restrict latent parameters to the nearest neighbour
         z_Sx = z_Sx_all[nearest_indices]
