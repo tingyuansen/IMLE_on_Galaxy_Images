@@ -85,14 +85,14 @@ class IMLE():
         z_Sx_all = torch.cat((z, Sx), axis=1)
 
         # make images in batch
-        #for i in range(num_samples_factor):
-        #    samples_np[i*num_data:(i+1)*num_data] \
-        #            = self.model(z_Sx_all[i*num_data:(i+1)*num_data]).cpu().data.numpy()
+        for i in range(num_samples_factor):
+            samples_np[i::num_samples_factor] \
+                    = self.model(z_Sx_all[i::num_samples_factor]).cpu().data.numpy()
 
         # save results
         np.savez("../samples_closest.npz",\
                     data_np = data_np,\
-                    samples_np = self.model(z_Sx_all).cpu().data.numpy())
+                    samples_np = samples_np)
 
 
 #=============================================================================================================
