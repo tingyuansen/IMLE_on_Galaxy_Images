@@ -91,9 +91,10 @@ class IMLE():
         z_Sx_all = torch.cat((z, Sx), axis=1)
 
         # # make images
+        samples_predict = self.model(z_Sx_all)
         np.savez("../sample_closest.npz",\
                     data_np = data_np,\
-                    samples_np = self.model(z_Sx_all).cpu().data.numpy())
+                    samples_np = samples_predict.cpu().data.numpy())
 
 
 #=============================================================================================================
