@@ -121,7 +121,7 @@ class IMLE():
             samples = self.model(z_Sx_all[i*num_samples_factor:(i+1)*num_samples_factor])
             samples_np[:] = samples.cpu().data.numpy()
             samples_flat_np = np.reshape(samples_np, (samples_np.shape[0], np.prod(samples_np.shape[1:])))
-
+            
             # find the nearest neighbours
             self.dci_db.reset()
             self.dci_db.add(np.copy(samples_flat_np),\
