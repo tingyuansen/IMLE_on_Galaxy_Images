@@ -73,10 +73,6 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
     def predict(self, data_np, data_Sx, batch_size=128, num_samples_factor=100):
 
-        # define metric
-        loss_fn = nn.MSELoss().cuda()
-        self.model.train()
-
         # train in batch
         num_batches = data_np.shape[0] // batch_size
 
@@ -93,10 +89,11 @@ class IMLE():
         z_Sx_all = torch.cat((z, Sx), axis=1)
 
         # make all different images of the same scattering coefficients
-        for i in range(num_data):
+        #for i in range(num_data):
+        for i in range(10):
             print(i)
             samples = self.model(z_Sx_all[i*num_samples_factor:(i+1)*num_samples_factor])
-            np.savez("mock_images_" + str(i) + ".npz",\
+            np.savez("../mock_images_" + str(i) + ".npz",\
                     data_np = data_np[i],\
                     samples_np = samples.cpu().data.numpy())
 
