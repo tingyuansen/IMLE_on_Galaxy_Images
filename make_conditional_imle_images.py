@@ -135,6 +135,10 @@ class IMLE():
             nearest_indices[i] = nearest_indices_temp[0][0] + i*num_samples_factor
             #samples_predict[i] = samples_np[nearest_indices_temp[0][0]]
 
+#-----------------------------------------------------------------------------------------------------------
+        # restrict latent parameters to the nearest neighbour
+        z_Sx = z_Sx_all[nearest_indices]
+
         # loop over all batches
         for i in range(num_batches):
             cur_samples = self.model(z_Sx[i*batch_size:(i+1)*batch_size])
