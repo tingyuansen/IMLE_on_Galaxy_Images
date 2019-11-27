@@ -133,7 +133,7 @@ class IMLE():
             nearest_indices_temp, _ = self.dci_db.query(data_flat_np[i:i+1],\
                                     num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
             nearest_indices[i] = nearest_indices_temp[0][0] + i*num_samples_factor
-            samples_predict[i] = samples_np[nearest_indices_temp[0][0]]
+            #samples_predict[i] = samples_np[nearest_indices_temp[0][0]]
 
         # loop over all batches
         for i in range(num_batches):
@@ -151,12 +151,12 @@ def main(*args):
 
     # restore data
     temp = np.load("../Illustris_Images.npz")
-    train_data = temp["training_data"][::3,None,32:-32,32:-32]
+    train_data = temp["training_data"][::30,None,32:-32,32:-32]
     train_data = np.clip(np.arcsinh(train_data)+0.05,0,5)/5
     print(train_data.shape)
 
     # restore scattering coefficients
-    train_Sx = np.load("../Sx_Illustris_Images.npy")[::3,:,None,None]
+    train_Sx = np.load("../Sx_Illustris_Images.npy")[::30,:,None,None]
     print(train_Sx.shape)
 
 #---------------------------------------------------------------------------------------------
