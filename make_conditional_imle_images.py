@@ -71,89 +71,88 @@ class IMLE():
         self.model.load_state_dict(state_dict)
 
 #=============================================================================================================
-    def predict(self, data_np, data_Sx, batch_size=128, num_samples_factor=100):
+    def predict(self, data_np, data_Sx, batch_size=128, num_samples_factor=1):
 
-
-        # # initate result array
-        # num_data = data_Sx.shape[0]
-        # samples_np = np.empty((num_samples_factor*num_data,)+data_np.shape[1:])
-        #
-        # # repeat scattering scoefficients
-        # Sx = torch.from_numpy(np.repeat(data_Sx,num_samples_factor,axis=0)).float().cuda()
-        #
-        # # # draw random z
-        # z = torch.randn(Sx.shape[0], self.z_dim, 1, 1).cuda()
-        # z_Sx_all = torch.cat((z, Sx), axis=1)
-        #
-        # # make images in batch
-        # #for i in range(num_samples_factor):
-        # #    samples_np[i*num_data:(i+1)*num_data] \
-        # #            = self.model(z_Sx_all[i*num_data:(i+1)*num_data]).cpu().data.numpy()
-        #
-        # # save results
-        # np.savez("../samples_closest.npz",\
-        #             data_np = data_np,\
-        #             samples_np = self.model(z_Sx_all).cpu().data.numpy())
-
-
-#=============================================================================================================
-        # train in batch
-        num_batches = data_np.shape[0] // batch_size
-
-        # truncate data to fit the batch size
-        num_data = num_batches*batch_size
-        data_np = data_np[:num_data]
-        data_Sx = data_Sx[:num_data]
+        # initate result array
+        num_data = data_Sx.shape[0]
+        samples_np = np.empty((num_samples_factor*num_data,)+data_np.shape[1:])
 
         # repeat scattering scoefficients
         Sx = torch.from_numpy(np.repeat(data_Sx,num_samples_factor,axis=0)).float().cuda()
 
-#-----------------------------------------------------------------------------------------------------------
-        # make it in 1D data image for DCI
-        data_flat_np = np.reshape(data_np, (data_np.shape[0], np.prod(data_np.shape[1:])))
-
-        # make empty array to store results
-        samples_predict = np.empty(data_np.shape)
-        samples_np = np.empty((num_samples_factor,)+data_np.shape[1:])
-
-        # initiate dci
-        if self.dci_db is None:
-            self.dci_db = DCI(np.prod(data_np.shape[1:]), num_comp_indices = 2, num_simp_indices = 7)
-
-        # draw random z
-        z = torch.randn(num_data*num_samples_factor, self.z_dim, 1, 1).cuda()
+        # # draw random z
+        z = torch.randn(Sx.shape[0], self.z_dim, 1, 1).cuda()
         z_Sx_all = torch.cat((z, Sx), axis=1)
 
-#-----------------------------------------------------------------------------------------------------------
-        # find the closest object for individual data
-        nearest_indices = np.empty((num_data)).astype("int")
-
-        # find the cloest models
-        for i in range(num_data):
-            samples = self.model(z_Sx_all[i*num_samples_factor:(i+1)*num_samples_factor])
-            samples_np[:] = samples.cpu().data.numpy()
-            samples_flat_np = np.reshape(samples_np, (samples_np.shape[0], np.prod(samples_np.shape[1:])))
-
-            # find the nearest neighbours
-            self.dci_db.reset()
-            self.dci_db.add(np.copy(samples_flat_np),\
-                                    num_levels = 2, field_of_view = 10, prop_to_retrieve = 0.002)
-            nearest_indices_temp, _ = self.dci_db.query(data_flat_np[i:i+1],\
-                                    num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
-            nearest_indices[i] = (nearest_indices_temp[0][0] + 50)%100 + i*num_samples_factor
-
-#-----------------------------------------------------------------------------------------------------------
-        # restrict latent parameters to the nearest neighbour
-        z_Sx = z_Sx_all[nearest_indices]
-
-        # loop over all batches
-        for i in range(num_batches):
-            cur_samples = self.model(z_Sx[i*batch_size:(i+1)*batch_size])
-            samples_predict[i*batch_size:(i+1)*batch_size] = cur_samples.cpu().data.numpy()
+        # make images in batch
+        #for i in range(num_samples_factor):
+        #    samples_np[i*num_data:(i+1)*num_data] \
+        #            = self.model(z_Sx_all[i*num_data:(i+1)*num_data]).cpu().data.numpy()
 
         # save results
         np.savez("../samples_closest.npz",\
-                 data_np=data_np, samples_np=samples_predict)
+                    data_np = data_np,\
+                    samples_np = self.model(z_Sx_all).cpu().data.numpy())
+
+
+#=============================================================================================================
+#         # train in batch
+#         num_batches = data_np.shape[0] // batch_size
+#
+#         # truncate data to fit the batch size
+#         num_data = num_batches*batch_size
+#         data_np = data_np[:num_data]
+#         data_Sx = data_Sx[:num_data]
+#
+#         # repeat scattering scoefficients
+#         Sx = torch.from_numpy(np.repeat(data_Sx,num_samples_factor,axis=0)).float().cuda()
+#
+# #-----------------------------------------------------------------------------------------------------------
+#         # make it in 1D data image for DCI
+#         data_flat_np = np.reshape(data_np, (data_np.shape[0], np.prod(data_np.shape[1:])))
+#
+#         # make empty array to store results
+#         samples_predict = np.empty(data_np.shape)
+#         samples_np = np.empty((num_samples_factor,)+data_np.shape[1:])
+#
+#         # initiate dci
+#         if self.dci_db is None:
+#             self.dci_db = DCI(np.prod(data_np.shape[1:]), num_comp_indices = 2, num_simp_indices = 7)
+#
+#         # draw random z
+#         z = torch.randn(num_data*num_samples_factor, self.z_dim, 1, 1).cuda()
+#         z_Sx_all = torch.cat((z, Sx), axis=1)
+#
+# #-----------------------------------------------------------------------------------------------------------
+#         # find the closest object for individual data
+#         nearest_indices = np.empty((num_data)).astype("int")
+#
+#         # find the cloest models
+#         for i in range(num_data):
+#             samples = self.model(z_Sx_all[i*num_samples_factor:(i+1)*num_samples_factor])
+#             samples_np[:] = samples.cpu().data.numpy()
+#             samples_flat_np = np.reshape(samples_np, (samples_np.shape[0], np.prod(samples_np.shape[1:])))
+#
+#             # find the nearest neighbours
+#             self.dci_db.reset()
+#             self.dci_db.add(np.copy(samples_flat_np),\
+#                                     num_levels = 2, field_of_view = 10, prop_to_retrieve = 0.002)
+#             nearest_indices_temp, _ = self.dci_db.query(data_flat_np[i:i+1],\
+#                                     num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
+#             nearest_indices[i] = (nearest_indices_temp[0][0] + 50)%100 + i*num_samples_factor
+#
+# #-----------------------------------------------------------------------------------------------------------
+#         # restrict latent parameters to the nearest neighbour
+#         z_Sx = z_Sx_all[nearest_indices]
+#
+#         # loop over all batches
+#         for i in range(num_batches):
+#             cur_samples = self.model(z_Sx[i*batch_size:(i+1)*batch_size])
+#             samples_predict[i*batch_size:(i+1)*batch_size] = cur_samples.cpu().data.numpy()
+#
+#         # save results
+#         np.savez("../samples_closest.npz",\
+#                  data_np=data_np, samples_np=samples_predict)
 
 
 #=============================================================================================================
