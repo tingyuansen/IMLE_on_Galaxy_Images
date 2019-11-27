@@ -71,7 +71,7 @@ class IMLE():
         self.model.load_state_dict(state_dict)
 
 #-----------------------------------------------------------------------------------------------------------
-    def predict(self, data_np, data_Sx, batch_size=128, num_samples_factor=100):
+    def predict(self, data_np, data_Sx, num_samples_factor=100):
 
         # initate result array
         samples_np = np.empty((num_samples_factor*data_Sx.shape[0],)+data_np.shape[1:])
