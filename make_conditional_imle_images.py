@@ -73,29 +73,59 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
     def predict(self, data_np, data_Sx, batch_size=128, num_samples_factor=100):
 
-        # train in batch
-        num_batches = data_np.shape[0] // batch_size
+        # # train in batch
+        # num_batches = data_np.shape[0] // batch_size
+        #
+        # # truncate data to fit the batch size
+        # num_data = num_batches*batch_size
+        # data_np = data_np[:num_data]
+        # data_Sx = data_Sx[:num_data]
+        #
+        # # repeat scattering scoefficients
+        # Sx = torch.from_numpy(np.repeat(data_Sx,num_samples_factor,axis=0)).float().cuda()
+        #
+        # # draw random z
+        # z = torch.randn(num_data*num_samples_factor, self.z_dim, 1, 1).cuda()
+        # z_Sx_all = torch.cat((z, Sx), axis=1)
+        #
+        # # make all different images of the same scattering coefficients
+        # #for i in range(num_data):
+        # for i in range(10):
+        #     print(i)
+        #     samples = self.model(z_Sx_all[i*num_samples_factor:(i+1)*num_samples_factor])
+        #     np.savez("../mock_images_" + str(i) + ".npz",\
+        #             data_np = data_np[i],\
+        #             samples_np = samples.cpu().data.numpy())
 
-        # truncate data to fit the batch size
-        num_data = num_batches*batch_size
-        data_np = data_np[:num_data]
-        data_Sx = data_Sx[:num_data]
+#=============================================================================================================
+        # make empty array to store results
+        samples_predict = np.empty(data_np.shape)
 
-        # repeat scattering scoefficients
-        Sx = torch.from_numpy(np.repeat(data_Sx,num_samples_factor,axis=0)).float().cuda()
+        # initiate dci
+        if self.dci_db is None:
+            self.dci_db = DCI(np.prod(data_np.shape[1:]), num_comp_indices = 2, num_simp_indices = 7)
 
         # draw random z
         z = torch.randn(num_data*num_samples_factor, self.z_dim, 1, 1).cuda()
         z_Sx_all = torch.cat((z, Sx), axis=1)
 
-        # make all different images of the same scattering coefficients
-        #for i in range(num_data):
-        for i in range(10):
-            print(i)
+#-----------------------------------------------------------------------------------------------------------
+        for i in range(num_data):
             samples = self.model(z_Sx_all[i*num_samples_factor:(i+1)*num_samples_factor])
-            np.savez("../mock_images_" + str(i) + ".npz",\
-                    data_np = data_np[i],\
-                    samples_np = samples.cpu().data.numpy())
+            samples_np = samples.cpu().data.numpy()
+            samples_flat_np = np.reshape(samples_np, (samples_np.shape[0], np.prod(samples_np.shape[1:])))
+
+            # find the nearest neighbours
+            self.dci_db.reset()
+            self.dci_db.add(np.copy(samples_flat_np),\
+                                    num_levels = 2, field_of_view = 10, prop_to_retrieve = 0.002)
+            nearest_indices_temp, _ = self.dci_db.query(data_flat_np[i:i+1],\
+                                    num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
+            samples_predict[i] = samples_np[nearest_indices_temp[0][0]]
+
+            # save results
+            np.savez("../samples_cloest.npz",\
+                            data_np=data_np, samples_np=samples_predict)
 
 
 #=============================================================================================================
