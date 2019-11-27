@@ -71,7 +71,7 @@ class IMLE():
         self.model.load_state_dict(state_dict)
 
 #-----------------------------------------------------------------------------------------------------------
-    def predict(self, data_np, data_Sx, batch_size=128, num_samples_factor=1):
+    def predict(self, data_np, data_Sx, batch_size=128, num_samples_factor=100):
 
         # repeat scattering scoefficients
         Sx = torch.from_numpy(np.repeat(data_Sx,num_samples_factor,axis=0)).float().cuda()
