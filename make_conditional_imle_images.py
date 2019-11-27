@@ -92,7 +92,7 @@ class IMLE():
 
         # # make images
         np.savez("../sample_closest.npz",\
-                    data_np = data_np[i],\
+                    data_np = data_np,\
                     samples_np = self.model(z_Sx_all).cpu().data.numpy())
 
 
