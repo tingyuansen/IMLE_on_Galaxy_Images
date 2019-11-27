@@ -94,10 +94,11 @@ class IMLE():
 
         # make all different images of the same scattering coefficients
         for i in range(num_data):
+            print(i)
             samples = self.model(z_Sx_all[i*num_samples_factor:(i+1)*num_samples_factor])
             np.savez("mock_images_" + str(i) + ".npz",\
                     data_np = data_np[i],\
-                    samples_np = samples.cpu().data.numpy()
+                    samples_np = samples.cpu().data.numpy())
 
 
 #=============================================================================================================
