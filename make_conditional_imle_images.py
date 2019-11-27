@@ -77,7 +77,7 @@ class IMLE():
         Sx = torch.from_numpy(np.repeat(data_Sx,num_samples_factor,axis=0)).float().cuda()
 
         # # draw random z
-        z = torch.randn(num_data*num_samples_factor, self.z_dim, 1, 1).cuda()
+        z = torch.randn(Sx.shape[0]*num_samples_factor, self.z_dim, 1, 1).cuda()
         z_Sx_all = torch.cat((z, Sx), axis=1)
 
         # # make images
