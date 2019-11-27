@@ -99,6 +99,7 @@ class IMLE():
         #             data_np = data_np[i],\
         #             samples_np = samples.cpu().data.numpy())
 
+
 #=============================================================================================================
         # make it in 1D data image for DCI
         data_flat_np = np.reshape(data_np, (data_np.shape[0], np.prod(data_np.shape[1:])))
@@ -116,6 +117,9 @@ class IMLE():
         z_Sx_all = torch.cat((z, Sx), axis=1)
 
 #-----------------------------------------------------------------------------------------------------------
+        # find the closest object for individual data
+        nearest_indices = np.empty((num_data)).astype("int")
+
         # find the cloest models
         for i in range(num_data):
             samples = self.model(z_Sx_all[i*num_samples_factor:(i+1)*num_samples_factor])
@@ -128,11 +132,12 @@ class IMLE():
                                     num_levels = 2, field_of_view = 10, prop_to_retrieve = 0.002)
             nearest_indices_temp, _ = self.dci_db.query(data_flat_np[i:i+1],\
                                     num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
+            nearest_indices[i] = nearest_indices_temp[0][0] + i*num_samples_factor
             samples_predict[i] = samples_np[nearest_indices_temp[0][0]]
 
-            # save results
-            np.savez("../samples_closest.npz",\
-                            data_np=data_np, samples_np=samples_predict)
+        # save results
+        np.savez("../samples_closest.npz",\
+                        data_np=data_np, samples_np=samples_predict)
 
 
 #=============================================================================================================
