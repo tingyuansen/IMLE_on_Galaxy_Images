@@ -71,7 +71,7 @@ class IMLE():
         self.model.load_state_dict(state_dict)
 
 #-----------------------------------------------------------------------------------------------------------
-    def predict(self, data_np, data_Sx, batch_size=128, num_samples_factor=1000):
+    def predict(self, data_np, data_Sx, batch_size=128, num_samples_factor=100):
 
         # define metric
         loss_fn = nn.MSELoss().cuda()
