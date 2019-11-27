@@ -73,17 +73,19 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
     def predict(self, data_np, data_Sx, batch_size=128, num_samples_factor=100):
 
-        # # train in batch
-        # num_batches = data_np.shape[0] // batch_size
-        #
-        # # truncate data to fit the batch size
-        # num_data = num_batches*batch_size
-        # data_np = data_np[:num_data]
-        # data_Sx = data_Sx[:num_data]
-        #
-        # # repeat scattering scoefficients
-        # Sx = torch.from_numpy(np.repeat(data_Sx,num_samples_factor,axis=0)).float().cuda()
-        #
+        # train in batch
+        num_batches = data_np.shape[0] // batch_size
+
+        # truncate data to fit the batch size
+        num_data = num_batches*batch_size
+        data_np = data_np[:num_data]
+        data_Sx = data_Sx[:num_data]
+
+        # repeat scattering scoefficients
+        Sx = torch.from_numpy(np.repeat(data_Sx,num_samples_factor,axis=0)).float().cuda()
+
+
+#=============================================================================================================
         # # draw random z
         # z = torch.randn(num_data*num_samples_factor, self.z_dim, 1, 1).cuda()
         # z_Sx_all = torch.cat((z, Sx), axis=1)
@@ -110,6 +112,7 @@ class IMLE():
         z_Sx_all = torch.cat((z, Sx), axis=1)
 
 #-----------------------------------------------------------------------------------------------------------
+        # find the cloest models
         for i in range(num_data):
             samples = self.model(z_Sx_all[i*num_samples_factor:(i+1)*num_samples_factor])
             samples_np = samples.cpu().data.numpy()
