@@ -71,7 +71,7 @@ class IMLE():
         self.model.load_state_dict(state_dict)
 
 #-----------------------------------------------------------------------------------------------------------
-    def predict(self, data_np, data_Sx, batch_size=128, num_samples_factor=10):
+    def predict(self, data_np, data_Sx, batch_size=128, num_samples_factor=1):
 
         # train in batch
         num_batches = data_np.shape[0] // batch_size
@@ -88,13 +88,10 @@ class IMLE():
 #=============================================================================================================
         # # draw random z
         z = torch.randn(num_data*num_samples_factor, self.z_dim, 1, 1).cuda()
-        print('yes1')
         z_Sx_all = torch.cat((z, Sx), axis=1)
-        print('yes2')
 
         # # make images
         samples_predict = self.model(z_Sx_all)
-        print('yes3')
         np.savez("../sample_closest.npz",\
                     data_np = data_np,\
                     samples_np = samples_predict.cpu().data.numpy())
