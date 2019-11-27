@@ -67,7 +67,7 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
         # load pre-trained model
-        state_dict = torch.load("../net_weights_2D_conditional_times3_trial2_epoch=2999.pth")
+        state_dict = torch.load("../net_weights_2D_conditional_times3_repeat_no_decay_epoch=499.pth")
         self.model.load_state_dict(state_dict)
 
 #-----------------------------------------------------------------------------------------------------------
@@ -121,7 +121,7 @@ class IMLE():
             samples = self.model(z_Sx_all[i*num_samples_factor:(i+1)*num_samples_factor])
             samples_np[:] = samples.cpu().data.numpy()
             samples_flat_np = np.reshape(samples_np, (samples_np.shape[0], np.prod(samples_np.shape[1:])))
-            
+
             # find the nearest neighbours
             self.dci_db.reset()
             self.dci_db.add(np.copy(samples_flat_np),\
