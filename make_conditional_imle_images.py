@@ -71,7 +71,7 @@ class IMLE():
         self.model.load_state_dict(state_dict)
 
 #-----------------------------------------------------------------------------------------------------------
-    def predict(self, data_np, data_Sx, batch_size=128, num_samples_factor=100):
+    def predict(self, data_np, data_Sx, batch_size=128, num_samples_factor=10):
 
         # train in batch
         num_batches = data_np.shape[0] // batch_size
