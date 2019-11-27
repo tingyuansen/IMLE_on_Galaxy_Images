@@ -133,16 +133,16 @@ class IMLE():
             nearest_indices_temp, _ = self.dci_db.query(data_flat_np[i:i+1],\
                                     num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
             nearest_indices[i] = nearest_indices_temp[0][0] + i*num_samples_factor
-            #samples_predict[i] = samples_np[nearest_indices_temp[0][0]]
+            samples_predict[i] = samples_np[nearest_indices_temp[0][0]]
 
 #-----------------------------------------------------------------------------------------------------------
-        # restrict latent parameters to the nearest neighbour
-        z_Sx = z_Sx_all[nearest_indices]
-
-        # loop over all batches
-        for i in range(num_batches):
-            cur_samples = self.model(z_Sx[i*batch_size:(i+1)*batch_size])
-            samples_predict[i*batch_size:(i+1)*batch_size] = cur_samples.cpu().data.numpy()
+        # # restrict latent parameters to the nearest neighbour
+        # z_Sx = z_Sx_all[nearest_indices]
+        #
+        # # loop over all batches
+        # for i in range(num_batches):
+        #     cur_samples = self.model(z_Sx[i*batch_size:(i+1)*batch_size])
+        #     samples_predict[i*batch_size:(i+1)*batch_size] = cur_samples.cpu().data.numpy()
 
         # save results
         np.savez("../samples_closest.npz",\
