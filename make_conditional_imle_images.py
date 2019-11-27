@@ -92,7 +92,7 @@ class IMLE():
         # save results
         np.savez("../sample_closest.npz",\
                     data_np = data_np,\
-                    samples_np = self.model(z_Sx_all))
+                    samples_np = self.model(z_Sx_all).cpu().data.numpy())
 
 
 #=============================================================================================================
