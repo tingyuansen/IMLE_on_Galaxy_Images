@@ -71,7 +71,7 @@ class IMLE():
         self.model.load_state_dict(state_dict)
 
 #=============================================================================================================
-    def predict(self, data_np, data_Sx, num_samples_factor=10):
+    def predict(self, data_np, data_Sx, batch_size=128, num_samples_factor=10):
 
 
         # # initate result array
@@ -162,12 +162,12 @@ def main(*args):
 
     # restore data
     temp = np.load("../Illustris_Images.npz")
-    train_data = temp["training_data"][::100,None,32:-32,32:-32]
+    train_data = temp["training_data"][::30,None,32:-32,32:-32]
     train_data = np.clip(np.arcsinh(train_data)+0.05,0,5)/5
     print(train_data.shape)
 
     # restore scattering coefficients
-    train_Sx = np.load("../Sx_Illustris_Images.npy")[::100,:,None,None]
+    train_Sx = np.load("../Sx_Illustris_Images.npy")[::30,:,None,None]
     print(train_Sx.shape)
 
 #---------------------------------------------------------------------------------------------
