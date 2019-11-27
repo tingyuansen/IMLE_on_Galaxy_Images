@@ -6,7 +6,7 @@ import torch.nn as nn
 import torch.optim as optim
 
 import sys
-sys.path.append('../dci_code')
+sys.path.append('./dci_code')
 from dci import DCI
 
 
