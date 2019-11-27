@@ -88,10 +88,13 @@ class IMLE():
 #=============================================================================================================
         # # draw random z
         z = torch.randn(num_data*num_samples_factor, self.z_dim, 1, 1).cuda()
+        print('yes1')
         z_Sx_all = torch.cat((z, Sx), axis=1)
+        print('yes2')
 
         # # make images
         samples_predict = self.model(z_Sx_all)
+        print('yes3')
         np.savez("../sample_closest.npz",\
                     data_np = data_np,\
                     samples_np = samples_predict.cpu().data.numpy())
