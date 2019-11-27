@@ -100,6 +100,9 @@ class IMLE():
         #             samples_np = samples.cpu().data.numpy())
 
 #=============================================================================================================
+        # make it in 1D data image for DCI
+        data_flat_np = np.reshape(data_np, (data_np.shape[0], np.prod(data_np.shape[1:])))
+
         # make empty array to store results
         samples_predict = np.empty(data_np.shape)
         samples_np = np.empty((num_samples_factor,)+data_np.shape[1:])
@@ -128,7 +131,7 @@ class IMLE():
             samples_predict[i] = samples_np[nearest_indices_temp[0][0]]
 
             # save results
-            np.savez("../samples_cloest.npz",\
+            np.savez("../samples_closest.npz",\
                             data_np=data_np, samples_np=samples_predict)
 
 
