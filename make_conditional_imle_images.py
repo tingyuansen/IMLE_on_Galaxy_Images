@@ -71,7 +71,7 @@ class IMLE():
         self.model.load_state_dict(state_dict)
 
 #-----------------------------------------------------------------------------------------------------------
-    def predict(self, data_np, data_Sx, num_samples_factor=100):
+    def predict(self, data_np, data_Sx, num_samples_factor=1):
 
         # initate result array
         num_data = data_Sx.shape[0]
@@ -79,21 +79,20 @@ class IMLE():
 
         # repeat scattering scoefficients
         Sx = torch.from_numpy(np.repeat(data_Sx,num_samples_factor,axis=0)).float().cuda()
-        print(Sx[:50])
 
         # # draw random z
         z = torch.randn(Sx.shape[0], self.z_dim, 1, 1).cuda()
         z_Sx_all = torch.cat((z, Sx), axis=1)
 
         # make images in batch
-        for i in range(num_samples_factor):
-            samples_np[i*num_data:(i+1)*num_data] \
-                    = self.model(z_Sx_all[i*num_data:(i+1)*num_data]).cpu().data.numpy()
+        #for i in range(num_samples_factor):
+        #    samples_np[i*num_data:(i+1)*num_data] \
+        #            = self.model(z_Sx_all[i*num_data:(i+1)*num_data]).cpu().data.numpy()
 
         # save results
         np.savez("../sample_closest.npz",\
                     data_np = data_np,\
-                    samples_np = samples_np)
+                    samples_np = self.model(z_Sx_all))
 
 
 #=============================================================================================================
