@@ -85,7 +85,8 @@ class IMLE():
 
         # make images in batch
         for i in range(num_samples_factor):
-            samples_np[i::num_samples_factor] = self.model(z_Sx_all[i::num_samples_factor]).cpu().data.numpy()
+            samples_np[i*num_samples_factor:(i+1)*num_samples_factor] \
+                    = self.model(z_Sx_all[i*num_samples_factor:(i+1)*num_samples_factor]).cpu().data.numpy()
 
         # save results
         np.savez("../sample_closest.npz",\
