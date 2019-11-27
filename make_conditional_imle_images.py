@@ -71,7 +71,7 @@ class IMLE():
         self.model.load_state_dict(state_dict)
 
 #=============================================================================================================
-    def predict(self, data_np, data_Sx, batch_size=128, num_samples_factor=10):
+    def predict(self, data_np, data_Sx, batch_size=128, num_samples_factor=100):
 
 
         # # initate result array
@@ -91,7 +91,7 @@ class IMLE():
         # #            = self.model(z_Sx_all[i*num_data:(i+1)*num_data]).cpu().data.numpy()
         #
         # # save results
-        # np.savez("../sample_closest.npz",\
+        # np.savez("../samples_closest.npz",\
         #             data_np = data_np,\
         #             samples_np = self.model(z_Sx_all).cpu().data.numpy())
 
