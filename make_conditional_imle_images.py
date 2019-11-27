@@ -102,6 +102,7 @@ class IMLE():
 #=============================================================================================================
         # make empty array to store results
         samples_predict = np.empty(data_np.shape)
+        samples_np = np.empty((num_samples_factor,)+data_np.shape[1:])
 
         # initiate dci
         if self.dci_db is None:
@@ -115,7 +116,7 @@ class IMLE():
         # find the cloest models
         for i in range(num_data):
             samples = self.model(z_Sx_all[i*num_samples_factor:(i+1)*num_samples_factor])
-            samples_np = samples.cpu().data.numpy()
+            samples_np[:] = samples.cpu().data.numpy()
             samples_flat_np = np.reshape(samples_np, (samples_np.shape[0], np.prod(samples_np.shape[1:])))
 
             # find the nearest neighbours
