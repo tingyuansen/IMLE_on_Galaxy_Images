@@ -90,11 +90,11 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
         # load pre-trained model
-        state_dict = torch.load("../net_weights_2D_conditional_times3_trial2_epoch=2999.pth")
-        self.model.load_state_dict(state_dict)
+        #state_dict = torch.load("../net_weights_2D_conditional_times3_trial2_epoch=2999.pth")
+        #self.model.load_state_dict(state_dict)
 
 #-----------------------------------------------------------------------------------------------------------
-    def train(self, data_np, data_Sx, base_lr=1e-5, batch_size=128, num_epochs=5000,\
+    def train(self, data_np, data_Sx, base_lr=1e-4, batch_size=128, num_epochs=5000,\
               decay_step=25, decay_rate=0.95, staleness=100, num_samples_factor=100):
 
         # define metric
@@ -218,8 +218,16 @@ def main(*args):
     print(train_data.shape)
 
     # restore scattering coefficients
-    train_Sx = np.load("../Sx_Illustris_Images.npy")[::3,:,None,None]
-    print(train_Sx.shape)
+    #train_Sx = np.load("../Sx_Illustris_Images.npy")[::3,:,None,None]
+    #print(train_Sx.shape)
+
+    # make low resolution as conditional
+    train_Sx = np.empty((train_data.shape[0],)+(1,16,16))
+    for i in range(train_data.shape[0]):
+        for j in range(16):
+            for k in range(16):
+                train_Sx[i,:,j,k] = np.mean(train_data[i,0,j*4:(j+1)*4,k*4:(k+1)*4])
+    train_Sx = train_Sx.reshape(train_Sx.shape[0],np.prod(train_Sx.shape[1:]),1,1)
 
 #---------------------------------------------------------------------------------------------
     # initiate network
