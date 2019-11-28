@@ -90,8 +90,8 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
         # load pre-trained model
-        #state_dict = torch.load("../net_weights_2D_conditional_times3_trial2_epoch=2999.pth")
-        #self.model.load_state_dict(state_dict)
+        state_dict = torch.load("../net_weights_2D_low_rez_times=1.pth")
+        self.model.load_state_dict(state_dict)
 
 #-----------------------------------------------------------------------------------------------------------
     def train(self, data_np, data_Sx, base_lr=1e-5, batch_size=128, num_epochs=5000,\
@@ -194,17 +194,17 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
             # save the mock sample
             if (epoch+1) % staleness == 0:
-                np.savez("../results_2D_lr=1e-5_times=1_epoch=" + str(epoch) +  ".npz", data_np=data_np,\
+                np.savez("../results_2D_lr=1e-5_times=10_epoch=" + str(epoch) +  ".npz", data_np=data_np,\
                                 z_Sx_np=z_Sx.cpu().data.numpy(),\
                                 samples_np=samples_predict)
 
                 # make random mock
                 samples_random = self.model(z_Sx_all[:10**4][::100]).cpu().data.numpy()
-                np.savez("../results_2D_random_lr=1e-5_times=1_epoch=" + str(epoch) +  ".npz", samples_np=samples_random,
+                np.savez("../results_2D_random_lr=1e-5_times=10_epoch=" + str(epoch) +  ".npz", samples_np=samples_random,
                           mse_err=err / num_batches)
 
                 # save network
-                torch.save(self.model.state_dict(), '../net_weights_2D_lr=1e-5_times=1_epoch=' \
+                torch.save(self.model.state_dict(), '../net_weights_2D_lr=1e-5_times=10_epoch=' \
                              + str(epoch) + '.pth')
 
 
@@ -214,7 +214,7 @@ def main(*args):
 
     # restore data
     temp = np.load("../Illustris_Images.npz")
-    train_data = temp["training_data"][::10,None,32:-32,32:-32]
+    train_data = temp["training_data"][:,None,32:-32,32:-32]
     train_data = np.clip(np.arcsinh(train_data)+0.05,0,5)/5
     print(train_data.shape)
 
