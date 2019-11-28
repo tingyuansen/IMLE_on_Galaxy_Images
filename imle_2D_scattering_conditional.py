@@ -90,8 +90,8 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
         # load pre-trained model
-        state_dict = torch.load("../net_weights_2D_low_rez_times=1.pth")
-        self.model.load_state_dict(state_dict)
+        #state_dict = torch.load("../net_weights_2D_low_rez_times=1.pth")
+        #self.model.load_state_dict(state_dict)
 
 #-----------------------------------------------------------------------------------------------------------
     def train(self, data_np, data_Sx, base_lr=1e-5, batch_size=128, num_epochs=5000,\
@@ -194,17 +194,17 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
             # save the mock sample
             if (epoch+1) % staleness == 0:
-                np.savez("../results_2D_lr=1e-5_times=3_epoch=" + str(epoch) +  ".npz", data_np=data_np,\
+                np.savez("../results_2D_lr=1e-5_times=10_lowlow_rez_epoch=" + str(epoch) +  ".npz", data_np=data_np,\
                                 z_Sx_np=z_Sx.cpu().data.numpy(),\
                                 samples_np=samples_predict)
 
                 # make random mock
                 samples_random = self.model(z_Sx_all[:10**4][::100]).cpu().data.numpy()
-                np.savez("../results_2D_random_lr=1e-5_times=3_epoch=" + str(epoch) +  ".npz", samples_np=samples_random,
+                np.savez("../results_2D_random_lr=1e-5_times=10_lowlow_rez_epoch=" + str(epoch) +  ".npz", samples_np=samples_random,
                           mse_err=err / num_batches)
 
                 # save network
-                torch.save(self.model.state_dict(), '../net_weights_2D_lr=1e-5_times=3_epoch=' \
+                torch.save(self.model.state_dict(), '../net_weights_2D_lr=1e-5_times=10_lowlow_rez_epoch=' \
                              + str(epoch) + '.pth')
 
 
@@ -214,7 +214,7 @@ def main(*args):
 
     # restore data
     temp = np.load("../Illustris_Images.npz")
-    train_data = temp["training_data"][::3,None,32:-32,32:-32]
+    train_data = temp["training_data"][::10,None,32:-32,32:-32]
     train_data = np.clip(np.arcsinh(train_data)+0.05,0,5)/5
     print(train_data.shape)
 
@@ -223,11 +223,18 @@ def main(*args):
     #print(train_Sx.shape)
 
     # make low resolution as conditional
-    train_Sx = np.empty((train_data.shape[0],)+(1,16,16))
+    # train_Sx = np.empty((train_data.shape[0],)+(1,16,16))
+    # for i in range(train_data.shape[0]):
+    #     for j in range(16):
+    #         for k in range(16):
+    #             train_Sx[i,:,j,k] = np.mean(train_data[i,0,j*4:(j+1)*4,k*4:(k+1)*4])
+    # train_Sx = train_Sx.reshape(train_Sx.shape[0],np.prod(train_Sx.shape[1:]),1,1)
+
+    train_Sx = np.empty((train_data.shape[0],)+(1,8,8))
     for i in range(train_data.shape[0]):
-        for j in range(16):
-            for k in range(16):
-                train_Sx[i,:,j,k] = np.mean(train_data[i,0,j*4:(j+1)*4,k*4:(k+1)*4])
+        for j in range(8):
+            for k in range(8):
+                train_Sx[i,:,j,k] = np.mean(train_data[i,0,j*8:(j+1)*8,k*8:(k+1)*8])
     train_Sx = train_Sx.reshape(train_Sx.shape[0],np.prod(train_Sx.shape[1:]),1,1)
 
 #---------------------------------------------------------------------------------------------
