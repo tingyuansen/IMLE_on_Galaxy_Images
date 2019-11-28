@@ -194,17 +194,17 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
             # save the mock sample
             if (epoch+1) % staleness == 0:
-                np.savez("../results_2D_conditional_times3_epoch=" + str(epoch) +  ".npz", data_np=data_np,\
+                np.savez("../results_2D_lr=1e-4_epoch=" + str(epoch) +  ".npz", data_np=data_np,\
                                 z_Sx_np=z_Sx.cpu().data.numpy(),\
                                 samples_np=samples_predict)
 
                 # make random mock
                 samples_random = self.model(z_Sx_all[:10**4][::100]).cpu().data.numpy()
-                np.savez("../results_2D_random_conditional_times3_epoch=" + str(epoch) +  ".npz", samples_np=samples_random,
+                np.savez("../results_2D_random_lr=1e-4_epoch=" + str(epoch) +  ".npz", samples_np=samples_random,
                           mse_err=err / num_batches)
 
                 # save network
-                torch.save(self.model.state_dict(), '../net_weights_2D_conditional_times3_epoch=' \
+                torch.save(self.model.state_dict(), '../net_weights_2D_lr=1e-4_epoch=' \
                              + str(epoch) + '.pth')
 
 #=============================================================================================================
