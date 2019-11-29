@@ -72,14 +72,42 @@ class IMLE():
 
 
 #=============================================================================================================
-    def predict(self, data_np, data_Sx, batch_size=128, num_samples_factor=100):
+    # # make various realizations
+    # def predict(self, data_np, data_Sx, num_samples_factor=100):
+    #
+    #     # initate result array
+    #     num_data = data_Sx.shape[0]
+    #     samples_np = np.empty((num_samples_factor*num_data,)+data_np.shape[1:])
+    #
+    #     # repeat scattering scoefficients
+    #     Sx = torch.from_numpy(np.repeat(data_Sx,num_samples_factor,axis=0)).float().cuda()
+    #
+    #     # # draw random z
+    #     z = torch.randn(Sx.shape[0], self.z_dim, 1, 1).cuda()
+    #     z_Sx_all = torch.cat((z, Sx), axis=1)
+    #
+    #     # make images in batch
+    #     for i in range(num_samples_factor):
+    #         samples_np[i::num_samples_factor] \
+    #                 = self.model(z_Sx_all[i::num_samples_factor]).cpu().data.numpy()
+    #
+    #     # save results
+    #     np.savez("../samples_closest.npz",\
+    #                 data_np = data_np,\
+    #                 samples_np = samples_np)
+
+
+#=============================================================================================================
+    # make various realizations
+    def predict(self, data_np, data_Sx, num_samples_factor=100):
 
         # initate result array
-        num_data = data_Sx.shape[0]
-        samples_np = np.empty((num_samples_factor*num_data,)+data_np.shape[1:])
+        samples_np = np.empty((num_samples_factor,)+data_np.shape[1:])
 
         # repeat scattering scoefficients
-        Sx = torch.from_numpy(np.repeat(data_Sx,num_samples_factor,axis=0)).float().cuda()
+        data_Sx = np.linspace(data_Sx[np.random.randint(data_Sx.shape[0])],\
+                              data_Sx[np.random.randint(data_Sx.shape[0])], num_samples_factor)
+        Sx = torch.from_numpy(data_Sx).float().cuda()
 
         # # draw random z
         z = torch.randn(Sx.shape[0], self.z_dim, 1, 1).cuda()
@@ -87,8 +115,7 @@ class IMLE():
 
         # make images in batch
         for i in range(num_samples_factor):
-            samples_np[i::num_samples_factor] \
-                    = self.model(z_Sx_all[i::num_samples_factor]).cpu().data.numpy()
+            samples_np[i] = self.model(z_Sx_all[i]).cpu().data.numpy()
 
         # save results
         np.savez("../samples_closest.npz",\
@@ -117,13 +144,6 @@ def main(*args):
             for k in range(16):
                 train_Sx[i,:,j,k] = np.mean(train_data[i,0,j*4:(j+1)*4,k*4:(k+1)*4])
     train_Sx = train_Sx.reshape(train_Sx.shape[0],np.prod(train_Sx.shape[1:]),1,1)
-
-    # train_Sx = np.empty((train_data.shape[0],)+(1,8,8))
-    # for i in range(train_data.shape[0]):
-    #     for j in range(8):
-    #         for k in range(8):
-    #             train_Sx[i,:,j,k] = np.mean(train_data[i,0,j*8:(j+1)*8,k*8:(k+1)*8])
-    # train_Sx = train_Sx.reshape(train_Sx.shape[0],np.prod(train_Sx.shape[1:]),1,1)
 
 #---------------------------------------------------------------------------------------------
     # initiate network
