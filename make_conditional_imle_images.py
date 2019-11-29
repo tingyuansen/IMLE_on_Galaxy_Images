@@ -122,7 +122,7 @@ class IMLE():
 
         # make images in batch
         for i in range(num_samples_factor):
-            ind = np.concanteate(np.arange(num_base),np.array([i+num_base]))
+            ind = np.concatenate(np.arange(num_base),np.array([i+num_base]))
             print(num_base, ind.shape)
             samples_np[i] = self.model(z_Sx_all[ind])[-1].cpu().data.numpy()
 
