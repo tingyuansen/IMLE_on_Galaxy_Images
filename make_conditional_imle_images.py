@@ -108,11 +108,10 @@ class IMLE():
         # repeat scattering scoefficients
         # data_Sx = np.linspace(data_Sx[np.random.randint(data_Sx.shape[0])],\
         #                       data_Sx[np.random.randint(data_Sx.shape[0])], num_samples_factor)
-        data_Sx_add = np.linspace(data_Sx[61], data_Sx[55], num_samples_factor)
+        data_Sx_add = np.linspace(data_Sx[45], data_Sx[55], num_samples_factor)
         Sx_1 = torch.from_numpy(data_Sx).float().cuda()
         Sx_2 = torch.from_numpy(data_Sx_add).float().cuda()
         Sx = torch.cat((Sx_1, Sx_2), axis=0)
-        print(Sx_1.shape, Sx_2.shape, Sx.shape)
 
         # # draw random z
         z_1 = torch.randn(Sx_1.shape[0], self.z_dim, 1, 1).cuda()
@@ -122,8 +121,8 @@ class IMLE():
 
         # make images in batch
         for i in range(num_samples_factor):
+            print(i)
             ind = np.concatenate([np.arange(num_base),np.array([i+num_base])])
-            print(num_base, ind.shape)
             samples_np[i] = self.model(z_Sx_all[ind])[-1].cpu().data.numpy()
 
         # save results
