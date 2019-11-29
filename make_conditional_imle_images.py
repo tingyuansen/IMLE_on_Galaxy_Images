@@ -103,20 +103,28 @@ class IMLE():
 
         # initate result array
         samples_np = np.empty((num_samples_factor,)+data_np.shape[1:])
+        num_base = data_Sx.shape[0]
 
         # repeat scattering scoefficients
         # data_Sx = np.linspace(data_Sx[np.random.randint(data_Sx.shape[0])],\
         #                       data_Sx[np.random.randint(data_Sx.shape[0])], num_samples_factor)
-        data_Sx = np.linspace(data_Sx[61], data_Sx[55], num_samples_factor)
-        Sx = torch.from_numpy(data_Sx).float().cuda()
+        data_Sx_add = np.linspace(data_Sx[61], data_Sx[55], num_samples_factor)
+        Sx_1 = torch.from_numpy(data_Sx).float().cuda()
+        Sx_2 = torch.from_numpy(data_Sx_add).float().cuda()
+        Sx = torch.cat((Sx_1, Sx_2), axis=0)
+        print(Sx_1.shape, Sx_2.shape, Sx.shape)
 
         # # draw random z
-        z = torch.randn(Sx.shape[0], self.z_dim, 1, 1).cuda()
+        z_1 = torch.randn(Sx_1.shape[0], self.z_dim, 1, 1).cuda()
+        z_2 = torch.zeros(Sx_2.shape[0], self.z_dim, 1, 1).cuda()
+        z = torch.cat((z_1, z_2), axis=0)
         z_Sx_all = torch.cat((z, Sx), axis=1)
 
         # make images in batch
         for i in range(num_samples_factor):
-            samples_np[i:i+1] = self.model(z_Sx_all[i:i+1]).cpu().data.numpy()
+            ind = np.concanteate(np.arange(num_base),np.array([i+num_base]))
+            print(num_base, ind.shape)
+            samples_np[i] = self.model(z_Sx_all[ind])[-1].cpu().data.numpy()
 
         # save results
         np.savez("../samples_closest.npz",\
