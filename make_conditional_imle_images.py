@@ -99,7 +99,7 @@ class IMLE():
 
 #=============================================================================================================
     # make various realizations
-    def predict(self, data_np, data_Sx, num_samples_factor=100):
+    def predict(self, data_np, data_Sx, num_samples_factor=1000):
 
         # initate result array
         samples_np = np.empty((num_samples_factor,)+data_np.shape[1:])
