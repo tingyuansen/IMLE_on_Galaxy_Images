@@ -67,7 +67,7 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
         # load pre-trained model
-        state_dict = torch.load("../net_weights_2D_16x16_low_rez_times=10.pth")
+        state_dict = torch.load("../net_weights_2D_scattering_times=3.pth")
         self.model.load_state_dict(state_dict)
 
 
