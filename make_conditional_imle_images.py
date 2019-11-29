@@ -105,8 +105,9 @@ class IMLE():
         samples_np = np.empty((num_samples_factor,)+data_np.shape[1:])
 
         # repeat scattering scoefficients
-        data_Sx = np.linspace(data_Sx[np.random.randint(data_Sx.shape[0])],\
-                              data_Sx[np.random.randint(data_Sx.shape[0])], num_samples_factor)
+        # data_Sx = np.linspace(data_Sx[np.random.randint(data_Sx.shape[0])],\
+        #                       data_Sx[np.random.randint(data_Sx.shape[0])], num_samples_factor)
+        data_Sx = np.linspace(data_Sx[21], data_Sx[65], num_samples_factor)
         Sx = torch.from_numpy(data_Sx).float().cuda()
 
         # # draw random z
