@@ -67,7 +67,7 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
         # load pre-trained model
-        state_dict = torch.load("../net_weights_2D_8x8_low_rez_times=10.pth")
+        state_dict = torch.load("../net_weights_2D_16x16_low_rez_times=10.pth")
         self.model.load_state_dict(state_dict)
 
 
@@ -111,19 +111,19 @@ def main(*args):
     # print(train_Sx.shape)
 
     # make low resolution as conditional
-    # train_Sx = np.empty((train_data.shape[0],)+(1,16,16))
-    # for i in range(train_data.shape[0]):
-    #     for j in range(16):
-    #         for k in range(16):
-    #             train_Sx[i,:,j,k] = np.mean(train_data[i,0,j*4:(j+1)*4,k*4:(k+1)*4])
-    # train_Sx = train_Sx.reshape(train_Sx.shape[0],np.prod(train_Sx.shape[1:]),1,1)
-
-    train_Sx = np.empty((train_data.shape[0],)+(1,8,8))
+    train_Sx = np.empty((train_data.shape[0],)+(1,16,16))
     for i in range(train_data.shape[0]):
-        for j in range(8):
-            for k in range(8):
-                train_Sx[i,:,j,k] = np.mean(train_data[i,0,j*8:(j+1)*8,k*8:(k+1)*8])
+        for j in range(16):
+            for k in range(16):
+                train_Sx[i,:,j,k] = np.mean(train_data[i,0,j*4:(j+1)*4,k*4:(k+1)*4])
     train_Sx = train_Sx.reshape(train_Sx.shape[0],np.prod(train_Sx.shape[1:]),1,1)
+
+    # train_Sx = np.empty((train_data.shape[0],)+(1,8,8))
+    # for i in range(train_data.shape[0]):
+    #     for j in range(8):
+    #         for k in range(8):
+    #             train_Sx[i,:,j,k] = np.mean(train_data[i,0,j*8:(j+1)*8,k*8:(k+1)*8])
+    # train_Sx = train_Sx.reshape(train_Sx.shape[0],np.prod(train_Sx.shape[1:]),1,1)
 
 #---------------------------------------------------------------------------------------------
     # initiate network
