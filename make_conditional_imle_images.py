@@ -67,7 +67,7 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
         # load pre-trained model
-        state_dict = torch.load("../net_weights_2D_scattering_times=3.pth")
+        state_dict = torch.load("../net_weights_2D_16x16_low_rez_times=10.pth")
         self.model.load_state_dict(state_dict)
 
 
@@ -105,19 +105,28 @@ class IMLE():
         samples_np = np.empty((num_samples_factor,)+data_np.shape[1:])
         num_base = data_Sx.shape[0]
 
+        # restore parameters
+        temp = np.load("results_2D_16x16_low_rez_times=10.npz")
+        z_Sx_np = temp["z_Sx_np"][::30]
+
         # repeat scattering scoefficients
-        # data_Sx = np.linspace(data_Sx[np.random.randint(data_Sx.shape[0])],\
-        #                       data_Sx[np.random.randint(data_Sx.shape[0])], num_samples_factor)
-        data_Sx_add = np.linspace(data_Sx[45], data_Sx[55], num_samples_factor)
         Sx_1 = torch.from_numpy(data_Sx).float().cuda()
-        Sx_2 = torch.from_numpy(data_Sx_add).float().cuda()
-        Sx = torch.cat((Sx_1, Sx_2), axis=0)
+
+        #data_Sx_add = np.linspace(data_Sx[45], data_Sx[55], num_samples_factor)
+        #Sx_2 = torch.from_numpy(data_Sx_add).float().cuda()
+        #Sx = torch.cat((Sx_1, Sx_2), axis=0)
 
         # # draw random z
         z_1 = torch.randn(Sx_1.shape[0], self.z_dim, 1, 1).cuda()
-        z_2 = torch.zeros(Sx_2.shape[0], self.z_dim, 1, 1).cuda()
-        z = torch.cat((z_1, z_2), axis=0)
-        z_Sx_all = torch.cat((z, Sx), axis=1)
+
+        #z_2 = torch.zeros(Sx_2.shape[0], self.z_dim, 1, 1).cuda()
+        #z = torch.cat((z_1, z_2), axis=0)
+        #z_Sx_all = torch.cat((z, Sx), axis=1)
+
+        data_Sx_add = np.linspace(z_Sx_np[45], z_Sx_np[55], num_samples_factor)
+        z_Sx_2 = torch.from_numpy(data_Sx_add).float().cuda()
+        z_Sx_1 = torch.cat((z_1, Sx_1), axis=1)
+        z_Sx_all = torch.cat((z_Sx_1, z_Sx_2), axis=0)
 
         # make images in batch
         for i in range(num_samples_factor):
