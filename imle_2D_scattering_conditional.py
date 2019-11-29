@@ -194,17 +194,17 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
             # save the mock sample
             if (epoch+1) % staleness == 0:
-                np.savez("../results_2D_times=10_4x4_epoch=" + str(epoch) +  ".npz", data_np=data_np,\
+                np.savez("../results_2D_times=10_4x4_zdim=32_epoch=" + str(epoch) +  ".npz", data_np=data_np,\
                                 z_Sx_np=z_Sx.cpu().data.numpy(),\
                                 samples_np=samples_predict)
 
                 # make random mock
                 samples_random = self.model(z_Sx_all[:10**4][::100]).cpu().data.numpy()
-                np.savez("../results_2D_random_times=10_4x4_epoch=" + str(epoch) +  ".npz", samples_np=samples_random,
+                np.savez("../results_2D_random_times=10_4x4_zdim=32_epoch=" + str(epoch) +  ".npz", samples_np=samples_random,
                           mse_err=err / num_batches)
 
                 # save network
-                torch.save(self.model.state_dict(), '../net_weights_2D_times=10_4x4_epoch=' \
+                torch.save(self.model.state_dict(), '../net_weights_2D_times=10_4x4_zdim=32_epoch=' \
                              + str(epoch) + '.pth')
 
 
@@ -246,7 +246,8 @@ def main(*args):
 
 #---------------------------------------------------------------------------------------------
     # initiate network
-    z_dim = 4
+    #z_dim = 4
+    z_dim = 32
     Sx_dim = train_Sx.shape[1]
     imle = IMLE(z_dim, Sx_dim)
 
