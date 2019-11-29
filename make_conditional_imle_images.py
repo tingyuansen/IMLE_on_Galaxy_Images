@@ -106,7 +106,7 @@ class IMLE():
         num_base = data_Sx.shape[0]
 
         # restore parameters
-        temp = np.load("results_2D_16x16_low_rez_times=10.npz")
+        temp = np.load("../results_2D_16x16_low_rez_times=10.npz")
         z_Sx_np = temp["z_Sx_np"][::30]
 
         # repeat scattering scoefficients
