@@ -223,7 +223,7 @@ def main(*args):
     name_JL = args[0]
 
     # restore scattering coefficients
-    train_Sx = np.load("../Sx_Illustris_Images" + name_JL + ".npy")[:,:,None,None]
+    train_Sx = np.load("Sx_Illustris_Images" + name_JL + ".npy")[:,:,None,None]
     print(train_Sx.shape)
 
     # make low resolution as conditional
