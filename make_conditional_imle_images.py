@@ -73,73 +73,65 @@ class IMLE():
 
 
 #=============================================================================================================
+    # make various realizations
+    def predict(self, data_np, data_Sx, num_samples_factor=100):
+
+        # initate result array
+        num_data = data_Sx.shape[0]
+        samples_np = np.empty((num_samples_factor*num_data,)+data_np.shape[1:])
+
+        # repeat scattering scoefficients
+        Sx = torch.from_numpy(np.repeat(data_Sx,num_samples_factor,axis=0)).float().cuda()
+
+        # # draw random z
+        z = torch.randn(Sx.shape[0], self.z_dim, 1, 1).cuda()
+        z_Sx_all = torch.cat((z, Sx), axis=1)
+
+        # make images in batch
+        for i in range(num_samples_factor):
+            samples_np[i::num_samples_factor] \
+                    = self.model(z_Sx_all[i::num_samples_factor]).cpu().data.numpy()
+
+        # save results
+        np.savez("../samples_closest_" + str(pix_choice) \
+                         + "x" + str(pix_choice) + ".npz",\
+                    data_np = data_np,\
+                    samples_np = samples_np)
+
+
+#=============================================================================================================
     # # make various realizations
-    # def predict(self, data_np, data_Sx, num_samples_factor=100):
+    # def predict(self, data_np, data_Sx, num_samples_factor=1000):
     #
     #     # initate result array
-    #     num_data = data_Sx.shape[0]
-    #     samples_np = np.empty((num_samples_factor*num_data,)+data_np.shape[1:])
+    #     samples_np = np.empty((num_samples_factor,)+data_np.shape[1:])
+    #     num_base = data_Sx.shape[0]
+    #
+    #     # restore parameters
+    #     temp = np.load("../results_2D_16x16_low_rez_times=10.npz")
+    #     z_Sx_np = temp["z_Sx_np"][::30]
     #
     #     # repeat scattering scoefficients
-    #     Sx = torch.from_numpy(np.repeat(data_Sx,num_samples_factor,axis=0)).float().cuda()
+    #     Sx_1 = torch.from_numpy(data_Sx).float().cuda()
     #
     #     # # draw random z
-    #     z = torch.randn(Sx.shape[0], self.z_dim, 1, 1).cuda()
-    #     z_Sx_all = torch.cat((z, Sx), axis=1)
+    #     z_1 = torch.randn(Sx_1.shape[0], self.z_dim, 1, 1).cuda()
+    #
+    #     data_Sx_add = np.linspace(z_Sx_np[45], z_Sx_np[55], num_samples_factor)
+    #     z_Sx_2 = torch.from_numpy(data_Sx_add).float().cuda()
+    #     z_Sx_1 = torch.cat((z_1, Sx_1), axis=1)
+    #     z_Sx_all = torch.cat((z_Sx_1, z_Sx_2), axis=0)
     #
     #     # make images in batch
     #     for i in range(num_samples_factor):
-    #         samples_np[i::num_samples_factor] \
-    #                 = self.model(z_Sx_all[i::num_samples_factor]).cpu().data.numpy()
+    #         print(i)
+    #         ind = np.concatenate([np.arange(num_base),np.array([i+num_base])])
+    #         samples_np[i] = self.model(z_Sx_all[ind])[-1].cpu().data.numpy()
     #
     #     # save results
     #     np.savez("../samples_closest.npz",\
     #                 data_np = data_np,\
     #                 samples_np = samples_np)
-
-
-#=============================================================================================================
-    # make various realizations
-    def predict(self, data_np, data_Sx, num_samples_factor=1000):
-
-        # initate result array
-        samples_np = np.empty((num_samples_factor,)+data_np.shape[1:])
-        num_base = data_Sx.shape[0]
-
-        # restore parameters
-        temp = np.load("../results_2D_16x16_low_rez_times=10.npz")
-        z_Sx_np = temp["z_Sx_np"][::30]
-
-        # repeat scattering scoefficients
-        Sx_1 = torch.from_numpy(data_Sx).float().cuda()
-
-        #data_Sx_add = np.linspace(data_Sx[45], data_Sx[55], num_samples_factor)
-        #Sx_2 = torch.from_numpy(data_Sx_add).float().cuda()
-        #Sx = torch.cat((Sx_1, Sx_2), axis=0)
-
-        # # draw random z
-        z_1 = torch.randn(Sx_1.shape[0], self.z_dim, 1, 1).cuda()
-
-        #z_2 = torch.zeros(Sx_2.shape[0], self.z_dim, 1, 1).cuda()
-        #z = torch.cat((z_1, z_2), axis=0)
-        #z_Sx_all = torch.cat((z, Sx), axis=1)
-
-        data_Sx_add = np.linspace(z_Sx_np[45], z_Sx_np[55], num_samples_factor)
-        z_Sx_2 = torch.from_numpy(data_Sx_add).float().cuda()
-        z_Sx_1 = torch.cat((z_1, Sx_1), axis=1)
-        z_Sx_all = torch.cat((z_Sx_1, z_Sx_2), axis=0)
-
-        # make images in batch
-        for i in range(num_samples_factor):
-            print(i)
-            ind = np.concatenate([np.arange(num_base),np.array([i+num_base])])
-            samples_np[i] = self.model(z_Sx_all[ind])[-1].cpu().data.numpy()
-
-        # save results
-        np.savez("../samples_closest_" + str(pix_choice) \
-                                 + "x" + str(pix_choice) + ".npz",\
-                    data_np = data_np,\
-                    samples_np = samples_np)
 
 
 #=============================================================================================================
