@@ -145,8 +145,7 @@ class IMLE():
 #=============================================================================================================
 # run the codes
 def main(*args):
-    print(args)
-    
+
     # restore data
     temp = np.load("../Illustris_Images.npz")
     train_data = temp["training_data"][::30,None,32:-32,32:-32]
@@ -158,7 +157,7 @@ def main(*args):
     # print(train_Sx.shape)
 
     # make low resolution as conditional
-    pix_choice = int(sys.argv[1])
+    pix_choice = int(args[0])
     avg_choice = 64/pix_choice
     train_Sx = np.empty((train_data.shape[0],)+(1,pix_choice,pix_choice))
     for i in range(train_data.shape[0]):
