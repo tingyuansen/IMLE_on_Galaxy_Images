@@ -51,7 +51,7 @@ def main():
         except:
             Sx_array = Sx[i]
         print(Sx_array.shape)
-    np.save("../Sx_Illustris_Images.npy", Sx_array)
+    np.save("../Sx_Illustris_Images_J=5_L=4.npy", Sx_array)
 
 
 #=========================================================================================================
