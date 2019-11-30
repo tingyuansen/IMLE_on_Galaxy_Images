@@ -22,7 +22,7 @@ def main():
     training_x = temp["training_data"]
 
     # define scattering
-    scattering = Scattering2D(J=4, shape=(training_x[0,:,:].shape), L=4, max_order=2)
+    scattering = Scattering2D(J=3, shape=(training_x[0,:,:].shape), L=4, max_order=2)
     scattering.cuda()
 
     # initiate results array
@@ -51,7 +51,7 @@ def main():
         except:
             Sx_array = Sx[i]
         print(Sx_array.shape)
-    np.save("../Sx_Illustris_Images_J=4_L=4.npy", Sx_array)
+    np.save("../Sx_Illustris_Images_J=3_L=4.npy", Sx_array)
 
 
 #=========================================================================================================
