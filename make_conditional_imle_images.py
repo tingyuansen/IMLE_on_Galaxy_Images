@@ -145,7 +145,8 @@ class IMLE():
 #=============================================================================================================
 # run the codes
 def main(*args):
-
+    print(args)
+    
     # restore data
     temp = np.load("../Illustris_Images.npz")
     train_data = temp["training_data"][::30,None,32:-32,32:-32]
