@@ -67,8 +67,9 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
         # load pre-trained model
-        state_dict = torch.load("../net_weights_2D_" + str(pix_choice) \
-                                 + "x" + str(pix_choice) + "_low_rez_times=10.pth")
+        #state_dict = torch.load("../net_weights_2D_" + str(pix_choice) \
+        #                         + "x" + str(pix_choice) + "_low_rez_times=10.pth")
+        state_dict = torch.load("../net_weights_2D_scattering_times=10.pth")
         self.model.load_state_dict(state_dict)
 
 
@@ -144,21 +145,22 @@ def main(*args):
     train_data = np.clip(np.arcsinh(train_data)+0.05,0,5)/5
     print(train_data.shape)
 
-    # # restore scattering coefficients
-    # train_Sx = np.load("../Sx_Illustris_Images.npy")[::30,:,None,None]
-    # print(train_Sx.shape)
+#---------------------------------------------------------------------------------------------
+    # restore scattering coefficients
+    train_Sx = np.load("../Sx_Illustris_Images.npy")[::30,:,None,None]
+    print(train_Sx.shape)
 
-    # make low resolution as conditional
-    pix_choice = int(args[0])
-    avg_choice = 64//pix_choice
-    train_Sx = np.empty((train_data.shape[0],)+(1,pix_choice,pix_choice))
-    for i in range(train_data.shape[0]):
-        for j in range(pix_choice):
-            for k in range(pix_choice):
-                train_Sx[i,:,j,k] = np.mean(train_data[i,0,\
-                                            j*avg_choice:(j+1)*avg_choice,\
-                                            k*avg_choice:(k+1)*avg_choice])
-    train_Sx = train_Sx.reshape(train_Sx.shape[0],np.prod(train_Sx.shape[1:]),1,1)
+    # # make low resolution as conditional
+    # pix_choice = int(args[0])
+    # avg_choice = 64//pix_choice
+    # train_Sx = np.empty((train_data.shape[0],)+(1,pix_choice,pix_choice))
+    # for i in range(train_data.shape[0]):
+    #     for j in range(pix_choice):
+    #         for k in range(pix_choice):
+    #             train_Sx[i,:,j,k] = np.mean(train_data[i,0,\
+    #                                         j*avg_choice:(j+1)*avg_choice,\
+    #                                         k*avg_choice:(k+1)*avg_choice])
+    # train_Sx = train_Sx.reshape(train_Sx.shape[0],np.prod(train_Sx.shape[1:]),1,1)
 
 #---------------------------------------------------------------------------------------------
     # initiate network
