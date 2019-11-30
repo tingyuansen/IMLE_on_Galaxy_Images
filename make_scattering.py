@@ -22,7 +22,7 @@ def main():
     training_x = temp["training_data"]
 
     # define scattering
-    scattering = Scattering2D(J=4, shape=(training_x[0,:,:].shape), L=2, max_order=2)
+    scattering = Scattering2D(J=5, shape=(training_x[0,:,:].shape), L=4, max_order=2)
     scattering.cuda()
 
     # initiate results array
