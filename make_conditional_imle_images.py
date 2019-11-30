@@ -158,7 +158,7 @@ def main(*args):
 
     # make low resolution as conditional
     pix_choice = int(args[0])
-    avg_choice = 64/pix_choice
+    avg_choice = 64//pix_choice
     train_Sx = np.empty((train_data.shape[0],)+(1,pix_choice,pix_choice))
     for i in range(train_data.shape[0]):
         for j in range(pix_choice):
