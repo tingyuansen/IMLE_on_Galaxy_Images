@@ -58,7 +58,7 @@ class ConvolutionalImplicitModel(nn.Module):
 #=============================================================================================================
 # define class
 class IMLE():
-    def __init__(self, z_dim, Sx_dim):
+    def __init__(self, z_dim, Sx_dim, pix_choice):
         self.z_dim = z_dim
         self.Sx_dim = Sx_dim
         self.model = ConvolutionalImplicitModel(z_dim+Sx_dim, 0.5).cuda()
@@ -67,7 +67,8 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
         # load pre-trained model
-        state_dict = torch.load("../net_weights_2D_16x16_low_rez_times=10.pth")
+        state_dict = torch.load("../net_weights_2D_" + str(pix_choice) \
+                                 + "x" + str(pix_choice) + "_low_rez_times=10.pth")
         self.model.load_state_dict(state_dict)
 
 
@@ -135,7 +136,8 @@ class IMLE():
             samples_np[i] = self.model(z_Sx_all[ind])[-1].cpu().data.numpy()
 
         # save results
-        np.savez("../samples_closest.npz",\
+        np.savez("../samples_closest_" + str(pix_choice) \
+                                 + "x" + str(pix_choice) + ".npz",\
                     data_np = data_np,\
                     samples_np = samples_np)
 
@@ -155,11 +157,15 @@ def main(*args):
     # print(train_Sx.shape)
 
     # make low resolution as conditional
-    train_Sx = np.empty((train_data.shape[0],)+(1,16,16))
+    pix_choice = 16
+    avg_choice = 64/pix_choice
+    train_Sx = np.empty((train_data.shape[0],)+(1,pix_choice,pix_choice))
     for i in range(train_data.shape[0]):
-        for j in range(16):
-            for k in range(16):
-                train_Sx[i,:,j,k] = np.mean(train_data[i,0,j*4:(j+1)*4,k*4:(k+1)*4])
+        for j in range(pix_choice):
+            for k in range(pix_choice):
+                train_Sx[i,:,j,k] = np.mean(train_data[i,0,\
+                                            j*avg_choice:(j+1)*avg_choice,\
+                                            k*avg_choice:(k+1)*avg_choice])
     train_Sx = train_Sx.reshape(train_Sx.shape[0],np.prod(train_Sx.shape[1:]),1,1)
 
 #---------------------------------------------------------------------------------------------
