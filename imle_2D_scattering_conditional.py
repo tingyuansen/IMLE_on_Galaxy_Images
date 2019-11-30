@@ -90,8 +90,8 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
         # load pre-trained model
-        #state_dict = torch.load("../net_weights_2D_low_rez_times=1.pth")
-        #self.model.load_state_dict(state_dict)
+        state_dict = torch.load("../net_weights_2D_scattering_times=10.pth")
+        self.model.load_state_dict(state_dict)
 
 #-----------------------------------------------------------------------------------------------------------
     def train(self, data_np, data_Sx, base_lr=1e-4, batch_size=128, num_epochs=3000,\
@@ -194,17 +194,17 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
             # save the mock sample
             if (epoch+1) % staleness == 0:
-                np.savez("../results_2D_times=10_4x4_zdim=32_epoch=" + str(epoch) +  ".npz", data_np=data_np,\
-                                z_Sx_np=z_Sx.cpu().data.numpy(),\
-                                samples_np=samples_predict)
+                #np.savez("../results_2D_times=10_J=4_L=2_epoch=" + str(epoch) +  ".npz", data_np=data_np,\
+                #                z_Sx_np=z_Sx.cpu().data.numpy(),\
+                #                samples_np=samples_predict)
 
                 # make random mock
                 samples_random = self.model(z_Sx_all[:10**4][::100]).cpu().data.numpy()
-                np.savez("../results_2D_random_times=10_4x4_zdim=32_epoch=" + str(epoch) +  ".npz", samples_np=samples_random,
+                np.savez("../results_2D_random_times=10_J=4_L=2_epoch=" + str(epoch) +  ".npz", samples_np=samples_random,
                           mse_err=err / num_batches)
 
                 # save network
-                torch.save(self.model.state_dict(), '../net_weights_2D_times=10_4x4_zdim=32_epoch=' \
+                torch.save(self.model.state_dict(), '../net_weights_2D_times=10_J=4_L=2_epoch=' \
                              + str(epoch) + '.pth')
 
 
@@ -218,9 +218,10 @@ def main(*args):
     train_data = np.clip(np.arcsinh(train_data)+0.05,0,5)/5
     print(train_data.shape)
 
+#---------------------------------------------------------------------------------------------
     # restore scattering coefficients
-    #train_Sx = np.load("../Sx_Illustris_Images.npy")[::3,:,None,None]
-    #print(train_Sx.shape)
+    train_Sx = np.load("../Sx_Illustris_Images.npy")[:,:,None,None]
+    print(train_Sx.shape)
 
     # make low resolution as conditional
     # train_Sx = np.empty((train_data.shape[0],)+(1,16,16))
@@ -230,24 +231,10 @@ def main(*args):
     #             train_Sx[i,:,j,k] = np.mean(train_data[i,0,j*4:(j+1)*4,k*4:(k+1)*4])
     # train_Sx = train_Sx.reshape(train_Sx.shape[0],np.prod(train_Sx.shape[1:]),1,1)
 
-    #train_Sx = np.empty((train_data.shape[0],)+(1,8,8))
-    #for i in range(train_data.shape[0]):
-    #    for j in range(8):
-    #        for k in range(8):
-    #            train_Sx[i,:,j,k] = np.mean(train_data[i,0,j*8:(j+1)*8,k*8:(k+1)*8])
-    #train_Sx = train_Sx.reshape(train_Sx.shape[0],np.prod(train_Sx.shape[1:]),1,1)
-
-    train_Sx = np.empty((train_data.shape[0],)+(1,4,4))
-    for i in range(train_data.shape[0]):
-        for j in range(4):
-            for k in range(4):
-                train_Sx[i,:,j,k] = np.mean(train_data[i,0,j*16:(j+1)*16,k*16:(k+1)*16])
-    train_Sx = train_Sx.reshape(train_Sx.shape[0],np.prod(train_Sx.shape[1:]),1,1)
-
 #---------------------------------------------------------------------------------------------
     # initiate network
-    #z_dim = 4
-    z_dim = 32
+    z_dim = 4
+    # z_dim = 32
     Sx_dim = train_Sx.shape[1]
     imle = IMLE(z_dim, Sx_dim)
 
