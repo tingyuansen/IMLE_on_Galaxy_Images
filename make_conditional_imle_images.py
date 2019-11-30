@@ -74,7 +74,7 @@ class IMLE():
 
 #=============================================================================================================
     # make various realizations
-    def predict(self, data_np, data_Sx, num_samples_factor=100):
+    def predict(self, data_np, data_Sx, pix_choice, num_samples_factor=100):
 
         # initate result array
         num_data = data_Sx.shape[0]
@@ -167,7 +167,7 @@ def main(*args):
     imle = IMLE(z_dim, Sx_dim, pix_choice)
 
     # train the network
-    imle.predict(train_data, train_Sx)
+    imle.predict(train_data, train_Sx, pix_choice)
 
 #---------------------------------------------------------------------------------------------
 if __name__ == '__main__':
