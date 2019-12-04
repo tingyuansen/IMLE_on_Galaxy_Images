@@ -249,6 +249,10 @@ def main(*args):
     # train the network
     imle.train(train_data, train_Sx, name_JL)
 
+    # the network becomes too large, and require smaller batch size
+    if pix_choice == 16:
+        imle.train(train_data, train_Sx, name_JL, batch_size=64)
+
 #---------------------------------------------------------------------------------------------
 if __name__ == '__main__':
     main(*sys.argv[1:])
