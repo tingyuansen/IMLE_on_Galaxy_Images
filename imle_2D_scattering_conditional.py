@@ -246,13 +246,14 @@ def main(*args):
     Sx_dim = train_Sx.shape[1]
     imle = IMLE(z_dim, Sx_dim)
 
-    # train the network
-    imle.train(train_data, train_Sx, name_JL)
-
     # the network becomes too large, and require smaller batch size
     if pix_choice == 16:
         print('smaller batch size')
-        imle.train(train_data, train_Sx, name_JL, batch_size=32)
+        imle.train(train_data, train_Sx, name_JL, batch_size=64)
+    else:
+        # train the network
+        imle.train(train_data, train_Sx, name_JL)
+
 
 #---------------------------------------------------------------------------------------------
 if __name__ == '__main__':
