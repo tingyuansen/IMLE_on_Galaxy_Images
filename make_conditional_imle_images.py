@@ -69,7 +69,7 @@ class IMLE():
         # load pre-trained model
         #state_dict = torch.load("../net_weights_2D_" + str(pix_choice) \
         #                         + "x" + str(pix_choice) + "_low_rez_times=10.pth")
-        state_dict = torch.load("../net_weights_2D_scattering_J=3_L=2_times=10.pth")
+        state_dict = torch.load("../net_weights_2D_scattering_J=5_L=2_times=10.pth")
         self.model.load_state_dict(state_dict)
 
 
@@ -147,7 +147,7 @@ def main(*args):
 
 #---------------------------------------------------------------------------------------------
     # restore scattering coefficients
-    train_Sx = np.load("Sx_Illustris_Images_J=3_L=2.npy")[::30,:,None,None]
+    train_Sx = np.load("Sx_Illustris_Images_J=5_L=2.npy")[::30,:,None,None]
     print(train_Sx.shape)
 
     # # make low resolution as conditional
