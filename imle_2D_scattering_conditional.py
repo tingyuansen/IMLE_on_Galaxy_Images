@@ -223,8 +223,8 @@ def main(*args):
     name_JL = args[0]
 
     # restore scattering coefficients
-    train_Sx = np.load("Sx_Illustris_Images_" + name_JL + ".npy")[:,:,None,None]
-    print(train_Sx.shape)
+    # train_Sx = np.load("Sx_Illustris_Images_" + name_JL + ".npy")[:,:,None,None]
+    # print(train_Sx.shape)
 
     # make low resolution as conditional
     # train_Sx = np.empty((train_data.shape[0],)+(1,16,16))
@@ -234,10 +234,15 @@ def main(*args):
     #             train_Sx[i,:,j,k] = np.mean(train_data[i,0,j*4:(j+1)*4,k*4:(k+1)*4])
     # train_Sx = train_Sx.reshape(train_Sx.shape[0],np.prod(train_Sx.shape[1:]),1,1)
 
+    pix_choice = int(args[0])
+    train_Sx = np.empty((train_data.shape[0],)+(1,pix_choice*2,pix_choice*2))
+    for i in range(train_data.shape[0]):
+        train_Sx[i,:,:,:] = train_data[i, 0 ,32-pix_choice:32+pix_choice, 32-pix_choice:32+pix_choice]
+    train_Sx = train_Sx.reshape(train_Sx.shape[0],np.prod(train_Sx.shape[1:]),1,1)
+
 #---------------------------------------------------------------------------------------------
     # initiate network
     z_dim = 4
-    # z_dim = 32
     Sx_dim = train_Sx.shape[1]
     imle = IMLE(z_dim, Sx_dim)
 
