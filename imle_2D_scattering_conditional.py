@@ -90,14 +90,14 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
         # load pre-trained model
-        state_dict = torch.load("../net_weights_2D_times=10_8_epoch=1799.pth")
-        self.model.load_state_dict(state_dict)
+        # state_dict = torch.load("../net_weights_2D_times=10_8_epoch=1799.pth")
+        # self.model.load_state_dict(state_dict)
 
 #-----------------------------------------------------------------------------------------------------------
-    #def train(self, data_np, data_Sx, name_JL, base_lr=1e-4, batch_size=128, num_epochs=3000,\
+    def train(self, data_np, data_Sx, name_JL, base_lr=1e-4, batch_size=128, num_epochs=3000,\
+             decay_step=25, decay_rate=0.95, staleness=100, num_samples_factor=100):
+    #def train(self, data_np, data_Sx, name_JL, base_lr=(1e-4*0.95**(1800//25)), batch_size=128, num_epochs=1200,\
     #          decay_step=25, decay_rate=0.95, staleness=100, num_samples_factor=100):
-    def train(self, data_np, data_Sx, name_JL, base_lr=(1e-4*0.95**(1800//25)), batch_size=128, num_epochs=1200,\
-              decay_step=25, decay_rate=0.95, staleness=100, num_samples_factor=100):
 
         # define metric
         loss_fn = nn.MSELoss().cuda()
@@ -202,12 +202,12 @@ class IMLE():
 
                 # make random mock
                 samples_random = self.model(z_Sx_all[:10**4][::100]).cpu().data.numpy()
-                np.savez("../results_2D_random_times=10_" + name_JL + "_epoch=" + str(epoch+1800) +  ".npz", samples_np=samples_random,
+                np.savez("../new_results_2D_random_times=10_" + name_JL + "_epoch=" + str(epoch) +  ".npz", samples_np=samples_random,
                           mse_err=err / num_batches)
 
                 # save network
-                torch.save(self.model.state_dict(), '../net_weights_2D_times=10_' + name_JL + '_epoch=' \
-                             + str(epoch+1800) + '.pth')
+                torch.save(self.model.state_dict(), '../new_net_weights_2D_times=10_' + name_JL + '_epoch=' \
+                             + str(epoch) + '.pth')
 
 
 #=============================================================================================================
