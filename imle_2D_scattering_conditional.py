@@ -202,12 +202,12 @@ class IMLE():
 
                 # make random mock
                 samples_random = self.model(z_Sx_all[:10**4][::100]).cpu().data.numpy()
-                np.savez("../results_2D_random_times=10_" + name_JL + "_epoch=" + str(epoch) +  ".npz", samples_np=samples_random,
+                np.savez("../results_2D_random_times=10_" + name_JL + "_epoch=" + str(epoch+1800) +  ".npz", samples_np=samples_random,
                           mse_err=err / num_batches)
 
                 # save network
                 torch.save(self.model.state_dict(), '../net_weights_2D_times=10_' + name_JL + '_epoch=' \
-                             + str(epoch) + '.pth')
+                             + str(epoch+1800) + '.pth')
 
 
 #=============================================================================================================
