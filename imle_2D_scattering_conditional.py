@@ -43,9 +43,8 @@ class ConvolutionalImplicitModel(nn.Module):
 
         layers = []
 
-        #channel = 256
-        channel = 128
-        # channel = 196
+        channel = 256
+        #channel = 128
 
         for i in range(5):
             for j in range(2):
