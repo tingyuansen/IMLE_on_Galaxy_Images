@@ -43,7 +43,8 @@ class ConvolutionalImplicitModel(nn.Module):
 
         layers = []
 
-        channel = 256
+        #channel = 256
+        channel = 128
 
         for i in range(5):
             for j in range(2):
@@ -202,11 +203,11 @@ class IMLE():
 
                 # make random mock
                 samples_random = self.model(z_Sx_all[:10**4][::100]).cpu().data.numpy()
-                np.savez("../new_results_2D_random_times=10_" + name_JL + "_epoch=" + str(epoch) +  ".npz", samples_np=samples_random,
+                np.savez("../results_2D_random_times=10_" + name_JL + "_epoch=" + str(epoch) +  ".npz", samples_np=samples_random,
                           mse_err=err / num_batches)
 
                 # save network
-                torch.save(self.model.state_dict(), '../new_net_weights_2D_times=10_' + name_JL + '_epoch=' \
+                torch.save(self.model.state_dict(), '../net_weights_2D_times=10_' + name_JL + '_epoch=' \
                              + str(epoch) + '.pth')
 
 
