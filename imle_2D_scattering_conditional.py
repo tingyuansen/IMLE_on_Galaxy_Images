@@ -92,14 +92,14 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
         # load pre-trained model
-        # state_dict = torch.load("../net_weights_2D_times=10_8_epoch=1799.pth")
-        # self.model.load_state_dict(state_dict)
+        state_dict = torch.load("../net_weights_2D_scattering_J=6_L=2_times=10.pth")
+        self.model.load_state_dict(state_dict)
 
 #-----------------------------------------------------------------------------------------------------------
-    def train(self, data_np, data_Sx, name_JL, base_lr=1e-4, batch_size=128, num_epochs=3000,\
-             decay_step=25, decay_rate=0.95, staleness=100, num_samples_factor=100):
-    #def train(self, data_np, data_Sx, name_JL, base_lr=(1e-4*0.95**(1800//25)), batch_size=128, num_epochs=1200,\
-    #          decay_step=25, decay_rate=0.95, staleness=100, num_samples_factor=100):
+    #def train(self, data_np, data_Sx, name_JL, base_lr=1e-4, batch_size=128, num_epochs=3000,\
+    #         decay_step=25, decay_rate=0.95, staleness=100, num_samples_factor=100):
+    def train(self, data_np, data_Sx, name_JL, base_lr=1e-5, batch_size=128, num_epochs=3000,\
+             decay_step=25, decay_rate=0.98, staleness=100, num_samples_factor=100):
 
         # define metric
         loss_fn = nn.MSELoss().cuda()
@@ -203,9 +203,9 @@ class IMLE():
                 #                samples_np=samples_predict)
 
                 # make random mock
-                #samples_random = self.model(z_Sx_all[:10**4][::100]).cpu().data.numpy()
-                #samples_np=samples_random,
+                samples_random = self.model(z_Sx_all[:10**4][::100]).cpu().data.numpy()
                 np.savez("../channel=196_results_2D_random_times=10_" + name_JL + "_epoch=" + str(epoch) +  ".npz",\
+                          samples_np=samples_random,\
                           mse_err=err / num_batches)
 
                 # save network
@@ -228,8 +228,8 @@ def main(*args):
     name_JL = args[0]
 
     # restore scattering coefficients
-    # train_Sx = np.load("Sx_Illustris_Images_" + name_JL + ".npy")[:,:,None,None]
-    # print(train_Sx.shape)
+    train_Sx = np.load("Sx_Illustris_Images_" + name_JL + ".npy")[:,:,None,None]
+    print(train_Sx.shape)
 
     # make low resolution as conditional
     # train_Sx = np.empty((train_data.shape[0],)+(1,16,16))
@@ -239,11 +239,11 @@ def main(*args):
     #             train_Sx[i,:,j,k] = np.mean(train_data[i,0,j*4:(j+1)*4,k*4:(k+1)*4])
     # train_Sx = train_Sx.reshape(train_Sx.shape[0],np.prod(train_Sx.shape[1:]),1,1)
 
-    pix_choice = int(args[0])
-    train_Sx = np.empty((train_data.shape[0],)+(1,pix_choice*2,pix_choice*2))
-    for i in range(train_data.shape[0]):
-        train_Sx[i,:,:,:] = train_data[i, 0 ,32-pix_choice:32+pix_choice, 32-pix_choice:32+pix_choice]
-    train_Sx = train_Sx.reshape(train_Sx.shape[0],np.prod(train_Sx.shape[1:]),1,1)
+    # pix_choice = int(args[0])
+    # train_Sx = np.empty((train_data.shape[0],)+(1,pix_choice*2,pix_choice*2))
+    # for i in range(train_data.shape[0]):
+    #     train_Sx[i,:,:,:] = train_data[i, 0 ,32-pix_choice:32+pix_choice, 32-pix_choice:32+pix_choice]
+    # train_Sx = train_Sx.reshape(train_Sx.shape[0],np.prod(train_Sx.shape[1:]),1,1)
 
 #---------------------------------------------------------------------------------------------
     # initiate network
