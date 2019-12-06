@@ -90,11 +90,13 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
         # load pre-trained model
-        # state_dict = torch.load("../net_weights_2D_scattering_times=10.pth")
-        # self.model.load_state_dict(state_dict)
+        state_dict = torch.load("../net_weights_2D_times=10_8_epoch=1799.pth")
+        self.model.load_state_dict(state_dict)
 
 #-----------------------------------------------------------------------------------------------------------
-    def train(self, data_np, data_Sx, name_JL, base_lr=1e-4, batch_size=128, num_epochs=3000,\
+    #def train(self, data_np, data_Sx, name_JL, base_lr=1e-4, batch_size=128, num_epochs=3000,\
+    #          decay_step=25, decay_rate=0.95, staleness=100, num_samples_factor=100):
+    def train(self, data_np, data_Sx, name_JL, base_lr=(1e-4*0.95**(1800//25)), batch_size=128, num_epochs=1200,\
               decay_step=25, decay_rate=0.95, staleness=100, num_samples_factor=100):
 
         # define metric
