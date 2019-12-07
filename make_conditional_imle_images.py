@@ -69,7 +69,7 @@ class IMLE():
         # load pre-trained model
         #state_dict = torch.load("../net_weights_2D_" + str(pix_choice) \
         #                         + "x" + str(pix_choice) + "_low_rez_times=10.pth")
-        state_dict = torch.load("../net_weights_2D_scattering_J=5_L=2_times=10.pth")
+        state_dict = torch.load("../net_weights_2D_times=10_inner_4x4.pth")
         self.model.load_state_dict(state_dict)
 
 
@@ -147,11 +147,12 @@ def main(*args):
 
 #---------------------------------------------------------------------------------------------
     # restore scattering coefficients
-    train_Sx = np.load("Sx_Illustris_Images_J=5_L=2.npy")[::30,:,None,None]
-    print(train_Sx.shape)
+    # train_Sx = np.load("Sx_Illustris_Images_J=5_L=2.npy")[::30,:,None,None]
+    # print(train_Sx.shape)
 
     # # make low resolution as conditional
     pix_choice = int(args[0])
+
     # avg_choice = 64//pix_choice
     # train_Sx = np.empty((train_data.shape[0],)+(1,pix_choice,pix_choice))
     # for i in range(train_data.shape[0]):
@@ -161,6 +162,11 @@ def main(*args):
     #                                         j*avg_choice:(j+1)*avg_choice,\
     #                                         k*avg_choice:(k+1)*avg_choice])
     # train_Sx = train_Sx.reshape(train_Sx.shape[0],np.prod(train_Sx.shape[1:]),1,1)
+
+    train_Sx = np.empty((train_data.shape[0],)+(1,pix_choice*2,pix_choice*2))
+    for i in range(train_data.shape[0]):
+        train_Sx[i,:,:,:] = train_data[i, 0 ,32-pix_choice:32+pix_choice, 32-pix_choice:32+pix_choice]
+    train_Sx = train_Sx.reshape(train_Sx.shape[0],np.prod(train_Sx.shape[1:]),1,1)
 
 #---------------------------------------------------------------------------------------------
     # initiate network
