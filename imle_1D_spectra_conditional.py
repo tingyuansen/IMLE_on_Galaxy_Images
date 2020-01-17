@@ -43,8 +43,8 @@ class IMLE():
 
         # define metric
         # loss_fn = nn.MSELoss().cuda()
-        loss_fn = nn.L1Loss().cuda()
-        #loss_fn = nn.BCELoss().cuda()
+        # loss_fn = nn.L1Loss().cuda()
+        loss_fn = nn.BCELoss().cuda()
         self.model.train()
 
         # train in batch
