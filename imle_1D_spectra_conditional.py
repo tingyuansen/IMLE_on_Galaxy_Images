@@ -23,6 +23,7 @@ class ConvolutionalImplicitModel(nn.Module):
             torch.nn.Linear(300, 300),
             torch.nn.LeakyReLU(),
             torch.nn.Linear(300, 7214),
+            torch.nn.ReLU(),
         )
 
     def forward(self, x):
