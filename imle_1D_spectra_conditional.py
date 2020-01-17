@@ -124,7 +124,8 @@ class IMLE():
 
                 # draw random z
                 z = torch.randn(num_data*num_samples_factor, self.z_dim).cuda()
-                z_Sx_all = torch.cat((z, Sx), axis=1)
+                #z_Sx_all = torch.cat((z, Sx), axis=1)
+                z_Sx_all = torch.cat((z, Sx), axis=1)[:,:,None]
 
 #-----------------------------------------------------------------------------------------------------------
                 # # find the closest object for individual data
