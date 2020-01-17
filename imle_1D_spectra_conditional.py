@@ -46,11 +46,7 @@ class IMLE():
         # define metric
         # loss_fn = nn.MSELoss().cuda()
         #loss_fn = nn.L1Loss().cuda()
-        #loss_fn = nn.CrossEntropyLoss().cuda()
-
-        def loss_fn(recon_x, x):
-            BCE = F.binary_cross_entropy(recon_x, x, reduction='sum')
-            return BCE
+        loss_fn = nn.BCELoss().cuda()
 
         self.model.train()
 
