@@ -106,6 +106,8 @@ class IMLE():
                 nearest_indices = np.empty((num_data)).astype("int")
 
                 samples = self.model(z_Sx_all)
+                print(samples.shape)
+                print(samples_np.shape)
                 samples_np[:] = samples.cpu().data.numpy()
 
                 # find the nearest neighbours
