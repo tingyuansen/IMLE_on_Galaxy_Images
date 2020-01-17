@@ -36,8 +36,8 @@ class IMLE():
         self.dci_db = None
 
 #-----------------------------------------------------------------------------------------------------------
-    def train(self, data_np, base_lr=1e-4, batch_size=512, num_epochs=30000,\
-             decay_step=25, decay_rate=0.995, staleness=100, num_samples_factor=100):
+    def train(self, data_np, base_lr=1e-4, batch_size=512, num_epochs=3000,\
+             decay_step=25, decay_rate=0.95, staleness=100, num_samples_factor=100):
 
         # define metric
         loss_fn = nn.MSELoss().cuda()
