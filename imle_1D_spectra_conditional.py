@@ -4,12 +4,11 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from torch.nn import functional as F
 
 import sys
 sys.path.append('../dci_code')
 from dci import DCI
-
-from torch.nn import functional as F
 
 
 #=============================================================================================================
@@ -145,6 +144,8 @@ class IMLE():
                     samples_predict[i*batch_size:(i+1)*batch_size] = cur_samples.cpu().data.numpy()
 
                 # gradient descent
+                print(cur_samples.shape)
+                print(data_all[i*batch_size:(i+1)*batch_size].shape)
                 loss = loss_fn(cur_samples, data_all[i*batch_size:(i+1)*batch_size])
                 loss.backward()
                 err += loss.item()
