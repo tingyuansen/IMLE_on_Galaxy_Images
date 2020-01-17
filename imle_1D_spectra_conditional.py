@@ -103,8 +103,6 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
                 # find the closest object for individual data
-                nearest_indices = np.empty((num_data)).astype("int")
-
                 samples = self.model(z_Sx_all)
                 samples_np[:] = samples.cpu().data.numpy()
 
@@ -112,11 +110,8 @@ class IMLE():
                 self.dci_db.reset()
                 self.dci_db.add(np.copy(samples_np),\
                                 num_levels = 2, field_of_view = 10, prop_to_retrieve = 0.002)
-                nearest_indices_temp, _ = self.dci_db.query(data_np,\
+                nearest_indices = self.dci_db.query(data_np,\
                                 num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
-                print(nearest_indices_temp)
-                print(len(nearest_indices_temp))
-                nearest_indices[:] = nearest_indices_temp
 
 #-----------------------------------------------------------------------------------------------------------
                 # restrict latent parameters to the nearest neighbour
