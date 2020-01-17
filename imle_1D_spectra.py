@@ -50,9 +50,6 @@ class IMLE():
         num_data = num_batches*batch_size
         data_np = data_np[:num_data]
 
-        # make it in 1D data image for DCI
-        data_flat_np = np.reshape(data_np, (data_np.shape[0], np.prod(data_np.shape[1:])))
-
 #-----------------------------------------------------------------------------------------------------------
         # make empty array to store results
         samples_predict = np.empty(data_np.shape)
@@ -88,14 +85,13 @@ class IMLE():
                 for i in range(num_data):
                     samples = self.model(z_all[i*num_samples_factor:(i+1)*num_samples_factor])
                     samples_np[:] = samples.cpu().data.numpy()
-                    samples_flat_np = np.reshape(samples_np, (samples_np.shape[0], np.prod(samples_np.shape[1:])))
 
 #-----------------------------------------------------------------------------------------------------------
                     # find the nearest neighbours
                     self.dci_db.reset()
-                    self.dci_db.add(np.copy(samples_flat_np),\
+                    self.dci_db.add(np.copy(samples_np),\
                                     num_levels = 2, field_of_view = 10, prop_to_retrieve = 0.002)
-                    nearest_indices_temp, _ = self.dci_db.query(data_flat_np[i:i+1],\
+                    nearest_indices_temp, _ = self.dci_db.query(data_np[i:i+1],\
                                         num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
                     nearest_indices[i] = nearest_indices_temp[0][0] + i*num_samples_factor
 
