@@ -141,9 +141,6 @@ class IMLE():
                     samples_predict[i*batch_size:(i+1)*batch_size] = cur_samples.cpu().data.numpy()
 
                 # gradient descent
-                np.savez("../test.npz",\
-                         recon_x = cur_samples.cpu().data.numpy(),\
-                         x = data_all[i*batch_size:(i+1)*batch_size].cpu().data.numpy())
                 loss = loss_fn(cur_samples, data_all[i*batch_size:(i+1)*batch_size])
                 loss.backward()
                 err += loss.item()
