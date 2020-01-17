@@ -150,6 +150,14 @@ def main(*args):
     print(train_Sx.shape)
 
 #---------------------------------------------------------------------------------------------
+    # shuffle the index
+    ind_shuffle = np.arange(train_data.shape[0])
+    np.random.shuffle(ind_shuffle)
+    train_data = train_data[ind_shuffle,:][:12000,:]
+    train_Sx = train_Sx[ind_shuffle,:][:12000,:]
+    np.savez("../ind_shuffle.npz", ind_shuffle=ind_shuffle)
+    
+#---------------------------------------------------------------------------------------------
     # initiate network
     z_dim = 4
     Sx_dim = train_Sx.shape[1]
