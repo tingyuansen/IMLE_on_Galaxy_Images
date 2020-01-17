@@ -74,7 +74,7 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
     def train(self, data_np, data_Sx, base_lr=1e-4, batch_size=512, num_epochs=3000,\
-             decay_step=25, decay_rate=0.95, staleness=100, num_samples_factor=10):
+             decay_step=25, decay_rate=0.95, staleness=100, num_samples_factor=100):
 
         # define metric
         # loss_fn = nn.MSELoss().cuda()
@@ -95,8 +95,8 @@ class IMLE():
         # make empty array to store results
         samples_predict = np.empty(data_np.shape)
 
-        #samples_np = np.empty((num_samples_factor,)+data_np.shape[1:])
-        samples_np = np.empty((num_data*num_samples_factor,)+data_np.shape[1:])
+        samples_np = np.empty((num_samples_factor,)+data_np.shape[1:])
+        # samples_np = np.empty((num_data*num_samples_factor,)+data_np.shape[1:])
 
         nearest_indices = np.empty((num_data)).astype("int")
 
@@ -128,33 +128,33 @@ class IMLE():
                 z_Sx_all = torch.cat((z, Sx), axis=1)[:,:,None]
 
 #-----------------------------------------------------------------------------------------------------------
-                # # find the closest object for individual data
-                # nearest_indices = np.empty((num_data)).astype("int")
-                #
-                # for i in range(num_data):
-                #     samples = self.model(z_Sx_all[i*num_samples_factor:(i+1)*num_samples_factor])
-                #     samples_np[:] = samples.cpu().data.numpy()
-                #
-                #     # find the nearest neighbours
-                #     self.dci_db.reset()
-                #     self.dci_db.add(np.copy(samples_np),\
-                #                     num_levels = 2, field_of_view = 10, prop_to_retrieve = 0.002)
-                #     nearest_indices_temp, _ = self.dci_db.query(data_np[i:i+1],\
-                #                         num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
-                #     nearest_indices[i] = nearest_indices_temp[0][0] + i*num_samples_factor
+                # find the closest object for individual data
+                nearest_indices = np.empty((num_data)).astype("int")
+
+                for i in range(num_data):
+                    samples = self.model(z_Sx_all[i*num_samples_factor:(i+1)*num_samples_factor])
+                    samples_np[:] = samples.cpu().data.numpy()
+
+                    # find the nearest neighbours
+                    self.dci_db.reset()
+                    self.dci_db.add(np.copy(samples_np),\
+                                    num_levels = 2, field_of_view = 10, prop_to_retrieve = 0.002)
+                    nearest_indices_temp, _ = self.dci_db.query(data_np[i:i+1],\
+                                        num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
+                    nearest_indices[i] = nearest_indices_temp[0][0] + i*num_samples_factor
 
 #-----------------------------------------------------------------------------------------------------------
-                # find the closest object for individual data
-                samples = self.model(z_Sx_all)
-                samples_np[:] = samples.cpu().data.numpy()
-
-                # find the nearest neighbours
-                self.dci_db.reset()
-                self.dci_db.add(np.copy(samples_np),\
-                                num_levels = 2, field_of_view = 10, prop_to_retrieve = 0.002)
-                nearest_indices_temp, _ = self.dci_db.query(data_np,\
-                                num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
-                nearest_indices[:] = nearest_indices_temp
+                # # find the closest object for individual data
+                # samples = self.model(z_Sx_all)
+                # samples_np[:] = samples.cpu().data.numpy()
+                #
+                # # find the nearest neighbours
+                # self.dci_db.reset()
+                # self.dci_db.add(np.copy(samples_np),\
+                #                 num_levels = 2, field_of_view = 10, prop_to_retrieve = 0.002)
+                # nearest_indices_temp, _ = self.dci_db.query(data_np,\
+                #                 num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
+                # nearest_indices[:] = nearest_indices_temp
 
 #-----------------------------------------------------------------------------------------------------------
                 # restrict latent parameters to the nearest neighbour
