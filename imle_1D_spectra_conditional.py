@@ -23,7 +23,7 @@ class ConvolutionalImplicitModel(nn.Module):
             torch.nn.Linear(300, 300),
             torch.nn.LeakyReLU(),
             torch.nn.Linear(300, 7214),
-            torch.nn.ReLU(),
+            torch.nn.Sigmoid(),
         )
 
     def forward(self, x):
@@ -179,7 +179,7 @@ def main(*args):
 
     # restore data
     temp = np.load("../mock_all_spectra_no_noise_resample_prior_large.npz")
-    train_data = temp["spectra"]
+    train_data = temp["spectra"]/2.
     train_Sx = temp["labels"].T
     train_Sx[:,0] = train_Sx[:,0]/1000.
     print(train_data.shape)
