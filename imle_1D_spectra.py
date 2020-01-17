@@ -139,8 +139,8 @@ class IMLE():
 def main(*args):
 
     # restore data
-    temp = np.load("../Illustris_Images.npz")
-    train_data = temp["training_data"][:,None,32:-32,32:-32]
+    temp = np.load("../mock_all_spectra_no_noise_resample_prior_large.npz")
+    train_data = temp["spectra"]
     print(train_data.shape)
 
 #---------------------------------------------------------------------------------------------
