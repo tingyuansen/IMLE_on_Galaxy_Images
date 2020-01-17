@@ -124,6 +124,11 @@ class IMLE():
             # save the mock sample
             if (epoch+1) % staleness == 0:
 
+                # save closet models
+                np.savez("../results_spectra_" + str(epoch) +  ".npz", data_np=data_np,\
+                                               z_np=z.cpu().data.numpy(),\
+                                               samples_np=samples_predict)
+
                 # save network
                 torch.save(self.model.state_dict(), '../net_weights_spectra_epoch=' + str(epoch) + '.pth')
 
