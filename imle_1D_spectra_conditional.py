@@ -144,7 +144,7 @@ def main(*args):
     # restore data
     temp = np.load("../mock_all_spectra_no_noise_resample_prior_large.npz")
     train_data = temp["spectra"]
-    train_Sx = temp["labels"]
+    train_Sx = temp["labels"].T
     print(train_data.shape)
     print(train_Sx.shape)
 
