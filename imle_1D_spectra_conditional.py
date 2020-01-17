@@ -9,6 +9,8 @@ import sys
 sys.path.append('../dci_code')
 from dci import DCI
 
+from torch.nn import functional as F
+
 
 #=============================================================================================================
 # define network
@@ -43,8 +45,13 @@ class IMLE():
 
         # define metric
         # loss_fn = nn.MSELoss().cuda()
-        loss_fn = nn.L1Loss().cuda()
+        #loss_fn = nn.L1Loss().cuda()
         #loss_fn = nn.CrossEntropyLoss().cuda()
+
+        def loss_fn(recon_x, x):
+            BCE = F.binary_cross_entropy(recon_x, x, reduction='sum')
+            return BCE
+
         self.model.train()
 
         # train in batch
@@ -150,15 +157,15 @@ class IMLE():
             if (epoch+1) % staleness == 0:
 
                 # save closet models
-                np.savez("../results_spectra_L1_" + str(epoch) +  ".npz", data_np=data_np,\
+                np.savez("../results_spectra_BCE_" + str(epoch) +  ".npz", data_np=data_np,\
                                                z_Sx_np=z_Sx.cpu().data.numpy(),\
                                                samples_np=samples_predict)
 
-                np.savez("../mse_err_L1_" + str(epoch) +  ".npz",\
+                np.savez("../mse_err_BCE_" + str(epoch) +  ".npz",\
                                                 mse_err=err/num_batches)
 
                 # save network
-                torch.save(self.model.state_dict(), '../net_weights_spectra_L1_epoch=' + str(epoch) + '.pth')
+                torch.save(self.model.state_dict(), '../net_weights_spectra_BCE_epoch=' + str(epoch) + '.pth')
 
 
 #=============================================================================================================
