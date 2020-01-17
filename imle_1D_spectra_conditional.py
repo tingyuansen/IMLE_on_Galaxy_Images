@@ -23,11 +23,44 @@ class ConvolutionalImplicitModel(nn.Module):
             torch.nn.Linear(300, 300),
             torch.nn.LeakyReLU(),
             torch.nn.Linear(300, 7214),
-            torch.nn.Sigmoid(),
         )
 
     def forward(self, x):
         return self.features(x)
+
+
+#=============================================================================================================
+# define network
+class ConvolutionalImplicitModel(nn.Module):
+    def __init__(self, z_dim):
+        super( ConvolutionalImplicitModel, self).__init__()
+        self.z_dim = z_dim
+        layers = []
+        channel = 128
+
+        for i in range(6):
+            for j in range(3):
+
+                if i == 0 and j == 0:
+                    layers.append(torch.nn.ConvTranspose1d(z_dim, channel, 7, stride=1))
+                    layers.append(torch.nn.BatchNorm1d(channel, momentum=0.001, affine=False))
+                    layers.append(torch.nn.LeakyReLU(0.2, inplace=True))
+                else:
+                    layers.append(torch.nn.Conv1d(channel, channel, 5, stride=1, padding=2))
+                    layers.append(torch.nn.BatchNorm1d(channel, momentum=0.001, affine=False))
+                    layers.append(torch.nn.LeakyReLU(0.2, inplace=True))
+
+            if i < 5:
+                layers.append(torch.nn.Upsample(scale_factor=4, mode='linear', align_corners = False))
+            else:
+                layers.append(torch.nn.Conv1d(channel, 1, 6, stride=1))
+                layers.append(torch.nn.LeakyReLU())
+
+        self.model = torch.nn.Sequential(*layers)
+        self.add_module("model", self.model)
+
+    def forward(self, z):
+        return self.model(z)[:,0,:]
 
 
 #=============================================================================================================
@@ -40,13 +73,13 @@ class IMLE():
         self.dci_db = None
 
 #-----------------------------------------------------------------------------------------------------------
-    def train(self, data_np, data_Sx, base_lr=1e-4, batch_size=512, num_epochs=10000,\
-             decay_step=25, decay_rate=0.99, staleness=100, num_samples_factor=5):
+    def train(self, data_np, data_Sx, base_lr=1e-4, batch_size=512, num_epochs=3000,\
+             decay_step=25, decay_rate=0.95, staleness=100, num_samples_factor=10):
 
         # define metric
         # loss_fn = nn.MSELoss().cuda()
-        #loss_fn = nn.L1Loss().cuda()
-        loss_fn = nn.BCELoss().cuda()
+        loss_fn = nn.L1Loss().cuda()
+        # loss_fn = nn.BCELoss().cuda()
 
         self.model.train()
 
@@ -153,15 +186,15 @@ class IMLE():
             if (epoch+1) % staleness == 0:
 
                 # save closet models
-                np.savez("../results_spectra_BCE_" + str(epoch) +  ".npz", data_np=data_np,\
+                np.savez("../results_spectra_deconv_" + str(epoch) +  ".npz", data_np=data_np,\
                                                z_Sx_np=z_Sx.cpu().data.numpy(),\
                                                samples_np=samples_predict)
 
-                np.savez("../mse_err_BCE_" + str(epoch) +  ".npz",\
+                np.savez("../mse_err_deconv_" + str(epoch) +  ".npz",\
                                                 mse_err=err/num_batches)
 
                 # save network
-                torch.save(self.model.state_dict(), '../net_weights_spectra_BCE_epoch=' + str(epoch) + '.pth')
+                torch.save(self.model.state_dict(), '../net_weights_spectra_deconv_epoch=' + str(epoch) + '.pth')
 
 
 #=============================================================================================================
@@ -170,7 +203,7 @@ def main(*args):
 
     # restore data
     temp = np.load("../mock_all_spectra_no_noise_resample_prior_large.npz")
-    train_data = temp["spectra"]/2.
+    train_data = temp["spectra"][:,7163]
     train_Sx = temp["labels"].T
     train_Sx[:,0] = train_Sx[:,0]/1000.
     print(train_data.shape)
