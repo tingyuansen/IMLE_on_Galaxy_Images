@@ -36,10 +36,10 @@ class ConvolutionalImplicitModel(nn.Module):
         super( ConvolutionalImplicitModel, self).__init__()
         self.z_dim = z_dim
         layers = []
-        channel = 32
+        channel = 128
 
         for i in range(6):
-            for j in range(2):
+            for j in range(3):
 
                 if i == 0 and j == 0:
                     layers.append(torch.nn.ConvTranspose1d(z_dim, channel, 7, stride=1))
@@ -74,7 +74,7 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
     def train(self, data_np, data_Sx, base_lr=1e-4, batch_size=512, num_epochs=3000,\
-             decay_step=25, decay_rate=0.95, staleness=100, num_samples_factor=100):
+             decay_step=25, decay_rate=0.95, staleness=100, num_samples_factor=30):
 
         # define metric
         # loss_fn = nn.MSELoss().cuda()
@@ -187,15 +187,15 @@ class IMLE():
             if (epoch+1) % staleness == 0:
 
                 # save closet models
-                np.savez("../results_spectra_deconv_32x2_" + str(epoch) +  ".npz", data_np=data_np,\
+                np.savez("../results_spectra_deconv_128x3_" + str(epoch) +  ".npz", data_np=data_np,\
                                                z_Sx_np=z_Sx.cpu().data.numpy(),\
                                                samples_np=samples_predict)
 
-                np.savez("../mse_err_deconv_32x2_" + str(epoch) +  ".npz",\
+                np.savez("../mse_err_deconv_128x3_" + str(epoch) +  ".npz",\
                                                 mse_err=err/num_batches)
 
                 # save network
-                torch.save(self.model.state_dict(), '../net_weights_spectra_deconv_32x2_epoch=' + str(epoch) + '.pth')
+                torch.save(self.model.state_dict(), '../net_weights_spectra_deconv_128x3_epoch=' + str(epoch) + '.pth')
 
 
 #=============================================================================================================
