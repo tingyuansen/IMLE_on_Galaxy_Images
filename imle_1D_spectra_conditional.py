@@ -56,7 +56,8 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
         # make empty array to store results
         samples_predict = np.empty(data_np.shape)
-        samples_np = np.empty((num_samples_factor,)+data_np.shape[1:])
+        #samples_np = np.empty((num_samples_factor,)+data_np.shape[1:])
+        samples_np = np.empty((num_data,)+data_np.shape[1:])
 
         # make global torch variables
         data_all = torch.from_numpy(data_np).float().cuda()
@@ -84,22 +85,39 @@ class IMLE():
                 z = torch.randn(num_data*num_samples_factor, self.z_dim).cuda()
                 z_Sx_all = torch.cat((z, Sx), axis=1)
 
+#-----------------------------------------------------------------------------------------------------------
+                # # find the closest object for individual data
+                # nearest_indices = np.empty((num_data)).astype("int")
+                #
+                # for i in range(num_data):
+                #     samples = self.model(z_Sx_all[i*num_samples_factor:(i+1)*num_samples_factor])
+                #     samples_np[:] = samples.cpu().data.numpy()
+                #
+                #     # find the nearest neighbours
+                #     self.dci_db.reset()
+                #     self.dci_db.add(np.copy(samples_np),\
+                #                     num_levels = 2, field_of_view = 10, prop_to_retrieve = 0.002)
+                #     nearest_indices_temp, _ = self.dci_db.query(data_np[i:i+1],\
+                #                         num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
+                #     nearest_indices[i] = nearest_indices_temp[0][0] + i*num_samples_factor
+
+#-----------------------------------------------------------------------------------------------------------
                 # find the closest object for individual data
                 nearest_indices = np.empty((num_data)).astype("int")
 
-                for i in range(num_data):
-                    samples = self.model(z_Sx_all[i*num_samples_factor:(i+1)*num_samples_factor])
-                    samples_np[:] = samples.cpu().data.numpy()
+                samples = self.model(z_Sx_all)
+                samples_np[:] = samples.cpu().data.numpy()
+
+                # find the nearest neighbours
+                self.dci_db.reset()
+                self.dci_db.add(np.copy(samples_np),\
+                                num_levels = 2, field_of_view = 10, prop_to_retrieve = 0.002)
+                nearest_indices_temp, _ = self.dci_db.query(data_np,\
+                                num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
+                print(nearest_indices_temp.shape)
+                nearest_indices[:] = nearest_indices_temp.ravel()
 
 #-----------------------------------------------------------------------------------------------------------
-                    # find the nearest neighbours
-                    self.dci_db.reset()
-                    self.dci_db.add(np.copy(samples_np),\
-                                    num_levels = 2, field_of_view = 10, prop_to_retrieve = 0.002)
-                    nearest_indices_temp, _ = self.dci_db.query(data_np[i:i+1],\
-                                        num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
-                    nearest_indices[i] = nearest_indices_temp[0][0] + i*num_samples_factor
-
                 # restrict latent parameters to the nearest neighbour
                 z_Sx = z_Sx_all[nearest_indices]
 
@@ -130,15 +148,15 @@ class IMLE():
             if (epoch+1) % staleness == 0:
 
                 # save closet models
-                np.savez("../results_spectra_Sx_neuron=3000_" + str(epoch) +  ".npz", data_np=data_np,\
+                np.savez("../results_spectra_Sx_" + str(epoch) +  ".npz", data_np=data_np,\
                                                z_Sx_np=z_Sx.cpu().data.numpy(),\
                                                samples_np=samples_predict, mse_err=err / num_batches)
 
-                np.savez("../mse_err_Sx_neuron=3000_" + str(epoch) +  ".npz",\
+                np.savez("../mse_err_Sx_" + str(epoch) +  ".npz",\
                                                 mse_err=err / num_batches)
 
                 # save network
-                torch.save(self.model.state_dict(), '../net_weights_spectra_Sx_neuron=3000_epoch=' + str(epoch) + '.pth')
+                torch.save(self.model.state_dict(), '../net_weights_spectra_Sx_epoch=' + str(epoch) + '.pth')
 
 
 #=============================================================================================================
