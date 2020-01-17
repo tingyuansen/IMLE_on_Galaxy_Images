@@ -39,7 +39,7 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
     def train(self, data_np, data_Sx, base_lr=1e-4, batch_size=512, num_epochs=3000,\
-             decay_step=25, decay_rate=0.95, staleness=100, num_samples_factor=30):
+             decay_step=25, decay_rate=0.95, staleness=100, num_samples_factor=50):
 
         # define metric
         loss_fn = nn.MSELoss().cuda()
@@ -103,6 +103,8 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
                 # find the closest object for individual data
+                nearest_indices = np.empty((num_data)).astype("int")
+
                 samples = self.model(z_Sx_all)
                 samples_np[:] = samples.cpu().data.numpy()
 
@@ -110,8 +112,9 @@ class IMLE():
                 self.dci_db.reset()
                 self.dci_db.add(np.copy(samples_np),\
                                 num_levels = 2, field_of_view = 10, prop_to_retrieve = 0.002)
-                nearest_indices = self.dci_db.query(data_np,\
+                nearest_indices_temp, _ = self.dci_db.query(data_np,\
                                 num_neighbours = 1, field_of_view = 20, prop_to_retrieve = 0.02)
+                nearest_indices[:] = nearest_indices_temp
 
 #-----------------------------------------------------------------------------------------------------------
                 # restrict latent parameters to the nearest neighbour
