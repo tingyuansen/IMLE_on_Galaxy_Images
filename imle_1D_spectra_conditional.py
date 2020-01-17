@@ -39,12 +39,12 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
     def train(self, data_np, data_Sx, base_lr=1e-4, batch_size=512, num_epochs=3000,\
-             decay_step=25, decay_rate=0.95, staleness=100, num_samples_factor=20):
+             decay_step=25, decay_rate=0.95, staleness=100, num_samples_factor=10):
 
         # define metric
         # loss_fn = nn.MSELoss().cuda()
-        #loss_fn = nn.L1Loss().cuda()
-        loss_fn = nn.BCELoss().cuda()
+        loss_fn = nn.L1Loss().cuda()
+        #loss_fn = nn.BCELoss().cuda()
         self.model.train()
 
         # train in batch
