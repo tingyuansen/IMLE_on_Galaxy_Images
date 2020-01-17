@@ -30,7 +30,7 @@ class ConvolutionalImplicitModel(nn.Module):
 #=============================================================================================================
 # define class
 class IMLE():
-    def __init__(self, z_dim):
+    def __init__(self, z_dim, Sx_dim):
         self.z_dim = z_dim
         self.Sx_dim = Sx_dim
         self.model = ConvolutionalImplicitModel(z_dim+Sx_dim).cuda()
