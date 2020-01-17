@@ -37,8 +37,8 @@ class IMLE():
         self.dci_db = None
 
 #-----------------------------------------------------------------------------------------------------------
-    def train(self, data_np, data_Sx, base_lr=1e-4, batch_size=512, num_epochs=3000,\
-             decay_step=25, decay_rate=0.95, staleness=100, num_samples_factor=100):
+    def train(self, data_np, data_Sx, base_lr=1e-4, batch_size=512, num_epochs=30000,\
+             decay_step=25, decay_rate=0.995, staleness=100, num_samples_factor=100):
 
         # define metric
         loss_fn = nn.MSELoss().cuda()
@@ -133,6 +133,9 @@ class IMLE():
                                                z_Sx_np=z_Sx.cpu().data.numpy(),\
                                                samples_np=samples_predict, mse_err=err / num_batches)
 
+                np.savez("../mse_err_Sx_" + str(epoch) +  ".npz",\
+                                                mse_err=err / num_batches)
+
                 # save network
                 torch.save(self.model.state_dict(), '../net_weights_spectra_Sx_epoch=' + str(epoch) + '.pth')
 
@@ -156,7 +159,7 @@ def main(*args):
     train_data = train_data[ind_shuffle,:][:12000,:]
     train_Sx = train_Sx[ind_shuffle,:][:12000,:]
     np.savez("../ind_shuffle.npz", ind_shuffle=ind_shuffle)
-    
+
 #---------------------------------------------------------------------------------------------
     # initiate network
     z_dim = 4
