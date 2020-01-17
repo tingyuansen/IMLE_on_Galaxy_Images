@@ -60,7 +60,7 @@ class ConvolutionalImplicitModel(nn.Module):
         self.add_module("model", self.model)
 
     def forward(self, z):
-        return self.model(z)[:,0,:]
+        return self.model(z).view(-1,7163)
 
 
 #=============================================================================================================
