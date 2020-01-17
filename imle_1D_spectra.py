@@ -49,23 +49,18 @@ class IMLE():
         # truncate data to fit the batch size
         num_data = num_batches*batch_size
         data_np = data_np[:num_data]
-        print(data_np.shape)
 
         # make it in 1D data image for DCI
         data_flat_np = np.reshape(data_np, (data_np.shape[0], np.prod(data_np.shape[1:])))
-        print(data_flat_np.shape)
 
 #-----------------------------------------------------------------------------------------------------------
         # make empty array to store results
         samples_predict = np.empty(data_np.shape)
         samples_np = np.empty((num_samples_factor,)+data_np.shape[1:])
 
-#-----------------------------------------------------------------------------------------------------------
         # make global torch variables
         data_all = torch.from_numpy(data_np).float().cuda()
-        print(data_all.shape)
 
-#-----------------------------------------------------------------------------------------------------------
         # initiate dci
         if self.dci_db is None:
             self.dci_db = DCI(np.prod(data_np.shape[1:]), num_comp_indices = 2, num_simp_indices = 7)
@@ -86,15 +81,12 @@ class IMLE():
 
                 # draw random z
                 z_all = torch.randn(num_data*num_samples_factor, self.z_dim).cuda()
-                print(z_all.shape)
 
                 # find the closest object for individual data
                 nearest_indices = np.empty((num_data)).astype("int")
 
                 for i in range(num_data):
-                    print(z_all[i*num_samples_factor:(i+1)*num_samples_factor].shape)
                     samples = self.model(z_all[i*num_samples_factor:(i+1)*num_samples_factor])
-                    print(samples.shape)
                     samples_np[:] = samples.cpu().data.numpy()
                     samples_flat_np = np.reshape(samples_np, (samples_np.shape[0], np.prod(samples_np.shape[1:])))
 
