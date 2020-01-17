@@ -49,10 +49,6 @@ class IMLE():
         #loss_fn = nn.CrossEntropyLoss().cuda()
 
         def loss_fn(recon_x, x):
-            print(recon_x)
-            print(x)
-            print(F.binary_cross_entropy(recon_x, x))
-            print(F.binary_cross_entropy(recon_x, x, reduction='sum'))
             BCE = F.binary_cross_entropy(recon_x, x, reduction='sum')
             return BCE
 
@@ -149,6 +145,9 @@ class IMLE():
                     samples_predict[i*batch_size:(i+1)*batch_size] = cur_samples.cpu().data.numpy()
 
                 # gradient descent
+                np.savez("../test.npz",\
+                         recon_x = cur_samples.cpu().data.numpy(),\
+                         x = data_all[i*batch_size:(i+1)*batch_size].cpu().data.numpy())
                 print(cur_samples.shape)
                 print(data_all[i*batch_size:(i+1)*batch_size].shape)
                 loss = loss_fn(cur_samples, data_all[i*batch_size:(i+1)*batch_size])
