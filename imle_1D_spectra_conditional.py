@@ -39,10 +39,11 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
     def train(self, data_np, data_Sx, base_lr=1e-4, batch_size=512, num_epochs=3000,\
-             decay_step=25, decay_rate=0.95, staleness=100, num_samples_factor=10):
+             decay_step=25, decay_rate=0.95, staleness=100, num_samples_factor=20):
 
         # define metric
-        loss_fn = nn.MSELoss().cuda()
+        # loss_fn = nn.MSELoss().cuda()
+        loss_fn = nn.L1Loss().cuda()
         self.model.train()
 
         # train in batch
@@ -56,8 +57,11 @@ class IMLE():
 #-----------------------------------------------------------------------------------------------------------
         # make empty array to store results
         samples_predict = np.empty(data_np.shape)
+
         #samples_np = np.empty((num_samples_factor,)+data_np.shape[1:])
         samples_np = np.empty((num_data*num_samples_factor,)+data_np.shape[1:])
+
+        nearest_indices = np.empty((num_data)).astype("int")
 
         # make global torch variables
         data_all = torch.from_numpy(data_np).float().cuda()
@@ -103,8 +107,6 @@ class IMLE():
 
 #-----------------------------------------------------------------------------------------------------------
                 # find the closest object for individual data
-                nearest_indices = np.empty((num_data)).astype("int")
-
                 samples = self.model(z_Sx_all)
                 samples_np[:] = samples.cpu().data.numpy()
 
@@ -147,15 +149,15 @@ class IMLE():
             if (epoch+1) % staleness == 0:
 
                 # save closet models
-                np.savez("../results_spectra_Sx_" + str(epoch) +  ".npz", data_np=data_np,\
+                np.savez("../results_spectra_L1_" + str(epoch) +  ".npz", data_np=data_np,\
                                                z_Sx_np=z_Sx.cpu().data.numpy(),\
-                                               samples_np=samples_predict, mse_err=err/num_batches)
+                                               samples_np=samples_predict)
 
-                np.savez("../mse_err_Sx_" + str(epoch) +  ".npz",\
+                np.savez("../mse_err_L1_" + str(epoch) +  ".npz",\
                                                 mse_err=err/num_batches)
 
                 # save network
-                torch.save(self.model.state_dict(), '../net_weights_spectra_Sx_epoch=' + str(epoch) + '.pth')
+                torch.save(self.model.state_dict(), '../net_weights_spectra_L1_epoch=' + str(epoch) + '.pth')
 
 
 #=============================================================================================================
