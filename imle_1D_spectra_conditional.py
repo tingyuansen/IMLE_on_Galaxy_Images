@@ -12,21 +12,21 @@ from dci import DCI
 
 
 #=============================================================================================================
-# define network
-class ConvolutionalImplicitModel(nn.Module):
-    def __init__(self, z_dim):
-        super(ConvolutionalImplicitModel, self).__init__()
-        self.z_dim = z_dim
-        self.features = torch.nn.Sequential(
-            torch.nn.Linear(z_dim, 300),
-            torch.nn.LeakyReLU(),
-            torch.nn.Linear(300, 300),
-            torch.nn.LeakyReLU(),
-            torch.nn.Linear(300, 7214),
-        )
-
-    def forward(self, x):
-        return self.features(x)
+# # define network
+# class ConvolutionalImplicitModel(nn.Module):
+#     def __init__(self, z_dim):
+#         super(ConvolutionalImplicitModel, self).__init__()
+#         self.z_dim = z_dim
+#         self.features = torch.nn.Sequential(
+#             torch.nn.Linear(z_dim, 300),
+#             torch.nn.LeakyReLU(),
+#             torch.nn.Linear(300, 300),
+#             torch.nn.LeakyReLU(),
+#             torch.nn.Linear(300, 7214),
+#         )
+#
+#     def forward(self, x):
+#         return self.features(x)
 
 
 #=============================================================================================================
