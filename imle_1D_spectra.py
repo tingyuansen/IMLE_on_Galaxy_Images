@@ -92,7 +92,9 @@ class IMLE():
                 nearest_indices = np.empty((num_data)).astype("int")
 
                 for i in range(num_data):
+                    print(z_all[i*num_samples_factor:(i+1)*num_samples_factor].shape)
                     samples = self.model(z_all[i*num_samples_factor:(i+1)*num_samples_factor])
+                    print(samples.shape)
                     samples_np[:] = samples.cpu().data.numpy()
                     samples_flat_np = np.reshape(samples_np, (samples_np.shape[0], np.prod(samples_np.shape[1:])))
 
