@@ -17,11 +17,11 @@ class ConvolutionalImplicitModel(nn.Module):
         super(ConvolutionalImplicitModel, self).__init__()
         self.z_dim = z_dim
         self.features = torch.nn.Sequential(
-            torch.nn.Linear(z_dim, 1000),
+            torch.nn.Linear(z_dim, 300),
             torch.nn.LeakyReLU(),
-            torch.nn.Linear(1000, 1000),
+            torch.nn.Linear(300, 300),
             torch.nn.LeakyReLU(),
-            torch.nn.Linear(1000, 7214),
+            torch.nn.Linear(300, 7214),
         )
 
     def forward(self, x):
