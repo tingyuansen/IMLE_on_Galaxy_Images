@@ -85,7 +85,7 @@ class IMLE():
             if epoch % staleness == 0:
 
                 # draw random z
-                z_all = torch.randn(num_data*num_samples_factor, self.z_dim, 1, 1).cuda()
+                z_all = torch.randn(num_data*num_samples_factor, self.z_dim).cuda()
                 print(z_all.shape)
 
                 # find the closest object for individual data
