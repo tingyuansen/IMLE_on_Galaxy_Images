@@ -48,6 +48,10 @@ class IMLE():
         #loss_fn = nn.CrossEntropyLoss().cuda()
 
         def loss_fn(recon_x, x):
+            print(recon_x)
+            print(x)
+            print(F.binary_cross_entropy(recon_x, x))
+            print(F.binary_cross_entropy(recon_x, x, reduction='sum'))
             BCE = F.binary_cross_entropy(recon_x, x, reduction='sum')
             return BCE
 
