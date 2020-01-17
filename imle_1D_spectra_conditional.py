@@ -57,7 +57,7 @@ class IMLE():
         # make empty array to store results
         samples_predict = np.empty(data_np.shape)
         #samples_np = np.empty((num_samples_factor,)+data_np.shape[1:])
-        samples_np = np.empty((num_data,)+data_np.shape[1:])
+        samples_np = np.empty((num_data*num_samples_factor,)+data_np.shape[1:])
 
         # make global torch variables
         data_all = torch.from_numpy(data_np).float().cuda()
@@ -106,8 +106,6 @@ class IMLE():
                 nearest_indices = np.empty((num_data)).astype("int")
 
                 samples = self.model(z_Sx_all)
-                print(samples.shape)
-                print(samples_np.shape)
                 samples_np[:] = samples.cpu().data.numpy()
 
                 # find the nearest neighbours
