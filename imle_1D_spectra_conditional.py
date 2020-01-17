@@ -145,6 +145,7 @@ def main(*args):
     temp = np.load("../mock_all_spectra_no_noise_resample_prior_large.npz")
     train_data = temp["spectra"]
     train_Sx = temp["labels"].T
+    train_Sx[:,0] = train_Sx[:,0]/1000.
     print(train_data.shape)
     print(train_Sx.shape)
 
