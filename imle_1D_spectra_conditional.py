@@ -36,10 +36,10 @@ class ConvolutionalImplicitModel(nn.Module):
         super( ConvolutionalImplicitModel, self).__init__()
         self.z_dim = z_dim
         layers = []
-        channel = 128
+        channel = 256
 
         for i in range(6):
-            for j in range(3):
+            for j in range(4):
 
                 if i == 0 and j == 0:
                     layers.append(torch.nn.ConvTranspose1d(z_dim, channel, 7, stride=1))
