@@ -99,7 +99,7 @@ flow.cuda()
 #=======================================================================================================
 # In [4]
 # number of epoch and batch size
-num_epochs = 101
+num_epochs = 2001
 batch_size = 512
 
 # break into batches
@@ -138,13 +138,11 @@ torch.save(flow, 'flow_final.pt')
 # sample results
 z1 = np.empty(y_tr.shape)
 for i in range(nbatches):
-    print(flow.f(y_tr[i*batch_size:(i+1)*batch_size])[0].shape)
     z1[i*batch_size:(i+1)*batch_size] \
             = flow.f(y_tr[i*batch_size:(i+1)*batch_size])[0].detach().cpu().numpy()
 z1_tr = torch.from_numpy(z1).type(torch.cuda.FloatTensor)
 x1 = np.empty(y_tr.shape)
 for i in range(nbatches):
-    print(flow.sample(z1_tr[i*batch_size:(i+1)*batch_size]).shape)
     x1[i*batch_size:(i+1)*batch_size] \
     = flow.sample(z1_tr[i*batch_size:(i+1)*batch_size]).detach().cpu().numpy()
 
