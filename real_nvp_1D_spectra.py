@@ -136,21 +136,20 @@ for e in range(num_epochs):
 torch.save(flow, 'flow_final.pt')
 
 # sample results
-z1 = flow.f(y_tr)[0].detach().cpu().numpy()
-x1 = y_tr
-z2 = np.random.multivariate_normal(np.zeros(dim_in), np.eye(dim_in), x1.shape[0])
-x2 = flow.sample(torch.from_numpy(z2).type(torch.cuda.FloatTensor))
-x1b = flow.sample(torch.from_numpy(z1).type(torch.cuda.FloatTensor))
+z1 = np.empty(y_tr.shape)
+for i in range(nbatches):
+    print(flow.f(y_tr[i*batch_size:(i+1)*batch_size]).shape)
+    z1[i*batch_size:(i+1)*batch_size] \
+            = flow.f(y_tr[i*batch_size:(i+1)*batch_size])[0].detach().cpu().numpy()
+z1_tr = torch.from_numpy(z1).type(torch.cuda.FloatTensor)
+x1 = np.empty(y_tr.shape)
+for i in range(nbatches):
+    print(flow.sample(z1_tr[i*batch_size:(i+1)*batch_size]).shape)
+    x1[i*batch_size:(i+1)*batch_size] \
+    = flow.sample(z1_tr[i*batch_size:(i+1)*batch_size]).detach().cpu().numpy()
 
-# convert back to numpy
-x1 = x1.detach().cpu().numpy()
-x1b = x1b.detach().cpu().numpy()
-x2 = x2.detach().cpu().numpy()
 
 # save results
 np.savez("../real_nvp_results.npz",\
          z1 = z1,\
-         z2 = z2,\
-         x1 = x1,\
-         x2 = x2,\
-         x1b = x1b)
+         x1 = x1)
