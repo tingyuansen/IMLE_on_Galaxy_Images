@@ -140,13 +140,11 @@ z1 = flow.f(y_tr)[0].detach().cpu().numpy()
 x1 = y_tr
 z2 = np.random.multivariate_normal(np.zeros(dim_in), np.eye(dim_in), x1.shape[0])
 x2 = flow.sample(torch.from_numpy(z2).type(torch.cuda.FloatTensor))
-
-# rescale the results
-x1 = x1*std_y + mu_y
-x2 = x2*std_y + mu_y
+x1b = flow.sample(torch.from_numpy(z1).type(torch.cuda.FloatTensor))
 
 # convert back to numpy
 x1 = x1.detach().cpu().numpy()
+x1b = x1b.detach().cpu().numpy()
 x2 = x2.detach().cpu().numpy()
 
 # save results
@@ -154,4 +152,5 @@ np.savez("../real_nvp_results.npz",\
          z1 = z1,\
          z2 = z2,\
          x1 = x1,\
-         x2 = x2)
+         x2 = x2,\
+         x1b = x1b)
