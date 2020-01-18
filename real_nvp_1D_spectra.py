@@ -138,7 +138,7 @@ torch.save(flow, 'flow_final.pt')
 # sample results
 z1 = np.empty(y_tr.shape)
 for i in range(nbatches):
-    print(flow.f(y_tr[i*batch_size:(i+1)*batch_size]).shape)
+    print(flow.f(y_tr[i*batch_size:(i+1)*batch_size])[0].shape)
     z1[i*batch_size:(i+1)*batch_size] \
             = flow.f(y_tr[i*batch_size:(i+1)*batch_size])[0].detach().cpu().numpy()
 z1_tr = torch.from_numpy(z1).type(torch.cuda.FloatTensor)
