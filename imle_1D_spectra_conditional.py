@@ -73,7 +73,7 @@ class IMLE():
         self.dci_db = None
 
 #-----------------------------------------------------------------------------------------------------------
-    def train(self, data_np, data_Sx, base_lr=1e-4, batch_size=64, num_epochs=3000,\
+    def train(self, data_np, data_Sx, base_lr=1e-4, batch_size=32, num_epochs=3000,\
              decay_step=25, decay_rate=0.95, staleness=100, num_samples_factor=100):
 
         # define metric
@@ -187,15 +187,15 @@ class IMLE():
             if (epoch+1) % staleness == 0:
 
                 # save closet models
-                np.savez("../results_spectra_deconv_256x2_" + str(epoch) +  ".npz", data_np=data_np,\
+                np.savez("../results_spectra_deconv_512x2_" + str(epoch) +  ".npz", data_np=data_np,\
                                                z_Sx_np=z_Sx.cpu().data.numpy(),\
                                                samples_np=samples_predict)
 
-                np.savez("../mse_err_deconv_256x2_" + str(epoch) +  ".npz",\
+                np.savez("../mse_err_deconv_512x2_" + str(epoch) +  ".npz",\
                                                 mse_err=err/num_batches)
 
                 # save network
-                torch.save(self.model.state_dict(), '../net_weights_spectra_deconv_256x2_epoch=' + str(epoch) + '.pth')
+                torch.save(self.model.state_dict(), '../net_weights_spectra_deconv_512x2_epoch=' + str(epoch) + '.pth')
 
 
 #=============================================================================================================
