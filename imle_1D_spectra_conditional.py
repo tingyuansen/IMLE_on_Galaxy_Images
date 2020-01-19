@@ -36,7 +36,7 @@ class ConvolutionalImplicitModel(nn.Module):
         super( ConvolutionalImplicitModel, self).__init__()
         self.z_dim = z_dim
         layers = []
-        channel = 256
+        channel = 512
 
         for i in range(6):
             for j in range(2):
@@ -212,11 +212,11 @@ def main(*args):
 
 #---------------------------------------------------------------------------------------------
     # shuffle the index
-    # ind_shuffle = np.arange(train_data.shape[0])
-    # np.random.shuffle(ind_shuffle)
-    # train_data = train_data[ind_shuffle,:][:12000,:]
-    # train_Sx = train_Sx[ind_shuffle,:][:12000,:]
-    # np.savez("../ind_shuffle.npz", ind_shuffle=ind_shuffle)
+    ind_shuffle = np.arange(train_data.shape[0])
+    np.random.shuffle(ind_shuffle)
+    train_data = train_data[ind_shuffle,:][:12000,:]
+    train_Sx = train_Sx[ind_shuffle,:][:12000,:]
+    np.savez("../ind_shuffle.npz", ind_shuffle=ind_shuffle)
 
 #---------------------------------------------------------------------------------------------
     # initiate network
