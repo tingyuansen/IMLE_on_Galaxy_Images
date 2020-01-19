@@ -13,7 +13,8 @@ from astropy.io import fits
 
 #========================================================================================================
 # restore data
-temp = np.load("../mock_all_spectra_no_noise_resample_prior_large.npz")
+#temp = np.load("../mock_all_spectra_no_noise_resample_prior_large.npz")
+temp = np.load("../apogee_spectra_0.npz")
 y_tr = temp["spectra"]
 
 # convert into torch
@@ -148,6 +149,6 @@ for i in range(nbatches):
 
 
 # save results
-np.savez("../real_nvp_results.npz",\
+np.savez("../real_nvp_results_apogee.npz",\
          z1 = z1,\
          x1 = x1)
