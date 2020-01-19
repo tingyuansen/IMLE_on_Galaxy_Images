@@ -14,8 +14,12 @@ from astropy.io import fits
 #========================================================================================================
 # restore data
 #temp = np.load("../mock_all_spectra_no_noise_resample_prior_large.npz")
+#y_tr = temp["spectra"]
+
 temp = np.load("../apogee_spectra_0.npz")
 y_tr = temp["spectra"]
+y_tr[y_tr < 0.3] = 1.
+y_tr[y_tr > 1.5] = 1.
 
 # convert into torch
 y_tr = torch.from_numpy(y_tr).type(torch.cuda.FloatTensor)
