@@ -42,6 +42,8 @@ flux_spectra = flux_spectra[:,100:-100]
 flux_spectra = (flux_spectra.T/np.median(flux_spectra, axis=1)).T
 flux_spectra[np.isnan(flux_spectra)] = 1.
 y_tr = np.copy(flux_spectra)
+y_tr[y_tr < 0.] = 0.
+y_tr[y_tr > 2] = 2.
 
 #-------------------------------------------------------------------------------------------------------
 # convert into torch
