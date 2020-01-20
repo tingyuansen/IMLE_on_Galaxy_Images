@@ -16,11 +16,27 @@ from astropy.io import fits
 #temp = np.load("../mock_all_spectra_no_noise_resample_prior_large.npz")
 #y_tr = temp["spectra"]
 
-temp = np.load("../apogee_spectra_0.npz")
-y_tr = temp["spectra"]
-y_tr[y_tr < 0.3] = 1.
-y_tr[y_tr > 1.5] = 1.
+#-------------------------------------------------------------------------------------------------------
+# temp = np.load("../apogee_spectra_0.npz")
+# y_tr = temp["spectra"]
+# y_tr[y_tr < 0.3] = 1.
+# y_tr[y_tr > 1.5] = 1.
 
+#-------------------------------------------------------------------------------------------------------
+# H3 id, wave, flux, err, model, rest_wave
+hdulist = fits.open('../H3_spectra.fits')
+temp = hdulist[1].data
+
+flux_spectra = np.empty((len(temp),temp[0][1].size))
+model_spectra = np.empty((len(temp),temp[0][1].size))
+for i in range(flux_spectra.shape[0]):
+    flux_spectra[i,:] = temp[i][2]
+    model_spectra[i,:] = temp[i][4]
+y_tr = (flux_spectra.T/np.median(flux_spectra, axis=1)).T
+y_tr[y_tr < 0.] = 1.
+y_tr[y_tr > 2,] = 1.
+
+#-------------------------------------------------------------------------------------------------------
 # convert into torch
 y_tr = torch.from_numpy(y_tr).type(torch.cuda.FloatTensor)
 
@@ -104,7 +120,7 @@ flow.cuda()
 #=======================================================================================================
 # In [4]
 # number of epoch and batch size
-num_epochs = 2001
+num_epochs = 501
 batch_size = 512
 
 # break into batches
