@@ -32,9 +32,15 @@ model_spectra = np.empty((len(temp),temp[0][1].size))
 for i in range(flux_spectra.shape[0]):
     flux_spectra[i,:] = temp[i][2]
     model_spectra[i,:] = temp[i][4]
-y_tr = (flux_spectra.T/np.median(flux_spectra, axis=1)).T
-y_tr[y_tr < 0.] = 1.
-y_tr[y_tr > 2,] = 1.
+
+# cull empty spectra
+median_flux = np.median(flux_spectra, axis=1)
+flux_spectra = flux_spectra[median_flux != 0,:]
+
+# exclude pixels
+flux_spectra = flux_spectra[:,100:-100]
+flux_spectra = (flux_spectra.T/np.median(flux_spectra, axis=1)).T
+flux_spectra[np.isnan(flux_spectra)] = 1.
 
 #-------------------------------------------------------------------------------------------------------
 # convert into torch
@@ -169,6 +175,6 @@ for i in range(nbatches):
 
 
 # save results
-np.savez("../real_nvp_results_apogee.npz",\
+np.savez("../real_nvp_results.npz",\
          z1 = z1,\
          x1 = x1)
