@@ -25,8 +25,8 @@ from scipy import interpolate
 
 #-------------------------------------------------------------------------------------------------------
 # read H3 labels
-hdulist = fits.open('../H3_labels.fits')
-SNR = hdulist[1].data['SNR']
+#hdulist = fits.open('../H3_labels.fits')
+#SNR = hdulist[1].data['SNR']
 
 # read H3 spectra
 # H3 id, wave, flux, err, model, rest_wave
@@ -37,15 +37,18 @@ temp = hdulist[1].data
 uniform_wave = np.linspace(5162,5290,(5290-5162)*10.+1)
 
 flux_spectra = np.empty((len(temp),uniform_wave.size))
+err_array = np.empty((len(temp)))
+
 for i in range(flux_spectra.shape[0]):
     if np.median(temp[i][2][0]) != 0:
         f_flux_spec = interpolate.interp1d(temp[i][5],temp[i][2])
         flux_spectra[i,:] = f_flux_spec(uniform_wave)
     else:
         flux_spectra[i,:] = temp[i][2][:uniform_wave.size]
+    err_array[i] = np.median(temp[i][2]/temp[i][3])
 
 # cull empty spectra
-ind = np.where((np.median(flux_spectra, axis=1) != 0)*(SNR > 10.) == 1)[0]
+ind = np.where((np.median(flux_spectra, axis=1) != 0)*(err_array > 20.) == 1)[0]
 flux_spectra = flux_spectra[ind,:]
 
 # normalize spectra
@@ -141,7 +144,7 @@ flow.cuda()
 #=======================================================================================================
 # In [4]
 # number of epoch and batch size
-num_epochs = 5001
+num_epochs = 501
 batch_size = 512
 
 # break into batches
