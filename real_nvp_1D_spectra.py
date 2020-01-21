@@ -47,6 +47,7 @@ flux_spectra[np.isnan(flux_spectra)] = 1.
 y_tr = np.copy(flux_spectra)
 y_tr[y_tr < 0.] = 0.
 y_tr[y_tr > 2] = 2.
+print(y_tr.shape)
 
 #-------------------------------------------------------------------------------------------------------
 # convert into torch
