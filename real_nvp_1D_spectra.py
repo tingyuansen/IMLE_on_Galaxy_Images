@@ -199,5 +199,5 @@ for i in range(nbatches):
 np.savez("../real_nvp_results_lr=-4_SNR=10.npz",\
          z1 = z1,\
          x1 = x1)
-np.savez("../loss_results_lr=-3_SNR=20.npz",\
+np.savez("../loss_results_lr=-4_SNR=10.npz",\
          loss_array = loss_array)
