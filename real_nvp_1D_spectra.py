@@ -32,19 +32,26 @@ SNR = hdulist[1].data['SNR']
 hdulist = fits.open('../H3_spectra.fits')
 temp = hdulist[1].data
 
-flux_spectra = np.empty((len(temp),temp[0][1].size))
+# define a uniform wavelength grid
+uniform_wave = np.linspace(5162,5290,(5290-5162)*10.+1)
+
+flux_spectra = np.empty((len(temp),uniform_wave.size))
 for i in range(flux_spectra.shape[0]):
-    flux_spectra[i,:] = temp[i][2]
+    if np.median(temp[i][2][0]) != 0:
+        f_flux_spec = interpolate.interp1d(temp[i][5],temp[i][2])
+        flux_spectra[i,:] = f_flux_spec(uniform_wave)
+    else:
+        flux_spectra[i,:] = temp[i][2][:uniform_wave.size]
 
 # cull empty spectra
-median_flux = np.median(flux_spectra, axis=1)
-flux_spectra = flux_spectra[(median_flux != 0)*(SNR > 10.),:]
+ind = np.where((np.median(flux_spectra, axis=1) != 0)*(SNR > 10.) == 1)[0]
+flux_spectra = flux_spectra[ind,:]
 
-# exclude pixels
-flux_spectra = flux_spectra[:,100:-100]
-flux_spectra = (flux_spectra.T/np.median(flux_spectra, axis=1)).T
-flux_spectra[np.isnan(flux_spectra)] = 1.
-y_tr = np.copy(flux_spectra)
+# normalize spectra
+y_tr = (flux_spectra.T/np.median(flux_spectra, axis=1)).T
+
+# exclude bad pixels
+y_tr[np.isnan(y_tr)] = 1.
 y_tr[y_tr < 0.] = 0.
 y_tr[y_tr > 2] = 2.
 print(y_tr.shape)
