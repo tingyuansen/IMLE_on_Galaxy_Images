@@ -9,6 +9,7 @@ from torch.nn.parameter import Parameter
 from torch.autograd import Variable
 
 from astropy.io import fits
+from scipy import interpolate
 
 
 #========================================================================================================
