@@ -151,6 +151,9 @@ nbatches = nsamples // batch_size
 # optimizing flow models
 optimizer = torch.optim.Adam([p for p in flow.parameters() if p.requires_grad==True], lr=1e-4)
 
+# record loss function
+loss_array = []
+
 #-------------------------------------------------------------------------------------------------------
 # train the network
 for e in range(num_epochs):
@@ -171,7 +174,7 @@ for e in range(num_epochs):
     # the average loss.
     if e % 10 == 0:
         print('iter %s:' % e, 'loss = %.3f' % loss)
-
+        loss_array.append(loss.item())
 
 #========================================================================================================
 # save models
@@ -193,3 +196,5 @@ for i in range(nbatches):
 np.savez("../real_nvp_results.npz",\
          z1 = z1,\
          x1 = x1)
+np.savez("../loss_results.npz",\
+         loss_array = loss_array)
