@@ -152,7 +152,7 @@ nsamples = y_tr.shape[0]
 nbatches = nsamples // batch_size
 
 # optimizing flow models
-optimizer = torch.optim.Adam([p for p in flow.parameters() if p.requires_grad==True], lr=1e-4)
+optimizer = torch.optim.Adam([p for p in flow.parameters() if p.requires_grad==True], lr=1e-3)
 
 # record loss function
 loss_array = []
@@ -181,7 +181,7 @@ for e in range(num_epochs):
 
 #========================================================================================================
 # save models
-torch.save(flow, 'flow_final.pt')
+torch.save(flow, 'flow_final_lr=-3_SNR=20.pt')
 
 # sample results
 z1 = np.empty(y_tr.shape)
@@ -196,8 +196,8 @@ for i in range(nbatches):
 
 
 # save results
-np.savez("../real_nvp_results.npz",\
+np.savez("../real_nvp_results_lr=-3_SNR=20.npz",\
          z1 = z1,\
          x1 = x1)
-np.savez("../loss_results.npz",\
+np.savez("../loss_results_lr=-3_SNR=20.npz",\
          loss_array = loss_array)
