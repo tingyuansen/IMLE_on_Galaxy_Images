@@ -180,6 +180,7 @@ for e in range(num_epochs):
         print('iter %s:' % e, 'loss = %.3f' % loss)
         loss_array.append(loss.item())
 
+
 #========================================================================================================
 # save models
 torch.save(flow, 'flow_final_lr=-4_SNR=10.pt')
@@ -194,7 +195,6 @@ x1 = np.empty(y_tr.shape)
 for i in range(nbatches):
     x1[i*batch_size:(i+1)*batch_size] \
     = flow.sample(z1_tr[i*batch_size:(i+1)*batch_size]).detach().cpu().numpy()
-
 
 # save results
 np.savez("../real_nvp_results_lr=-4_SNR=10.npz",\
