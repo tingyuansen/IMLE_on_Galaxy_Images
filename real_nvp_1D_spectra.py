@@ -147,6 +147,7 @@ flow.cuda()
 num_epochs = 5001
 batch_size = 512
 
+
 # break into batches
 nsamples = y_tr.shape[0]
 nbatches = nsamples // batch_size
