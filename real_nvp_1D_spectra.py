@@ -48,7 +48,7 @@ for i in range(flux_spectra.shape[0]):
     err_array[i] = np.median(temp[i][2]/temp[i][3])
 
 # cull empty spectra
-ind = np.where((np.median(flux_spectra, axis=1) != 0)*(err_array > 10.) == 1)[0]
+ind = np.where((np.median(flux_spectra, axis=1) != 0)*(err_array > 20.) == 1)[0]
 flux_spectra = flux_spectra[ind,:]
 
 # normalize spectra
@@ -143,7 +143,7 @@ flow.cuda()
 #=======================================================================================================
 # In [4]
 # number of epoch and batch size
-num_epochs = 5001
+num_epochs = 20001
 batch_size = 512
 
 
@@ -182,7 +182,7 @@ for e in range(num_epochs):
 
 #========================================================================================================
 # save models
-torch.save(flow, 'flow_final_lr=-4_SNR=10.pt')
+torch.save(flow, 'flow_final_lr=-4_SNR=20.pt')
 
 # sample results
 z1 = np.empty(y_tr.shape)
@@ -196,8 +196,8 @@ for i in range(nbatches):
     = flow.sample(z1_tr[i*batch_size:(i+1)*batch_size]).detach().cpu().numpy()
 
 # save results
-np.savez("../real_nvp_results_lr=-4_SNR=10.npz",\
+np.savez("../real_nvp_results_lr=-4_SNR=20.npz",\
          z1 = z1,\
          x1 = x1)
-np.savez("../loss_results_lr=-4_SNR=10.npz",\
+np.savez("../loss_results_lr=-4_SNR=20.npz",\
          loss_array = loss_array)
