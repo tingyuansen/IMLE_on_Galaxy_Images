@@ -25,8 +25,9 @@ from scipy import interpolate
 
 #-------------------------------------------------------------------------------------------------------
 # read H3 labels
-#hdulist = fits.open('../H3_labels.fits')
+hdulist = fits.open('../H3_labels.fits')
 #SNR = hdulist[1].data['SNR']
+h3_flag = hdulist[1].data['FLAG']
 
 # read H3 spectra
 # H3 id, wave, flux, err, model, rest_wave
@@ -48,7 +49,7 @@ for i in range(flux_spectra.shape[0]):
     err_array[i] = np.median(temp[i][2]/temp[i][3])
 
 # cull empty spectra
-ind = np.where((np.median(flux_spectra, axis=1) != 0)*(err_array > 20.) == 1)[0]
+ind = np.where((np.median(flux_spectra, axis=1) != 0)*(err_array > 20.)*(h3_flag == 0) == 1)[0]
 flux_spectra = flux_spectra[ind,:]
 
 # normalize spectra
