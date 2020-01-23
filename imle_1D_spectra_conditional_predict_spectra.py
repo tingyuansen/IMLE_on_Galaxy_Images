@@ -76,7 +76,15 @@ model.load_state_dict(state_dict)
 Sx = torch.from_numpy(train_Sx).float().cuda()
 z = torch.zeros(Sx.shape[0], z_dim).cuda()
 z_Sx_all = torch.cat((z, Sx), axis=1)[:,:,None]
-predict_flux_array = model.forward(z_Sx_all)
+
+# train in batch
+batch_size = 500
+num_batches = z_Sx_all.shape[0] // batch_size
+predict_flux_array = []
+for i in range(num_batches):
+    print(i)
+    predict_flux_array.append(model.forward(z_Sx_all[i*batch_size:(i+1)*batch_size]).cpu().data.numpy())
+predict_flux_array = np.array(predict_flux_array)
 
 # save array
-np.save("predict_flux_array.npy", predict_flux_array.cpu().data.numpy())
+np.save("predict_flux_array.npy", predict_flux_array)
