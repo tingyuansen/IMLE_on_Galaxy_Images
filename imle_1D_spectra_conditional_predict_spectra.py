@@ -78,7 +78,7 @@ z = torch.zeros(Sx.shape[0], z_dim).cuda()
 z_Sx_all = torch.cat((z, Sx), axis=1)[:,:,None]
 
 # train in batch
-batch_size = 500
+batch_size = 100
 num_batches = z_Sx_all.shape[0] // batch_size
 predict_flux_array = []
 for i in range(num_batches):
