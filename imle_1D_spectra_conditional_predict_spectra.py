@@ -59,8 +59,8 @@ train_Sx[:,0] = train_Sx[:,0]/1000.
 # shuffle the index
 temp = np.load("../ind_shuffle_kurucz.npz")
 ind_shuffle = temp["ind_shuffle"]
-train_data = train_data[ind_shuffle,:][:1000,:]
-train_Sx = train_Sx[ind_shuffle,:][:1000,:]
+train_data = train_data[ind_shuffle,:][:12000,:]
+train_Sx = train_Sx[ind_shuffle,:][:12000,:]
 
 #-------------------------------------------------------------------------------------------------------
 # restore models
@@ -77,7 +77,7 @@ Sx = torch.from_numpy(train_Sx).float().cuda()
 ### predict with random z and find the best estimates ###
 
 # # train in batch
-batch_size = 100
+batch_size = 500
 num_batches = Sx.shape[0] // batch_size
 num_samples_factor = 100
 
@@ -90,12 +90,12 @@ for j in range(num_samples_factor):
         predict_flux_array.extend(model.forward(z_Sx_all[i*batch_size:(i+1)*batch_size]).cpu().data.numpy())
 predict_flux_array_all = np.copy(np.array(predict_flux_array))
 print(predict_flux_array_all.shape)
-print(predict_flux_array_all[0::num_sample_factor])
+print(predict_flux_array_all[0::num_samples_factor])
 
 predict_flux_array = []
 for i in range(train_Sx.shape[0]):
     print(i)
-    predict_flux_temp = predict_flux_array_all[i::num_sample_factor]
+    predict_flux_temp = predict_flux_array_all[i::num_samples_factor]
     diff = np.sum((predict_flux_temp-train_data[i])**2,axis=1)
     predict_flux_array.append(predict_flux_temp[np.argmin(diff),:])
 predict_flux_array = np.array(predict_flux_array)
