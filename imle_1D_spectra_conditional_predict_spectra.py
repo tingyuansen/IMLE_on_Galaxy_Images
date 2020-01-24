@@ -102,7 +102,7 @@ print(z_Sx_all.shape)
 
 #for i in range(train_Sx.shape):
 i = 0
-predict_flux_temp = model.forward(z_Sx_all[i*num_sample_factor:(i+1)*num_sample_factor]).cpu().data.numpy())
+predict_flux_temp = model.forward(z_Sx_all[i*num_sample_factor:(i+1)*num_sample_factor]).cpu().data.numpy()
 print(predict_flux_temp.shape)
 print(predict_flux_temp-train_data[i])
 
