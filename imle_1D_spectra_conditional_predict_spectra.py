@@ -59,8 +59,8 @@ train_Sx[:,0] = train_Sx[:,0]/1000.
 # shuffle the index
 temp = np.load("../ind_shuffle_kurucz.npz")
 ind_shuffle = temp["ind_shuffle"]
-train_data = train_data[ind_shuffle,:][12000:,:]
-train_Sx = train_Sx[ind_shuffle,:][12000:,:]
+train_data = train_data[ind_shuffle,:][:12000,:]
+train_Sx = train_Sx[ind_shuffle,:][:12000,:]
 
 #-------------------------------------------------------------------------------------------------------
 # restore models
@@ -70,21 +70,39 @@ model = ConvolutionalImplicitModel(z_dim+Sx_dim).cuda()
 state_dict = torch.load("../net_weights_spectra_deconv_256x2_epoch=2999.pth")
 model.load_state_dict(state_dict)
 
-
-#========================================================================================================
 # make predictions
 Sx = torch.from_numpy(train_Sx).float().cuda()
-z = torch.zeros(Sx.shape[0], z_dim).cuda()
+
+#========================================================================================================
+### predict with a single latent z ###
+# z = torch.zeros(Sx.shape[0], z_dim).cuda()
+# z_Sx_all = torch.cat((z, Sx), axis=1)[:,:,None]
+#
+# # train in batch
+# batch_size = 100
+# num_batches = z_Sx_all.shape[0] // batch_size
+# predict_flux_array = []
+# for i in range(num_batches):
+#     print(i)
+#     predict_flux_array.extend(model.forward(z_Sx_all[i*batch_size:(i+1)*batch_size]).cpu().data.numpy())
+# predict_flux_array = np.array(predict_flux_array)
+
+
+#========================================================================================================
+### predict with random z and find the best estimates ###
+predict_flux_array = []
+num_samples_factor = 100
+Sx = torch.from_numpy(np.repeat(train_Sx,num_samples_factor,axis=0)).float().cuda()
+z = torch.randn(Sx.shape[0], self.z_dim).cuda()
 z_Sx_all = torch.cat((z, Sx), axis=1)[:,:,None]
 
-# train in batch
-batch_size = 100
-num_batches = z_Sx_all.shape[0] // batch_size
-predict_flux_array = []
-for i in range(num_batches):
-    print(i)
-    predict_flux_array.extend(model.forward(z_Sx_all[i*batch_size:(i+1)*batch_size]).cpu().data.numpy())
-predict_flux_array = np.array(predict_flux_array)
+print(Sx.shape, z.shape)
+print(Sx)
+print(z_Sx_all.shape)
 
+#for i in range()
+
+
+#========================================================================================================
 # save array
 np.save("../predict_flux_array.npy", predict_flux_array)
