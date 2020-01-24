@@ -244,7 +244,7 @@ def main(*args):
     temp = np.load("../H3_training_grid.npz")
     train_data = temp["spectra"][:,150:4433+150]
 
-    train_Sx = temp["labels"].T
+    train_Sx = temp["labels"]
     train_Sx[:,0] = train_Sx[:,0]/1000.
     print(train_data.shape)
     print(train_Sx.shape)
