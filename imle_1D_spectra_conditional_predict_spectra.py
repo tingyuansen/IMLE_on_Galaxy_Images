@@ -87,4 +87,4 @@ for i in range(num_batches):
 predict_flux_array = np.array(predict_flux_array)
 
 # save array
-np.save("predict_flux_array.npy", predict_flux_array)
+np.save("../predict_flux_array.npy", predict_flux_array)
