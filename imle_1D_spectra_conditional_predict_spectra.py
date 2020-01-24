@@ -106,7 +106,7 @@ for i in range(10):
     predict_flux_array.append(predict_flux_temp[np.argmin(diff),:])
     print(predict_flux_array)
 predict_flux_array = np.array(predict_flux_array)
-print(predict_flux_Array.shape)
+print(predict_flux_array.shape)
 
 #========================================================================================================
 # save array
