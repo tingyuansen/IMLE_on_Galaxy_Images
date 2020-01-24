@@ -77,7 +77,7 @@ Sx = torch.from_numpy(train_Sx).float().cuda()
 ### predict with random z and find the best estimates ###
 
 # # train in batch
-batch_size = 500
+batch_size = 300
 num_batches = Sx.shape[0] // batch_size
 num_samples_factor = 100
 
