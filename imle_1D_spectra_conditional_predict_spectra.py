@@ -91,6 +91,9 @@ for j in range(num_samples_factor):
 predict_flux_array_all = np.copy(np.array(predict_flux_array))
 print(predict_flux_array_all.shape)
 print(predict_flux_array_all[0::num_samples_factor])
+np.save("../test_array_0.npy", predict_flux_array_all[0::num_samples_factor])
+np.save("../test_array_100.npy", predict_flux_array_all[100::num_samples_factor])
+np.save("../test_array_200.npy", predict_flux_array_all[200::num_samples_factor])
 
 predict_flux_array = []
 for i in range(train_Sx.shape[0]):
