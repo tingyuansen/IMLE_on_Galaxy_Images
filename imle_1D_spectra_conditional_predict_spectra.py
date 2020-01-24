@@ -59,8 +59,8 @@ train_Sx[:,0] = train_Sx[:,0]/1000.
 # shuffle the index
 temp = np.load("../ind_shuffle_kurucz.npz")
 ind_shuffle = temp["ind_shuffle"]
-train_data = train_data[ind_shuffle,:][:12000,:]
-train_Sx = train_Sx[ind_shuffle,:][:12000,:]
+train_data = train_data[ind_shuffle,:][12000:,:]
+train_Sx = train_Sx[ind_shuffle,:][12000:,:]
 
 #-------------------------------------------------------------------------------------------------------
 # restore models
@@ -83,7 +83,7 @@ num_batches = z_Sx_all.shape[0] // batch_size
 predict_flux_array = []
 for i in range(num_batches):
     print(i)
-    predict_flux_array.append(model.forward(z_Sx_all[i*batch_size:(i+1)*batch_size]).cpu().data.numpy())
+    predict_flux_array.extend(model.forward(z_Sx_all[i*batch_size:(i+1)*batch_size]).cpu().data.numpy())
 predict_flux_array = np.array(predict_flux_array)
 
 # save array
