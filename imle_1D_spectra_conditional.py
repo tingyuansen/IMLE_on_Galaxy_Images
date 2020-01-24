@@ -31,6 +31,40 @@ from dci import DCI
 
 #=============================================================================================================
 # define network
+# class ConvolutionalImplicitModel(nn.Module):
+#     def __init__(self, z_dim):
+#         super( ConvolutionalImplicitModel, self).__init__()
+#         self.z_dim = z_dim
+#         layers = []
+#         channel = 256
+#
+#         for i in range(6):
+#             for j in range(2):
+#
+#                 if i == 0 and j == 0:
+#                     layers.append(torch.nn.ConvTranspose1d(z_dim, channel, 7, stride=1))
+#                     layers.append(torch.nn.BatchNorm1d(channel, momentum=0.001, affine=False))
+#                     layers.append(torch.nn.LeakyReLU(0.2, inplace=True))
+#                 else:
+#                     layers.append(torch.nn.Conv1d(channel, channel, 5, stride=1, padding=2))
+#                     layers.append(torch.nn.BatchNorm1d(channel, momentum=0.001, affine=False))
+#                     layers.append(torch.nn.LeakyReLU(0.2, inplace=True))
+#
+#             if i < 5:
+#                 layers.append(torch.nn.Upsample(scale_factor=4, mode='linear', align_corners = False))
+#             else:
+#                 layers.append(torch.nn.Conv1d(channel, 1, 6, stride=1))
+#                 layers.append(torch.nn.LeakyReLU())
+#
+#         self.model = torch.nn.Sequential(*layers)
+#         self.add_module("model", self.model)
+#
+#     def forward(self, z):
+#         return self.model(z).view(-1,7163)
+
+
+#=============================================================================================================
+# define network
 class ConvolutionalImplicitModel(nn.Module):
     def __init__(self, z_dim):
         super( ConvolutionalImplicitModel, self).__init__()
@@ -42,11 +76,11 @@ class ConvolutionalImplicitModel(nn.Module):
             for j in range(2):
 
                 if i == 0 and j == 0:
-                    layers.append(torch.nn.ConvTranspose1d(z_dim, channel, 7, stride=1))
+                    layers.append(torch.nn.ConvTranspose1d(z_dim, channel, 6, stride=1))
                     layers.append(torch.nn.BatchNorm1d(channel, momentum=0.001, affine=False))
                     layers.append(torch.nn.LeakyReLU(0.2, inplace=True))
                 else:
-                    layers.append(torch.nn.Conv1d(channel, channel, 5, stride=1, padding=2))
+                    layers.append(torch.nn.Conv1d(channel, channel, 6, stride=1, padding=2))
                     layers.append(torch.nn.BatchNorm1d(channel, momentum=0.001, affine=False))
                     layers.append(torch.nn.LeakyReLU(0.2, inplace=True))
 
@@ -60,7 +94,7 @@ class ConvolutionalImplicitModel(nn.Module):
         self.add_module("model", self.model)
 
     def forward(self, z):
-        return self.model(z).view(-1,7163)
+        return self.model(z).view(-1,4433)
 
 
 #=============================================================================================================
@@ -73,7 +107,7 @@ class IMLE():
         self.dci_db = None
 
 #-----------------------------------------------------------------------------------------------------------
-    def train(self, data_np, data_Sx, base_lr=1e-4, batch_size=64, num_epochs=3000,\
+    def train(self, data_np, data_Sx, base_lr=1e-4, batch_size=128, num_epochs=3000,\
              decay_step=25, decay_rate=0.95, staleness=100, num_samples_factor=100):
 
         # define metric
@@ -203,8 +237,11 @@ class IMLE():
 def main(*args):
 
     # restore data
-    temp = np.load("../mock_all_spectra_no_noise_resample_prior_large.npz")
-    train_data = temp["spectra"][:,:7163]
+    #temp = np.load("../mock_all_spectra_no_noise_resample_prior_large.npz")
+    #train_data = temp["spectra"][:,:7163]
+    temp = np.load("../H3_training_grid.npz")
+    train_data = temp["spectra"][:,150:4433+150]
+
     train_Sx = temp["labels"].T
     train_Sx[:,0] = train_Sx[:,0]/1000.
     print(train_data.shape)
@@ -214,8 +251,12 @@ def main(*args):
     # shuffle the index
     ind_shuffle = np.arange(train_data.shape[0])
     np.random.shuffle(ind_shuffle)
-    train_data = train_data[ind_shuffle,:][:12000,:]
-    train_Sx = train_Sx[ind_shuffle,:][:12000,:]
+
+    #train_data = train_data[ind_shuffle,:][:12000,:]
+    #train_Sx = train_Sx[ind_shuffle,:][:12000,:]
+    train_data = train_data[ind_shuffle,:][:20000,:]
+    train_Sx = train_Sx[ind_shuffle,:][:20000,:]
+
     np.savez("../ind_shuffle.npz", ind_shuffle=ind_shuffle)
 
 #---------------------------------------------------------------------------------------------
