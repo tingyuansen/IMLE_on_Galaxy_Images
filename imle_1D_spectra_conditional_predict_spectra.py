@@ -85,7 +85,7 @@ predict_flux_array = []
 for j in range(num_samples_factor):
     for i in range(num_batches):
         print(j,i)
-        z = torch.randn(Sx.shape[0], z_dim).cuda()
+        z = torch.zeros(Sx.shape[0], z_dim).cuda()
         z_Sx_all = torch.cat((z, Sx), axis=1)[:,:,None]
         predict_flux_array.extend(model.forward(z_Sx_all[i*batch_size:(i+1)*batch_size]).cpu().data.numpy())
 predict_flux_array_all = np.copy(np.array(predict_flux_array))
