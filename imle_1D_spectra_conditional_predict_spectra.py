@@ -73,9 +73,9 @@ model.load_state_dict(state_dict)
 # make predictions
 Sx = torch.from_numpy(train_Sx).float().cuda()
 
+
 #========================================================================================================
 ### predict with random z and find the best estimates ###
-
 # # train in batch
 batch_size = 300
 num_batches = Sx.shape[0] // batch_size

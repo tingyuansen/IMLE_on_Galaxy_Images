@@ -216,8 +216,6 @@ class IMLE():
 
             print("Epoch %d: Error: %f" % (epoch, err / num_batches))
 
-            print(samples_predict.shape)
-
 #-----------------------------------------------------------------------------------------------------------
             # save the mock sample
             if (epoch+1) % staleness == 0:
