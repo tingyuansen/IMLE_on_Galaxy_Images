@@ -30,4 +30,4 @@ validation_labels = labels[ind_shuffle,:][20000:,:]
 training_loss, validation_loss = training.neural_net(training_labels, training_spectra,\
                                                      validation_labels, validation_spectra,\
                                                      num_neurons=300, learning_rate=1e-4,\
-                                                     num_steps=2e4, batch_size=512, num_pixel=4433)
+                                                     num_steps=1e5, batch_size=512, num_pixel=4433)
