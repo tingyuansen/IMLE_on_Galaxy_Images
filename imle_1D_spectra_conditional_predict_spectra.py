@@ -100,6 +100,7 @@ for i in range(train_Sx.shape[0]):
 predict_flux_array = np.array(predict_flux_array)
 
 
+
 #========================================================================================================
 # save array
 np.save("../predict_flux_array.npy", predict_flux_array)
