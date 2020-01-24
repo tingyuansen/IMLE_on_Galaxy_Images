@@ -100,7 +100,7 @@ for i in range(train_Sx.shape[0]):
     print(i)
     predict_flux_temp = model.forward(z_Sx_all[i*num_samples_factor:(i+1)*num_samples_factor]).cpu().data.numpy()
     diff = np.sum((predict_flux_temp-train_data[i])**2,axis=1)
-    predict_flux_array.extend(predict_flux_temp[np.argmin(diff),:])
+    predict_flux_array.append(predict_flux_temp[np.argmin(diff),:])
 predict_flux_array = np.array(predict_flux_array)
 
 
