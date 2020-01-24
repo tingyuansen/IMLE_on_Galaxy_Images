@@ -59,8 +59,8 @@ train_Sx[:,0] = train_Sx[:,0]/1000.
 # shuffle the index
 temp = np.load("../ind_shuffle_kurucz.npz")
 ind_shuffle = temp["ind_shuffle"]
-train_data = train_data[ind_shuffle,:][:12000,:]
-train_Sx = train_Sx[ind_shuffle,:][:12000,:]
+train_data = train_data[ind_shuffle,:][:1000,:]
+train_Sx = train_Sx[ind_shuffle,:][:1000,:]
 
 #-------------------------------------------------------------------------------------------------------
 # restore models
