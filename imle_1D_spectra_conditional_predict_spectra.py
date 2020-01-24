@@ -80,6 +80,7 @@ Sx = torch.from_numpy(train_Sx).float().cuda()
 batch_size = 300
 num_batches = Sx.shape[0] // batch_size
 num_samples_factor = 100
+num_data = num_batches*batch_size
 
 predict_flux_array = []
 for j in range(num_samples_factor):
@@ -92,10 +93,10 @@ for j in range(num_samples_factor):
 predict_flux_array_all = np.copy(np.array(predict_flux_array))
 
 print(predict_flux_array_all.shape)
-print(predict_flux_array_all[0::num_samples_factor])
-np.save("../test_array_0.npy", predict_flux_array_all[0::num_samples_factor,:])
-np.save("../test_array_100.npy", predict_flux_array_all[100::num_samples_factor,:])
-np.save("../test_array_200.npy", predict_flux_array_all[200::num_samples_factor,:])
+print(predict_flux_array_all[0::num_data])
+np.save("../test_array_0.npy", predict_flux_array_all[0::num_data])
+np.save("../test_array_100.npy", predict_flux_array_all[100::num_data])
+np.save("../test_array_200.npy", predict_flux_array_all[200::num_data])
 
 predict_flux_array = []
 for i in range(train_Sx.shape[0]):
