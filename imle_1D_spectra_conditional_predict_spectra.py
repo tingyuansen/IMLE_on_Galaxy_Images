@@ -92,7 +92,9 @@ Sx = torch.from_numpy(train_Sx).float().cuda()
 ### predict with random z and find the best estimates ###
 num_samples_factor = 100
 Sx = torch.from_numpy(np.repeat(train_Sx,num_samples_factor,axis=0)).float().cuda()
-z = torch.randn(Sx.shape[0], z_dim).cuda()
+print(Sx[:100])
+print(Sx[100:200])
+z = torch.zeros(Sx.shape[0], z_dim).cuda()
 z_Sx_all = torch.cat((z, Sx), axis=1)[:,:,None]
 
 predict_flux_array = []
