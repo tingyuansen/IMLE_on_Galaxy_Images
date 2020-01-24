@@ -105,7 +105,7 @@ i = 0
 predict_flux_temp = model.forward(z_Sx_all[i*num_samples_factor:(i+1)*num_samples_factor]).cpu().data.numpy()
 print(predict_flux_temp.shape)
 diff = np.sum((predict_flux_temp-train_data[i])**2,axis=1)
-print(dff.shape)
+print(diff.shape)
 
 #========================================================================================================
 # save array
