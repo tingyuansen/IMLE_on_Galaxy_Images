@@ -50,7 +50,7 @@ flux_spectra = flux_spectra[ind,:]
 print(flux_spectra.shape)
 
 # save the restriction array
-np.savez("ind_cut_real_nvp_SNR=10.npz")
+np.save("ind_cut_real_nvp_SNR=10.npz", ind)
 
 #-------------------------------------------------------------------------------------------------------
 # normalize spectra
