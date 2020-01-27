@@ -17,41 +17,43 @@ from scipy import interpolate
 #temp = np.load("../mock_all_spectra_no_noise_resample_prior_large.npz")
 #y_tr = temp["spectra"]
 
-#-------------------------------------------------------------------------------------------------------
 # temp = np.load("../apogee_spectra_0.npz")
 # y_tr = temp["spectra"]
 # y_tr[y_tr < 0.3] = 1.
 # y_tr[y_tr > 1.5] = 1.
 
 #-------------------------------------------------------------------------------------------------------
-# read H3 labels
-hdulist = fits.open('../H3_labels.fits')
-#SNR = hdulist[1].data['SNR']
-h3_flag = hdulist[1].data['FLAG']
-
 # read H3 spectra
-# H3 id, wave, flux, err, model, rest_wave
-hdulist = fits.open('../H3_spectra.fits')
-temp = hdulist[1].data
+temp = np.load("H3_spectra.npz")
+h3_flag = temp["h3_flag"]
+flux_spectra = temp["flux_spectra"]
+err_array = temp["err_array"]
+rest_wave = temp["rest_wave"]
 
+print(h3_flag.shape)
+print(flux_spectra.shape)
+print(err_array.shape)
+
+#-------------------------------------------------------------------------------------------------------
 # define a uniform wavelength grid
 uniform_wave = np.linspace(5162,5290,(5290-5162)*10.+1)
 
-flux_spectra = np.empty((len(temp),uniform_wave.size))
-err_array = np.empty((len(temp)))
-
+# interpolate to the rest frame
 for i in range(flux_spectra.shape[0]):
-    if np.median(temp[i][2][0]) != 0:
-        f_flux_spec = interpolate.interp1d(temp[i][5],temp[i][2])
+    if np.median(flux_spectra[i]) != 0:
+        f_flux_spec = interpolate.interp1d(rest_wave[i,:], flux_spectra[i,:])
         flux_spectra[i,:] = f_flux_spec(uniform_wave)
     else:
-        flux_spectra[i,:] = temp[i][2][:uniform_wave.size]
-    err_array[i] = np.median(temp[i][2]/temp[i][3])
+        flux_spectra[i,:] = flux_spectra[i,:][:uniform_wave.size]
 
 # cull empty spectra
-ind = np.where((np.median(flux_spectra, axis=1) != 0)*(err_array > 10.)*(h3_flag == 0) == 1)[0]
+ind = np.where((np.median(flux_spectra, axis=1) != 0)*(err_array > 20.)*(h3_flag == 0) == 1)[0]
 flux_spectra = flux_spectra[ind,:]
 
+# save the restriction array
+np.savez("ind_cut_real_nvp_SNR=20.npz")
+
+#-------------------------------------------------------------------------------------------------------
 # normalize spectra
 y_tr = (flux_spectra.T/np.median(flux_spectra, axis=1)).T
 
@@ -61,7 +63,6 @@ y_tr[y_tr < 0.] = 0.
 y_tr[y_tr > 2] = 2.
 print(y_tr.shape)
 
-#-------------------------------------------------------------------------------------------------------
 # convert into torch
 y_tr = torch.from_numpy(y_tr).type(torch.cuda.FloatTensor)
 
@@ -183,7 +184,7 @@ for e in range(num_epochs):
 
 #========================================================================================================
 # save models
-torch.save(flow, 'flow_final_lr=-4_SNR=10.pt')
+torch.save(flow, 'flow_final_lr=-4_SNR=20.pt')
 
 # sample results
 z1 = np.empty(y_tr.shape)
@@ -197,8 +198,8 @@ for i in range(nbatches):
     = flow.sample(z1_tr[i*batch_size:(i+1)*batch_size]).detach().cpu().numpy()
 
 # save results
-np.savez("../real_nvp_results_lr=-4_SNR=10.npz",\
+np.savez("../real_nvp_results_lr=-4_SNR=20.npz",\
          z1 = z1,\
          x1 = x1)
-np.savez("../loss_results_lr=-4_SNR=10.npz",\
+np.savez("../loss_results_lr=-4_SNR=20.npz",\
          loss_array = loss_array)
