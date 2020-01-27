@@ -77,6 +77,7 @@ model = Payne_model(dim_in = 4, num_neurons = 300,\
                     num_features = 64*3, mask_size=11, num_pixel=4375)
 state_dict = torch.load("../NN_normalized_spectra.pt")
 model.load_state_dict(state_dict)
+model.cuda()
 
 #------------------------------------------------------------------------------------------------
 # reconstruct the xmin-xmax scaling
