@@ -24,7 +24,7 @@ from scipy import interpolate
 
 #-------------------------------------------------------------------------------------------------------
 # read H3 spectra
-temp = np.load("H3_spectra.npz")
+temp = np.load("../H3_spectra.npz")
 h3_flag = temp["h3_flag"]
 flux_spectra = temp["flux_spectra"]
 err_array = temp["err_array"]
