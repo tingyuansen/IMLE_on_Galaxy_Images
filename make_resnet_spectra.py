@@ -94,8 +94,8 @@ labels[:,0] = labels[:,0]/1000.
 Y_u_all = temp["spectra"][:,150:4375+150].T
 
 # calculate spectrum
-labels = (labels[i,:]-x_min)/(x_max-x_min) - 0.5
-predict_flux_array = model(torch.from_numpy(labels).float().cuda()).detach().cpu().numpy())
+labels = (labels-x_min)/(x_max-x_min) - 0.5
+predict_flux_array = model(torch.from_numpy(labels).float().cuda()).detach().cpu().numpy()
 
 print(predict_flux_array.shape)
 np.save("predict_flux_array.npy", predict_flux_array)
