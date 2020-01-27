@@ -91,7 +91,6 @@ for j in range(num_samples_factor):
         predict_flux_array.extend(model.forward(z_Sx_all[i*batch_size:(i+1)*batch_size]).cpu().data.numpy())
 predict_flux_array_all = np.copy(np.array(predict_flux_array))
 
-
 predict_flux_array = []
 for i in range(train_Sx.shape[0]):
     print(i)
