@@ -36,15 +36,13 @@ print(err_array.shape)
 
 #-------------------------------------------------------------------------------------------------------
 # define a uniform wavelength grid
-uniform_wave = np.linspace(5162,5290,(5290-5162)*10.+1)
+uniform_wave = np.linspace(5162,5290,flux_spectra.shape[1])
 
 # interpolate to the rest frame
 for i in range(flux_spectra.shape[0]):
     if np.median(flux_spectra[i]) != 0:
         f_flux_spec = interpolate.interp1d(rest_wave[i,:], flux_spectra[i,:])
         flux_spectra[i,:] = f_flux_spec(uniform_wave)
-    else:
-        flux_spectra[i,:] = flux_spectra[i,:][:uniform_wave.size]
 
 # cull empty spectra
 ind = np.where((np.median(flux_spectra, axis=1) != 0)*(err_array > 20.)*(h3_flag == 0) == 1)[0]
