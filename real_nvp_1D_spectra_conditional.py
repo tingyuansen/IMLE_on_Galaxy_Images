@@ -67,7 +67,7 @@ y_tr[y_tr > 2] = 2.
 print(y_tr.shape)
 
 # convert into torch
-x_tr = torch.from_numpy(y_tr[:,200:]).type(torch.cuda.FloatTensor)
+x_tr = torch.from_numpy(y_tr[:,200::10]).type(torch.cuda.FloatTensor)
 y_tr = torch.from_numpy(y_tr[:,:200]).type(torch.cuda.FloatTensor)
 
 
