@@ -36,7 +36,7 @@ print(err_array.shape)
 
 #-------------------------------------------------------------------------------------------------------
 ## SNR cut
-SNR_cut = 10
+SNR_cut = 20
 
 # define a uniform wavelength grid
 uniform_wave = np.linspace(5150,5290,flux_spectra.shape[1])
