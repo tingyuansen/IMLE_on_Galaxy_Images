@@ -35,6 +35,9 @@ print(flux_spectra.shape)
 print(err_array.shape)
 
 #-------------------------------------------------------------------------------------------------------
+## SNR cut
+SNR_cut = 10
+
 # define a uniform wavelength grid
 uniform_wave = np.linspace(5150,5290,flux_spectra.shape[1])
 
@@ -46,12 +49,12 @@ for i in range(flux_spectra.shape[0]):
         flux_spectra[i,:] = f_flux_spec(uniform_wave)
 
 # cull empty spectra
-ind = np.where((np.median(flux_spectra, axis=1) != 0)*(err_array > 10.)*(h3_flag == 0) == 1)[0]
+ind = np.where((np.median(flux_spectra, axis=1) != 0)*(err_array > SNR_cut)*(h3_flag == 0) == 1)[0]
 flux_spectra = flux_spectra[ind,:]
 print(flux_spectra.shape)
 
 # save the restriction array
-np.save("ind_cut_real_nvp_SNR=10.npz", ind)
+np.save("ind_cut_real_nvp_SNR=" + str(SNR_cut) + ".npz", ind)
 
 #-------------------------------------------------------------------------------------------------------
 # normalize spectra
@@ -64,8 +67,8 @@ y_tr[y_tr > 2] = 2.
 print(y_tr.shape)
 
 # convert into torch
-x_tr = torch.from_numpy(y_tr[:,:200]).type(torch.cuda.FloatTensor)
-y_tr = torch.from_numpy(y_tr[:,200:]).type(torch.cuda.FloatTensor)
+x_tr = torch.from_numpy(y_tr[:,200:]).type(torch.cuda.FloatTensor)
+y_tr = torch.from_numpy(y_tr[:,:200]).type(torch.cuda.FloatTensor)
 
 
 #=======================================================================================================
@@ -127,7 +130,6 @@ num_neurons = 300
 
 # input dimension
 dim_in = y_tr.shape[-1]
-
 nets = lambda: nn.Sequential(nn.Linear(dim_in, num_neurons), nn.LeakyReLU(),\
                              nn.Linear(num_neurons, num_neurons), nn.LeakyReLU(),\
                              nn.Linear(num_neurons, dim_in), nn.Tanh()).cuda()
@@ -205,6 +207,6 @@ for e in range(num_epochs):
 
 #========================================================================================================
 # save models
-torch.save(flow, 'flow_final_conditional_lr=-4_SNR=10.pt')
-np.savez("../loss_results_conditional_lr=-4_SNR=10.npz",\
+torch.save(flow, 'flow_final_conditional_lr=-4_SNR=' + str(SNR_cut) + '.pt')
+np.savez("../loss_results_conditional_lr=-4_SNR=" + str(SNR_cut) + ".npz",\
          loss_array = loss_array)

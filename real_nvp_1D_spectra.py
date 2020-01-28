@@ -184,21 +184,5 @@ for e in range(num_epochs):
 #========================================================================================================
 # save models
 torch.save(flow, 'flow_final_lr=-4_SNR=10.pt')
-
-# sample results
-z1 = np.empty(y_tr.shape)
-for i in range(nbatches):
-    z1[i*batch_size:(i+1)*batch_size] \
-            = flow.f(y_tr[i*batch_size:(i+1)*batch_size])[0].detach().cpu().numpy()
-z1_tr = torch.from_numpy(z1).type(torch.cuda.FloatTensor)
-x1 = np.empty(y_tr.shape)
-for i in range(nbatches):
-    x1[i*batch_size:(i+1)*batch_size] \
-    = flow.sample(z1_tr[i*batch_size:(i+1)*batch_size]).detach().cpu().numpy()
-
-# save results
-np.savez("../real_nvp_results_lr=-4_SNR=10.npz",\
-         z1 = z1,\
-         x1 = x1)
 np.savez("../loss_results_lr=-4_SNR=10.npz",\
          loss_array = loss_array)
