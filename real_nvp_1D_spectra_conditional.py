@@ -39,7 +39,7 @@ print(err_array.shape)
 SNR_cut = 20
 
 # define a uniform wavelength grid
-uniform_wave = np.linspace(5150,5290,flux_spectra.shape[1])
+uniform_wave = np.linspace(5162,5290,flux_spectra.shape[1])
 
 # interpolate to the rest frame
 for i in range(flux_spectra.shape[0]):
