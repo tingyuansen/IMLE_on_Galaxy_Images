@@ -45,6 +45,7 @@ uniform_wave = np.linspace(5150,5290,flux_spectra.shape[1])
 for i in range(flux_spectra.shape[0]):
     if np.median(flux_spectra[i]) != 0:
         f_flux_spec = interpolate.interp1d(rest_wave[i,:], flux_spectra[i,:],\
+                                          bounds_error=False,\
                                           fill_value=(flux_spectra[i,0], flux_spectra[i,-1]))
         flux_spectra[i,:] = f_flux_spec(uniform_wave)
 
