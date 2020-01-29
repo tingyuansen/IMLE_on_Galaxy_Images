@@ -39,7 +39,7 @@ print(err_array.shape)
 SNR_cut = 20
 
 # define a uniform wavelength grid
-uniform_wave = np.linspace(5162,5290,flux_spectra.shape[1])
+uniform_wave = np.linspace(5150,5290,flux_spectra.shape[1])
 
 # interpolate to the rest frame
 for i in range(flux_spectra.shape[0]):
@@ -67,7 +67,7 @@ y_tr[y_tr > 2] = 2.
 print(y_tr.shape)
 
 # convert into torch
-x_tr = torch.from_numpy(y_tr[:,200::10]).type(torch.cuda.FloatTensor)
+x_tr = torch.from_numpy(y_tr[:,200::]).type(torch.cuda.FloatTensor)
 y_tr = torch.from_numpy(y_tr[:,:200]).type(torch.cuda.FloatTensor)
 
 
@@ -172,7 +172,7 @@ flow.cuda()
 # In [4]
 # number of epoch and batch size
 num_epochs = 20001
-batch_size = 512
+batch_size = 2048
 
 # break into batches
 nsamples = y_tr.shape[0]
