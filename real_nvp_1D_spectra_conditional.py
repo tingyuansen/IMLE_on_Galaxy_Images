@@ -36,7 +36,7 @@ print(err_array.shape)
 
 #-------------------------------------------------------------------------------------------------------
 ## SNR cut
-SNR_cut = 20
+SNR_cut = 10
 
 # define a uniform wavelength grid
 uniform_wave = np.linspace(5150,5290,flux_spectra.shape[1])
@@ -207,7 +207,7 @@ for e in range(num_epochs):
     if e % 10 == 0:
         print('iter %s:' % e, 'loss = %.3f' % loss)
         loss_array.append(loss.item())
-        
+
     # save models periodically
     if e % 1e3 == 0:
         torch.save(flow, 'flow_final_conditional_lr=-4_SNR=' + str(SNR_cut) + '.pt')
