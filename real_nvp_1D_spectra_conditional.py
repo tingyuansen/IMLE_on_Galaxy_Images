@@ -172,7 +172,7 @@ flow.cuda()
 #=======================================================================================================
 # In [4]
 # number of epoch and batch size
-num_epochs = 1e5
+num_epochs = int(1e5)
 batch_size = 2048
 
 # break into batches
