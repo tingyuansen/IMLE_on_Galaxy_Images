@@ -172,7 +172,7 @@ flow.cuda()
 #=======================================================================================================
 # In [4]
 # number of epoch and batch size
-num_epochs = 20001
+num_epochs = 1e5
 batch_size = 2048
 
 # break into batches
@@ -202,9 +202,16 @@ for e in range(num_epochs):
         loss.backward(retain_graph=True)
         optimizer.step()
 
+#-------------------------------------------------------------------------------------------------------
     # the average loss.
     if e % 10 == 0:
         print('iter %s:' % e, 'loss = %.3f' % loss)
+
+    # save models periodically
+    if e % 1e3 == 0:
+        torch.save(flow, 'flow_final_conditional_lr=-4_SNR=' + str(SNR_cut) + '.pt')
+        np.savez("../loss_results_conditional_lr=-4_SNR=" + str(SNR_cut) + ".npz",\
+                 loss_array = loss_array)
 
 #========================================================================================================
 # save models
