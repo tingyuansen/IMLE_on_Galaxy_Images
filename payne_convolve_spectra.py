@@ -7,14 +7,16 @@ from phil_h3_smoothing import smoothspec
 
 #===============================================================================
 # all the hdf5 files
-file_list = os.listdir("/n/conroyfs1/bdjohnson/data/stars/c3k_v1.3/rv31_vt05")
+vt_str = sys.argv[1]
+file_list = os.listdir("/n/conroyfs1/bdjohnson/data/stars/c3k_v1.3/rv31_" + vt_str)
+
 
 # loop over all files
 spectra = []
 parameters = []
 wavelength = []
 for file_name in file_list:
-    fcat = h5py.File('/n/conroyfs1/bdjohnson/data/stars/c3k_v1.3/rv31_vt05/' + file_name, 'r')
+    fcat = h5py.File('/n/conroyfs1/bdjohnson/data/stars/c3k_v1.3/rv31_vt' + vt_str + '/' + file_name, 'r')
     spectra.extend(np.array(fcat['spectra'])/np.array(fcat['continuua']))
     wavelength = np.array(fcat['wavelengths'])
     parameters_temp = np.array(fcat['parameters'])
@@ -65,10 +67,10 @@ for i in range(spectra.shape[0]):
                                 outwave=wavelength_o, smoothtype='R', fftsmooth=True, inres=500000.0))
 spectra = np.copy(spectra_o)
 
-np.savez("../H3_training_grid_vt05.npz",\
+np.savez("../H3_training_grid_vt" + vt_str + ".npz",\
          labels = parameters,\
          spectra = spectra,\
          wavelength = wavelength_o)
-print(labels.shape)
+print(parameters.shape)
 print(spectra.shape)
 print(wavelength.shape)
