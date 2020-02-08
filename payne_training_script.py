@@ -22,10 +22,14 @@ np.savez("../ind_shuffle_payne_h3.npz", ind_shuffle=ind_shuffle)
 
 #----------------------------------------------------------------------------------------
 # separate into training and validation set
-training_spectra = spectra[ind_shuffle,:][:18000,:]
-training_labels = labels[ind_shuffle,:][:18000,:]
-validation_spectra = spectra[ind_shuffle,:][18000:,:]
-validation_labels = labels[ind_shuffle,:][18000:,:]
+# training_spectra = spectra[ind_shuffle,:][:18000,:]
+# training_labels = labels[ind_shuffle,:][:18000,:]
+# validation_spectra = spectra[ind_shuffle,:][18000:,:]
+# validation_labels = labels[ind_shuffle,:][18000:,:]
+training_spectra = spectra[ind_shuffle,:][:72000,:]
+training_labels = labels[ind_shuffle,:][:72000,:]
+validation_spectra = spectra[ind_shuffle,:][72000:,:]
+validation_labels = labels[ind_shuffle,:][72000:,:]
 
 #----------------------------------------------------------------------------------------
 # train neural network # require GPU
