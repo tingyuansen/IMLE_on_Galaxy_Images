@@ -2,6 +2,7 @@
 import os
 import numpy as np
 import h5py
+import sys
 from phil_h3_smoothing import smoothspec
 
 
