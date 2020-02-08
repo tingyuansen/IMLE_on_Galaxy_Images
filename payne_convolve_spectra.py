@@ -9,7 +9,7 @@ from phil_h3_smoothing import smoothspec
 #===============================================================================
 # all the hdf5 files
 vt_str = sys.argv[1]
-file_list = os.listdir("/n/conroyfs1/bdjohnson/data/stars/c3k_v1.3/rv31_" + vt_str)
+file_list = os.listdir("/n/conroyfs1/bdjohnson/data/stars/c3k_v1.3/rv31_vt" + vt_str)
 
 
 # loop over all files
