@@ -74,4 +74,4 @@ np.savez("../H3_training_grid_vt" + vt_str + ".npz",\
          wavelength = wavelength_o)
 print(parameters.shape)
 print(spectra.shape)
-print(wavelength.shape)
+print(wavelength_o.shape)
