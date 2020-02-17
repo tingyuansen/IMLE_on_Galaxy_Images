@@ -19,7 +19,11 @@ real_spec = np.load("../light_curve.npy")
 print(real_spec.shape)
 
 ### change the amplitude
-real_spec = real_spec*10.
+#real_spec = real_spec*10.
+
+## mix two modes
+real_spec = real_spec[:,:] + real_spec[::-1,:]
+
 
 #================================================================================================
 # define wavelet scattering hyperparameters
