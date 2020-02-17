@@ -16,9 +16,10 @@ import numpy as np
 #=========================================================================================================
 # load light curves
 light_curve = np.load("../light_curve.npy")
+print(light_curve.shape)
 
 # define wavelet scattering hyperparameters
-J = 12
+J = 8
 Q = 5
 
 # convert into torch variable
