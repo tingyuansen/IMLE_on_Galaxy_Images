@@ -20,7 +20,7 @@ print(real_spec.shape)
 
 # define wavelet scattering hyperparameters
 J = 6
-Q = 16
+Q = 8
 T = real_spec.shape[1]
 
 # convert into torch variable
