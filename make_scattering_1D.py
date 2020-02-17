@@ -22,9 +22,10 @@ J = 12
 Q = 5
 
 # convert into torch variable
-x = torch.from_numpy(light_curve).type(torch.FloatTensor)
+x = torch.from_numpy(light_curve).type(torch.cuda.FloatTensor)
 
 # perform wavelet scattering
 scattering = Scattering1D(J, light_curve.shape[1], Q)
+scattering.cuda()
 s = scattering.forward(x)[0]
 print(s.shape)
