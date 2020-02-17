@@ -24,12 +24,12 @@ Q = 16
 T = real_spec.shape[1]
 
 # convert into torch variable
-x = torch.from_numpy(real_spec[:,:T]).type(torch.FloatTensor)
+x = torch.from_numpy(real_spec[:,:T]).type(torch.cuda.FloatTensor)
 print(x.shape)
 
 # define wavelet scattering
 scattering = Scattering1D(J, T, Q)
-
+scattering.cuda()
 
 #================================================================================================
 # perform wavelet scattering
@@ -43,4 +43,4 @@ Sx_all = torch.log10(Sx_all)
 print(Sx_all.shape)
 
 # save results
-np.save("../Sx_all.npy" Sx_all.cpu().numpy())
+np.save("../Sx_all.npy", Sx_all.cpu().numpy())
