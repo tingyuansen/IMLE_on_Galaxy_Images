@@ -51,4 +51,4 @@ Sx_all = torch.log10(Sx_all)
 print(Sx_all.shape)
 
 # save results
-np.save("../Sx_all.npy", Sx_all.cpu().numpy())
+np.save("../Sx_all_mixed.npy", Sx_all.cpu().numpy())
