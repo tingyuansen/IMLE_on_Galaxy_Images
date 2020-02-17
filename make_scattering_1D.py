@@ -18,6 +18,10 @@ import numpy as np
 real_spec = np.load("../light_curve.npy")
 print(real_spec.shape)
 
+### change the amplitude
+real_spec = real_spec*10.
+
+#================================================================================================
 # define wavelet scattering hyperparameters
 J = 6
 Q = 8
