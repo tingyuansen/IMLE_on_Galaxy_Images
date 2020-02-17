@@ -15,18 +15,32 @@ import numpy as np
 
 #=========================================================================================================
 # load light curves
-light_curve = np.load("../light_curve.npy")
-print(light_curve.shape)
+real_spec = np.load("../light_curve.npy")
+print(real_spec.shape)
 
 # define wavelet scattering hyperparameters
-J = 8
-Q = 5
+J = 6
+Q = 16
+T = real_spec.shape[1]
 
 # convert into torch variable
-x = torch.from_numpy(light_curve).type(torch.cuda.FloatTensor)
+x = torch.from_numpy(real_spec[:,:T]).type(torch.FloatTensor)
+print(x.shape)
 
+# define wavelet scattering
+scattering = Scattering1D(J, T, Q)
+
+
+#================================================================================================
 # perform wavelet scattering
-scattering = Scattering1D(J, light_curve.shape[1], Q)
-scattering.cuda()
-s = scattering.forward(x)[0]
-print(s.shape)
+Sx_all = scattering.forward(x)
+
+# calculate invariate representation
+Sx_all = torch.mean(Sx_all[:,1:,:], dim=-1)
+
+# take log to normalize the coefficient better
+Sx_all = torch.log10(Sx_all)
+print(Sx_all.shape)
+
+# save results
+np.save("../Sx_all.npy" Sx_all.cpu().numpy())
