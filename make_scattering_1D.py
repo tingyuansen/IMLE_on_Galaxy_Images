@@ -19,7 +19,7 @@ real_spec = np.load("../light_curve.npy")
 print(real_spec.shape)
 
 ### change the amplitude
-#real_spec = real_spec*2.
+real_spec = real_spec*2.
 
 ## mix two modes
 #real_spec = (real_spec[:,:] + real_spec[::-1,:])/2.
