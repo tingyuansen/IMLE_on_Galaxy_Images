@@ -19,15 +19,10 @@ real_spec = np.load("../light_curve.npy")
 print(real_spec.shape)
 
 ### change the amplitude
-real_spec = real_spec*2.
+#real_spec = real_spec*2.
 
 ## mix two modes
 #real_spec = (real_spec[:,:] + real_spec[::-1,:])/2.
-
-#-----------------------------------------------------------------------------------------------
-# normalize wrt to the first coefficient
-for i in range(y_tr.shape[0]):
-    y_tr[i,:] = y_tr[i,:]/y_tr[i,0]
 
 
 #================================================================================================
