@@ -14,7 +14,7 @@ from scipy import interpolate
 
 #========================================================================================================
 # read scattering coefficents
-y_tr = np.load("../Sx_all.npy")
+y_tr = np.load("../Sx_all_normal.npy")
 
 # convert into torch
 y_tr = torch.from_numpy(y_tr).type(torch.cuda.FloatTensor)
@@ -98,7 +98,7 @@ flow.cuda()
 #=======================================================================================================
 # In [4]
 # number of epoch and batch size
-num_epochs = 5001
+num_epochs = 10001
 batch_size = 512
 
 
