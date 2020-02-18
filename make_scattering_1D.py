@@ -22,7 +22,7 @@ print(real_spec.shape)
 #real_spec = real_spec*10.
 
 ## mix two modes
-real_spec = real_spec[:,:] + real_spec[::-1,:]
+real_spec = (real_spec[:,:] + real_spec[::-1,:])/2.
 
 
 #================================================================================================
