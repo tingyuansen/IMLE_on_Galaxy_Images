@@ -16,7 +16,7 @@ import numpy as np
 #===============================================================================================
 # load light curves
 temp = np.load("../light_curve.npz")
-real_spec = temp["light_curve"]
+real_spec = temp["light_curve"][:,::10]
 print(real_spec.shape)
 
 ### change the amplitude
