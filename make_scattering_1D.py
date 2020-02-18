@@ -42,14 +42,15 @@ scattering.cuda()
 #================================================================================================
 # perform wavelet scattering
 Sx_all = scattering.forward(x)
+Sx_all = Sx_all.cpu().numpy()
 
 # normalize wrt to the first coefficient
 for i in range(Sx_all.shape[0]):
     Sx_all[i,:] = Sx_all[i,:]/np.abs(Sx_all[i,0])
 
 # take log to normalize the coefficient better
-Sx_all = torch.log10(Sx_all[:,1:])
+Sx_all = np.log10(Sx_all[:,1:])
 print(Sx_all.shape)
 
 # save results
-np.save("../Sx_all_normal.npy", Sx_all.cpu().numpy())
+np.save("../Sx_all_normal.npy", Sx_all)
