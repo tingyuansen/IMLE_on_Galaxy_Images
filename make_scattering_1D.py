@@ -22,7 +22,7 @@ print(real_spec.shape)
 #real_spec = real_spec*10.
 
 ## mix two modes
-real_spec = real_spec[:,:] + real_spec[::-1,:]
+#real_spec = real_spec[:,:] + real_spec[::-1,:]
 
 
 #================================================================================================
@@ -51,4 +51,4 @@ Sx_all = torch.log10(Sx_all)
 print(Sx_all.shape)
 
 # save results
-np.save("../Sx_all_mixed.npy", Sx_all.cpu().numpy())
+np.save("../Sx_all_normal.npy", Sx_all.cpu().numpy())
