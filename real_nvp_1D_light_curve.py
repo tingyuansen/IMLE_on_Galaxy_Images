@@ -14,7 +14,7 @@ from scipy import interpolate
 
 #========================================================================================================
 # read scattering coefficents
-y_tr = np.load("../Sx_all_normal.npy")
+y_tr = np.load("../Sx_all_mixed.npy")
 
 # convert into torch
 y_tr = torch.from_numpy(y_tr).type(torch.cuda.FloatTensor)
