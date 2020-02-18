@@ -42,6 +42,9 @@ scattering.cuda()
 #================================================================================================
 # perform wavelet scattering
 Sx_all = scattering.forward(x)
+
+# calculate invariate representation
+Sx_all = torch.mean(Sx_all, dim=-1)
 Sx_all = Sx_all.cpu().numpy()
 
 # normalize wrt to the first coefficient
