@@ -19,10 +19,10 @@ real_spec = np.load("../light_curve.npy")
 print(real_spec.shape)
 
 ### change the amplitude
-real_spec = real_spec*10.
+#real_spec = real_spec*10.
 
 ## mix two modes
-#real_spec = (real_spec[:,:] + real_spec[::-1,:])/2.
+real_spec = (real_spec[:,:] + real_spec[::-1,:])
 
 
 #================================================================================================
@@ -56,4 +56,4 @@ Sx_all = np.log10(Sx_all[:,1:])
 print(Sx_all.shape)
 
 # save results
-np.save("../Sx_all_x10.npy", Sx_all)
+np.save("../Sx_all_mixed.npy", Sx_all)
