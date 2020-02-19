@@ -89,7 +89,7 @@ def GP_interp(ind_choose):
 
 #=====================================================================================
 # number of CPU to run in parallel
-num_CPU = 4
+num_CPU = 32
 pool = Pool(num_CPU)
 start_time = time.time()
 Y_predict_array = np.array(pool.map(GP_interp,range(mjd_g.size)))
