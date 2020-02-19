@@ -18,7 +18,7 @@ from scipy import interpolate
 
 # restore Lomb Scargle coefficients
 temp = np.load("../g_lomb_scargle.npz")
-y_tr = temp["power_array"][:,30:40]
+y_tr = temp["power_array"][:,:50]
 
 # convert into torch
 y_tr = torch.from_numpy(y_tr).type(torch.cuda.FloatTensor)
