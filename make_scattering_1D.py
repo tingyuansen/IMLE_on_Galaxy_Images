@@ -27,6 +27,7 @@ print(real_spec.shape)
 
 ## mix two modes
 #real_spec = (real_spec[:,:] + real_spec[::-1,:])
+real_spec = -2.5*np.log10(10**(-real_spec[:,:]/2.5)+ 10**(-real_spec[::-1,:]/2.5))
 
 
 #================================================================================================
@@ -60,4 +61,4 @@ Sx_all = np.log10(Sx_all[:,1:])
 print(Sx_all.shape)
 
 # save results
-np.save("../Sx_all_normal.npy", Sx_all)
+np.save("../Sx_all_mixed.npy", Sx_all)
