@@ -17,8 +17,8 @@ from scipy import interpolate
 #y_tr = np.load("../Sx_all_normal.npy")
 
 # restore Lomb Scargle coefficients
-temp = np.load("../g_lomb_scargle.npz", allow_pickle=True)
-y_tr = temp["power_array"]
+temp = np.load("../g_lomb_scargle.npz")
+y_tr = temp["power_array"][:,30:40]
 
 # convert into torch
 y_tr = torch.from_numpy(y_tr).type(torch.cuda.FloatTensor)
@@ -141,6 +141,6 @@ for e in range(num_epochs):
 
 #========================================================================================================
 # save models
-torch.save(flow, '../flow_final_g.pt')
-np.savez("../loss_results_g.npz",\
+torch.save(flow, '../flow_final_g_short.pt')
+np.savez("../loss_results_g_short.npz",\
          loss_array = loss_array)
