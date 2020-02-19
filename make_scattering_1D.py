@@ -15,8 +15,11 @@ import numpy as np
 
 #===============================================================================================
 # load light curves
-temp = np.load("../light_curve.npz")
-real_spec = temp["light_curve"]
+# temp = np.load("../light_curve.npz")
+# real_spec = temp["light_curve"]
+# print(real_spec.shape)
+
+real_spec = np.load("../g_array_interp.npy")
 print(real_spec.shape)
 
 ### change the amplitude
