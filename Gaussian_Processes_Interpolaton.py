@@ -12,7 +12,7 @@ os.environ['OMP_NUM_THREADS']='{:d}'.format(1)
 # restore grid
 temp = np.load("../SDSS_DR14_qso.npz", allow_pickle=True)
 mjd_g = temp["mjd_r"]
-r_array = temp["r_array"]
+g_array = temp["r_array"]
 
 # set grid to interpolate into
 X_array = np.arange(5120)*0.1
