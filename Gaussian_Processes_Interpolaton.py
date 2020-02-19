@@ -73,4 +73,4 @@ Y_predict_array = np.array(pool.map(GP_interp,range(100)))
 print(time.time()-start_time)
 
 # save results
-np.save("g_array_interp.npy", np.array(Y_predict_array))
+np.save("../g_array_interp.npy", np.array(Y_predict_array))
