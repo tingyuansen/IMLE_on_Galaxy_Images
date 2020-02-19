@@ -69,7 +69,7 @@ def GP_interp(ind_choose):
 num_CPU = 32
 pool = Pool(num_CPU)
 start_time = time.time()
-Y_predict_array = np.array(pool.map(GP_interp,range(100)))
+Y_predict_array = np.array(pool.map(GP_interp,range(g_array.size)))
 print(time.time()-start_time)
 
 # save results
