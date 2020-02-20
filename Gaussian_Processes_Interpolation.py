@@ -15,13 +15,15 @@ os.environ['OMP_NUM_THREADS']='{:d}'.format(1)
 # g_array = temp["g_array"]
 
 ### restore mock grid ###
-temp = np.load("../SDSS_DR14_qso_mock_mixed_dt=0.001.npz", allow_pickle=True)
-mjd_g = temp["t_array"]
-g_array = temp["light_curve"]
+temp = np.load("../SDSS_DR14_qso_mock_normal_dense.npz", allow_pickle=True)
+mjd_g_original = temp["t_array"]
+mjd_g = temp["t_array"][:,::100]
+g_array = temp["light_curve"][:,::100]
 
 # set grid to interpolate into
 # X_array = np.arange(5120)*0.1
-# X_array = X_array.reshape(X_array.size,1)
+X_array = mjd_g_original[0,:]
+X_array = X_array.reshape(X_array.size,1)
 
 #-------------------------------------------------------------------------------------
 # interpolate with GP
@@ -37,7 +39,9 @@ def GP_interp(ind_choose):
     k0 = GPy.kern.Matern32(1)
     k1 = GPy.kern.Matern32(1)
     k2 = GPy.kern.Matern32(1)
-    kernel = k0 + k1 + k2
+
+    kernel = k0
+    #kernel = k0 + k1 + k2
 
 #-------------------------------------------------------------------------------------
     # define regression
@@ -63,24 +67,28 @@ def GP_interp(ind_choose):
     m.optimize_restarts(num_restarts = 10)
 
     # make prediction
-    #Y_predict = np.array(m.predict(X_array))[0,:,0]
+    Y_predict = np.array(m.predict(X_array))[0,:,0]
 
 #-------------------------------------------------------------------------------------
-    # extract parameters
-    lengthscale_array = np.array([m.kern.Mat32.lengthscale[0],\
-                                  m.kern.Mat32_1.lengthscale[0],\
-                                  m.kern.Mat32_2.lengthscale[0]])
-    variance_array = np.array([m.kern.Mat32.variance[0],\
-                               m.kern.Mat32_1.variance[0],\
-                               m.kern.Mat32_2.variance[0]])
+    # # extract parameters
+    # lengthscale_array = np.array([m.kern.Mat32.lengthscale[0],\
+    #                               m.kern.Mat32_1.lengthscale[0],\
+    #                               m.kern.Mat32_2.lengthscale[0]])
+    # variance_array = np.array([m.kern.Mat32.variance[0],\
+    #                            m.kern.Mat32_1.variance[0],\
+    #                            m.kern.Mat32_2.variance[0]])
+    #
+    # # sort by lengthscale
+    # length_sort = np.argsort(lengthscale_array)
+    # lengthscale_array = lengthscale_array[length_sort]
+    # variance_array = variance_array[length_sort]
+    #
+    # # combine all parameters
+    # Y_predict = np.concatenate([lengthscale_array,variance_array])
 
-    # sort by lengthscale
-    length_sort = np.argsort(lengthscale_array)
-    lengthscale_array = lengthscale_array[length_sort]
-    variance_array = variance_array[length_sort]
-
-    # combine all parameters
-    Y_predict = np.concatenate([lengthscale_array,variance_array])
+#-------------------------------------------------------------------------------------
+    ### assuming just one kernel
+    # kernel = np.concatenate([m.kern.lengthscale,m.kern.variance])
 
 #-------------------------------------------------------------------------------------
     # return prediction
@@ -96,4 +104,4 @@ Y_predict_array = np.array(pool.map(GP_interp,range(mjd_g.size)))
 print(time.time()-start_time)
 
 # save results
-np.save("../kernel_param_mock_mixed_dt=0.001.npy", np.array(Y_predict_array))
+np.save("../SDSS_DR14_qso_mock_normal_dense_GP_interpolated.npy", np.array(Y_predict_array))
