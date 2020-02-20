@@ -14,14 +14,14 @@ from scipy import interpolate
 
 #========================================================================================================
 # read scattering coefficents
-#y_tr = np.load("../Sx_all_normal.npy")
+y_tr = np.load("../Sx_all_normal.npy")
 
 # read GP coefficients
 #y_tr = np.load("../kernel_param_mock_normal_dt=0.001.npy")
 
 # restore Lomb Scargle coefficients
-temp = np.load("../g_lomb_scargle_normal.npz")
-y_tr = temp["power_added"]
+# temp = np.load("../g_lomb_scargle_normal.npz")
+# y_tr = temp["power_added"]
 
 # convert into torch
 y_tr = torch.from_numpy(y_tr).type(torch.cuda.FloatTensor)
@@ -144,6 +144,6 @@ for e in range(num_epochs):
 
 #========================================================================================================
 # save models
-torch.save(flow, '../flow_final_lomb_scargle_added.pt')
-np.savez("../loss_results_lomb_scargle_added.npz",\
+torch.save(flow, '../flow_final_wst.pt')
+np.savez("../loss_results_wst.npz",\
          loss_array = loss_array)
