@@ -61,4 +61,4 @@ Sx_all = np.log10(Sx_all[:,1:])
 print(Sx_all.shape)
 
 # save results
-np.save("../Sx_all_mixed_order=1.npy", Sx_all)
+np.save("../Sx_all_normal_order=1.npy", Sx_all)
