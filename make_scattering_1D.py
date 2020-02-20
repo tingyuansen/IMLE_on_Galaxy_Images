@@ -45,6 +45,7 @@ print(x.shape)
 scattering = Scattering1D(J, T, Q, max_order=max_choice)
 scattering.cuda()
 
+
 #================================================================================================
 # perform wavelet scattering
 Sx_all = scattering.forward(x)
