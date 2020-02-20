@@ -15,7 +15,7 @@ import numpy as np
 
 #===============================================================================================
 # load light curves
-temp = np.load("../SDSS_DR14_qso_mock_mixed_dense.npz")
+temp = np.load("../SDSS_DR14_qso_mock_normal_dense.npz")
 real_spec = temp["light_curve"]
 print(real_spec.shape)
 
@@ -41,7 +41,7 @@ x = torch.from_numpy(real_spec[:,:T]).type(torch.cuda.FloatTensor)
 print(x.shape)
 
 # define wavelet scattering
-scattering = Scattering1D(J, T, Q)
+scattering = Scattering1D(J, T, Q, max_order=1)
 scattering.cuda()
 
 #================================================================================================
@@ -61,4 +61,4 @@ Sx_all = np.log10(Sx_all[:,1:])
 print(Sx_all.shape)
 
 # save results
-np.save("../Sx_all_mixed.npy", Sx_all)
+np.save("../Sx_all_mixed_order=1.npy", Sx_all)
