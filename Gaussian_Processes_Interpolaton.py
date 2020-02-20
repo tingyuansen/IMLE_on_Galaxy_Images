@@ -96,4 +96,4 @@ Y_predict_array = np.array(pool.map(GP_interp,range(mjd_g.size)))
 print(time.time()-start_time)
 
 # save results
-np.save("../kernel_param_mock_mixed.npy", np.array(Y_predict_array))
+np.save("../kernel_param_mock_normal_dt=0.001.npy", np.array(Y_predict_array))
