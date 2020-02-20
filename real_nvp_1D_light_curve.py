@@ -144,6 +144,6 @@ for e in range(num_epochs):
 
 #========================================================================================================
 # save models
-torch.save(flow, '../flow_final_wst_order=1.pt')
+torch.save(flow, '../flow_final_wst_order=1_GP_interpolated.pt')
 np.savez("../loss_results_wst.npz",\
          loss_array = loss_array)
