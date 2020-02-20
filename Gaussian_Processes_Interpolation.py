@@ -15,7 +15,7 @@ os.environ['OMP_NUM_THREADS']='{:d}'.format(1)
 # g_array = temp["g_array"]
 
 ### restore mock grid ###
-temp = np.load("../SDSS_DR14_qso_mock_mixed_dense.npz", allow_pickle=True)
+temp = np.load("../SDSS_DR14_qso_mock_validation_dense.npz", allow_pickle=True)
 mjd_g_original = temp["t_array"]
 mjd_g = temp["t_array"][:,::100]
 g_array = temp["light_curve"][:,::100]
@@ -104,4 +104,4 @@ Y_predict_array = np.array(pool.map(GP_interp,range(mjd_g.shape[0])))
 print(time.time()-start_time)
 
 # save results
-np.save("../SDSS_DR14_qso_mock_mixed_dense_GP_interpolated.npy", np.array(Y_predict_array))
+np.save("../SDSS_DR14_qso_mock_validation_dense_GP_interpolated.npy", np.array(Y_predict_array))
