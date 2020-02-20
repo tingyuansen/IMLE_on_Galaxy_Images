@@ -15,19 +15,19 @@ import numpy as np
 
 #===============================================================================================
 # load light curves
-# temp = np.load("../light_curve.npz")
-# real_spec = temp["light_curve"]
-# print(real_spec.shape)
-
-real_spec = np.load("../g_array_interp.npy")
+temp = np.load("../SDSS_DR14_qso_mock_normal_dense.npz")
+real_spec = temp["light_curve"]
 print(real_spec.shape)
+
+# real_spec = np.load("../g_array_interp.npy")
+# print(real_spec.shape)
 
 ### change the amplitude
 #real_spec = real_spec*10.
 
 ## mix two modes
 #real_spec = (real_spec[:,:] + real_spec[::-1,:])
-real_spec = -2.5*np.log10(10**(-real_spec[:,:]/2.5)+ 10**(-real_spec[::-1,:]/2.5))
+#real_spec = -2.5*np.log10(10**(-real_spec[:,:]/2.5)+ 10**(-real_spec[::-1,:]/2.5))
 
 
 #================================================================================================
@@ -61,4 +61,4 @@ Sx_all = np.log10(Sx_all[:,1:])
 print(Sx_all.shape)
 
 # save results
-np.save("../Sx_all_mixed.npy", Sx_all)
+np.save("../Sx_all_normal.npy", Sx_all)
