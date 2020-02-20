@@ -23,7 +23,7 @@ print(real_spec.shape)
 # print(real_spec.shape)
 
 ### change the amplitude
-real_spec = real_spec*10.
+#real_spec = real_spec*10.
 
 ## mix two modes
 #real_spec = (real_spec[:,:] + real_spec[::-1,:])
@@ -33,9 +33,9 @@ real_spec = real_spec*10.
 #================================================================================================
 # define wavelet scattering hyperparameters
 J = 6
-Q = 8
+Q = 1
 T = real_spec.shape[1]
-max_choice = 2
+max_choice = 1
 
 # convert into torch variable
 x = torch.from_numpy(real_spec[:,:T]).type(torch.cuda.FloatTensor)
@@ -62,4 +62,4 @@ Sx_all = np.log10(Sx_all[:,1:])
 print(Sx_all.shape)
 
 # save results
-np.save("../Sx_all_validation_x10.npy", Sx_all)
+np.save("../Sx_all_validation_order=1.npy", Sx_all)
