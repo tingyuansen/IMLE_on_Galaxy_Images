@@ -15,7 +15,7 @@ os.environ['OMP_NUM_THREADS']='{:d}'.format(1)
 # g_array = temp["g_array"]
 
 ### restore mock grid ###
-temp = np.load("../SDSS_DR14_qso_mock_mixed.npz", allow_pickle=True)
+temp = np.load("../SDSS_DR14_qso_mock_normal_dt=0.001.npz", allow_pickle=True)
 mjd_g = temp["t_array"]
 g_array = temp["light_curve"]
 
