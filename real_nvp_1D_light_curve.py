@@ -14,7 +14,7 @@ from scipy import interpolate
 
 #========================================================================================================
 # read scattering coefficents
-y_tr = np.load("../Sx_all_normal.npy")
+y_tr = np.load("../Sx_all_normal_order=1.npy")
 
 # read GP coefficients
 #y_tr = np.load("../kernel_param_mock_normal_dt=0.001.npy")
@@ -144,6 +144,6 @@ for e in range(num_epochs):
 
 #========================================================================================================
 # save models
-torch.save(flow, '../flow_final_wst.pt')
+torch.save(flow, '../flow_final_wst_order=1.pt')
 np.savez("../loss_results_wst.npz",\
          loss_array = loss_array)
