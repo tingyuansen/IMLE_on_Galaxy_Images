@@ -21,7 +21,7 @@ from scipy import interpolate
 
 # restore Lomb Scargle coefficients
 temp = np.load("../g_lomb_scargle_normal.npz")
-y_tr = temp["power_array"]
+y_tr = temp["power_added"]
 
 # convert into torch
 y_tr = torch.from_numpy(y_tr).type(torch.cuda.FloatTensor)
@@ -144,6 +144,6 @@ for e in range(num_epochs):
 
 #========================================================================================================
 # save models
-torch.save(flow, '../flow_final_GP_dt=0.001.pt')
-np.savez("../loss_results_GP_dt=0.001.npz",\
+torch.save(flow, '../flow_final_lomb_scargle_added.pt')
+np.savez("../loss_results_lomb_scargle_added.npz",\
          loss_array = loss_array)
