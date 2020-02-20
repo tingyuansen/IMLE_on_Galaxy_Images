@@ -17,11 +17,11 @@ from scipy import interpolate
 #y_tr = np.load("../Sx_all_normal.npy")
 
 # read GP coefficients
-y_tr = np.load("../kernel_param_mock_normal_dt=0.001.npy")
+#y_tr = np.load("../kernel_param_mock_normal_dt=0.001.npy")
 
 # restore Lomb Scargle coefficients
-# temp = np.load("../g_lomb_scargle.npz")
-# y_tr = temp["power_array"]
+temp = np.load("../g_lomb_scargle_normal.npz")
+y_tr = temp["power_array"]
 
 # convert into torch
 y_tr = torch.from_numpy(y_tr).type(torch.cuda.FloatTensor)
