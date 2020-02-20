@@ -15,7 +15,7 @@ os.environ['OMP_NUM_THREADS']='{:d}'.format(1)
 # g_array = temp["g_array"]
 
 ### restore mock grid ###
-temp = np.load("../SDSS_DR14_qso_mock_normal_dt=0.001.npz", allow_pickle=True)
+temp = np.load("../SDSS_DR14_qso_mock_validation_dt=0.001.npz", allow_pickle=True)
 mjd_g = temp["t_array"]
 g_array = temp["light_curve"]
 
@@ -96,4 +96,4 @@ Y_predict_array = np.array(pool.map(GP_interp,range(mjd_g.size)))
 print(time.time()-start_time)
 
 # save results
-np.save("../kernel_param_mock_normal_dt=0.001.npy", np.array(Y_predict_array))
+np.save("../kernel_param_mock_validation_dt=0.001.npy", np.array(Y_predict_array))
