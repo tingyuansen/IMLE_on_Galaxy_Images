@@ -17,7 +17,7 @@ from scipy import interpolate
 #y_tr = np.load("../Sx_all_normal.npy")
 
 # read GP coefficients
-y_tr = np.load("../kernel_param_mock.npy")
+y_tr = np.load("../kernel_param_mock_normal_dt=0.001.npy")
 
 # restore Lomb Scargle coefficients
 # temp = np.load("../g_lomb_scargle.npz")
@@ -144,6 +144,6 @@ for e in range(num_epochs):
 
 #========================================================================================================
 # save models
-torch.save(flow, '../flow_final_GP.pt')
-np.savez("../loss_results_GP.npz",\
+torch.save(flow, '../flow_final_GP_dt=0.001.pt')
+np.savez("../loss_results_GP_dt=0.001.npz",\
          loss_array = loss_array)
