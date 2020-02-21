@@ -14,7 +14,7 @@ from scipy import interpolate
 
 #========================================================================================================
 # read scattering coefficents
-y_tr = np.load("../Sx_all_normal_order=2_GP_interpolated.npy")
+y_tr = np.load("../Sx_all_normal_order=1_GP_interpolated.npy")
 
 # read GP coefficients
 #y_tr = np.load("../kernel_param_mock_normal_dt=0.001.npy")
@@ -72,7 +72,7 @@ class RealNVP(nn.Module):
 # define network
 device = torch.device("cuda")
 #num_neurons = 300
-num_neurons = 10
+num_neurons = 50
 
 # input dimension
 dim_in = y_tr.shape[-1]
@@ -146,6 +146,6 @@ for e in range(num_epochs):
 
 #========================================================================================================
 # save models
-torch.save(flow, '../flow_final_wst_order=2_GP_interpolated.pt')
+torch.save(flow, '../flow_final_wst_order=1_GP_interpolated.pt')
 np.savez("../loss_results_wst.npz",\
          loss_array = loss_array)

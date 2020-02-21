@@ -32,8 +32,8 @@ print(real_spec.shape)
 
 #================================================================================================
 # define wavelet scattering hyperparameters
-J = 8
-Q = 4
+J = 12
+Q = 1
 T = real_spec.shape[1]
 max_choice = 2
 
@@ -63,4 +63,4 @@ Sx_all = np.log10(Sx_all[:,1:])
 print(Sx_all.shape)
 
 # save results
-np.save("../Sx_all_mixed_order=2_GP_interpolated.npy", Sx_all)
+np.save("../Sx_all_mixed_order=1_GP_interpolated.npy", Sx_all)
