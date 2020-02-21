@@ -10,7 +10,7 @@ import numpy as np
 temp = np.load("../SDSS_DR14_qso_mock_normal_dense.npz")
 t_array = temp["t_array"]
 real_spec_all = temp["light_curve"]
-print(real_spec.shape)
+print(real_spec_all.shape)
 
 ### change the amplitude
 #real_spec = real_spec*10.
@@ -54,7 +54,6 @@ for j in range(100):
             # smooth pixel
             choose = np.abs(time_stamp - time_stamp[i]) < window_array[k]
             real_spec_smooth[i] = np.mean(real_spec[choose])
-            choose_array.append(choose)
 
 #-----------------------------------------------------------------------------------------------
         # substract away this frequency scale
@@ -69,4 +68,6 @@ for j in range(100):
 
 #-----------------------------------------------------------------------------------------------
 # save results
+Sx_all = np.array(Sx_all)
+print(Sx_all.shape)
 np.save("../Sx_all_mixed_dense.npy", Sx_all)
