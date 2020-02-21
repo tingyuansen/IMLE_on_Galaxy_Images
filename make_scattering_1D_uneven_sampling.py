@@ -14,7 +14,7 @@ real_spec_all = temp["light_curve"]
 print(real_spec_all.shape)
 
 ### change the amplitude
-real_spec = real_spec*10.
+real_spec_all = real_spec_all*10.
 
 
 #================================================================================================
