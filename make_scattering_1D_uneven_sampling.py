@@ -25,9 +25,8 @@ window_array = 10.**np.linspace(-1,2,7)[::-1]
 Sx_all = []
 
 #-----------------------------------------------------------------------------------------------
-# loop over all objects
-#for j in range(real_spec.shape[0]):
-for j in range(100):
+# calculate coefficient with uneven sampling
+def calc_coefficient(j):
 
     print(j)
 
@@ -62,12 +61,16 @@ for j in range(100):
         # extract coefficients
         Sx_all_temp.append(np.mean(np.abs(real_spec)))
 
-    # record results
+    # export results
     Sx_all_temp = np.array(Sx_all_temp)
-    Sx_all.append(Sx_all_temp)
+    return Sx_all_temp
 
 #-----------------------------------------------------------------------------------------------
-# save results
-Sx_all = np.array(Sx_all)
+# number of CPU to run in parallel
+num_CPU = 64
+pool = Pool(num_CPU)
+Sx_all = np.array(pool.map(calc_coefficient,range(real_spec_all.shape[0])))
 print(Sx_all.shape)
+
+# save results
 np.save("../Sx_all_mixed_dense.npy", Sx_all)
