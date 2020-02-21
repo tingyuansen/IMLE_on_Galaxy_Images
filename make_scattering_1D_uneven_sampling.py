@@ -29,7 +29,7 @@ Sx_all = []
 for j in range(100):
 
     print(j)
-    
+
     # array collect coefficients
     Sx_all_temp = []
 
