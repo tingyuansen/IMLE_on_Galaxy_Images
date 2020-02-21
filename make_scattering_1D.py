@@ -32,10 +32,10 @@ print(real_spec.shape)
 
 #================================================================================================
 # define wavelet scattering hyperparameters
-J = 13
-Q = 1
+J = 8
+Q = 4
 T = real_spec.shape[1]
-max_choice = 1
+max_choice = 2
 
 # convert into torch variable
 x = torch.from_numpy(real_spec[:,:T]).type(torch.cuda.FloatTensor)
