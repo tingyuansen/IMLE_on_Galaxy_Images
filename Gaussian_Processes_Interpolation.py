@@ -17,8 +17,8 @@ os.environ['OMP_NUM_THREADS']='{:d}'.format(1)
 ### restore mock grid ###
 temp = np.load("../SDSS_DR14_qso_mock_validation_dense.npz", allow_pickle=True)
 mjd_g_original = temp["t_array"]
-mjd_g = temp["t_array"][:,::100]
-g_array = temp["light_curve"][:,::100]
+mjd_g = temp["t_array"][:,::10]
+g_array = temp["light_curve"][:,::10]
 
 # set grid to interpolate into
 # X_array = np.arange(5120)*0.1
