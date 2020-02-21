@@ -15,6 +15,7 @@ print(real_spec_all.shape)
 ### change the amplitude
 #real_spec = real_spec*10.
 
+
 #================================================================================================
 # choose windows of convolution (in unit of days)
 window_array = 10.**np.linspace(-1,2,7)[::-1]
