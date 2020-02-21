@@ -75,4 +75,4 @@ Sx_all = np.array(pool.map(calc_coefficient,range(real_spec_all.shape[0])))
 print(Sx_all.shape)
 
 # save results
-np.save("../Sx_all_mixed_dense.npy", Sx_all)
+np.save("../Sx_all_normal_dense.npy", Sx_all)
