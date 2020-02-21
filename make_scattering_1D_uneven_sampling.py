@@ -8,6 +8,7 @@ import numpy as np
 #===============================================================================================
 # load light curves
 temp = np.load("../SDSS_DR14_qso_mock_normal_dense.npz")
+t_array = temp["t_array"]
 real_spec = temp["light_curve"]
 print(real_spec.shape)
 
@@ -35,6 +36,7 @@ for j in range(100):
 
     # choose a spectrum
     real_spec = real_spec_all[j,:]
+    time_stamp = t_array[j,:]
 
     # normalize, i.e. substract away the zero order coefficients
     real_spec = real_spec/np.mean(np.abs(real_spec))
@@ -46,14 +48,10 @@ for j in range(100):
     # loop over all windows
     for k in range(window_array.shape[0]):
 
-        # record the pixels that are within the pixel
-        if k == 0:
-            choose_array = []
-
-#-----------------------------------------------------------------------------------------------
         # loop over all pixels
         for i in range(real_spec.size):
 
+            # smooth pixel
             choose = np.abs(time_stamp - time_stamp[i]) < window_array[k]
             real_spec_smooth[i] = np.mean(real_spec[choose])
             choose_array.append(choose)
