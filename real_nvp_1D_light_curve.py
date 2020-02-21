@@ -86,7 +86,7 @@ nett = lambda: nn.Sequential(nn.Linear(dim_in, num_neurons), nn.LeakyReLU(),\
 
 # define mask
 # num_layers = 10
-num_layers = 3
+num_layers = 5
 masks = []
 for i in range(num_layers):
     mask_layer = np.random.randint(2,size=(dim_in))
