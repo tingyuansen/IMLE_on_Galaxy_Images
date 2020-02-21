@@ -14,7 +14,7 @@ from scipy import interpolate
 
 #========================================================================================================
 # read scattering coefficents
-y_tr = np.load("../Sx_all_normal_dense.npy")
+y_tr = np.log10(np.load("../Sx_all_normal_dense.npy"))
 
 # read GP coefficients
 #y_tr = np.load("../kernel_param_mock_normal_dt=0.001.npy")
