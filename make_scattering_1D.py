@@ -19,7 +19,7 @@ import numpy as np
 # real_spec = temp["light_curve"]
 # print(real_spec.shape)
 
-real_spec = np.load("../SDSS_DR14_qso_mock_normal_dense_GP_interpolated.npy")
+real_spec = np.load("../SDSS_DR14_qso_mock_validation_dense_GP_interpolated.npy")
 print(real_spec.shape)
 
 ### change the amplitude
@@ -63,4 +63,4 @@ Sx_all = np.log10(Sx_all[:,1:])
 print(Sx_all.shape)
 
 # save results
-np.save("../Sx_all_normal_order=1_GP_interpolated.npy", Sx_all)
+np.save("../Sx_all_validation_order=1_GP_interpolated.npy", Sx_all)
