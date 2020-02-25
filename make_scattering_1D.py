@@ -33,14 +33,14 @@ print(real_spec.shape)
 # zero out the mean since WST is not addition invariant
 for i in range(real_spec.shape[0]):
     real_spec[i,:] = real_spec[i,:] - np.mean(real_spec[i,:])
-    
+
 
 #================================================================================================
 # define wavelet scattering hyperparameters
-J = 12
+J = 10
 Q = 1
 T = real_spec.shape[1]
-max_choice = 2
+max_choice = 1
 
 # convert into torch variable
 x = torch.from_numpy(real_spec[:,:T]).type(torch.cuda.FloatTensor)
