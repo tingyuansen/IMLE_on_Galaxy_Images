@@ -15,7 +15,7 @@ print(real_spec_all.shape)
 
 ### change the amplitude
 #real_spec_all = real_spec_all*10.
-#real_spec_all = real_spec_all + 100.
+real_spec_all = real_spec_all + 100.
 
 # zero out the mean since WST is not addition invariant
 #for i in range(real_spec_all.shape[0]):
@@ -45,9 +45,9 @@ def calc_coefficient(j):
     time_stamp = t_array[j,:]
 
     # normalize, i.e. substract away the zero order coefficients
-    real_spec = real_spec - np.mean(real_spec)
     real_spec = real_spec/np.mean(np.abs(real_spec))
-    
+    real_spec = real_spec - np.mean(real_spec)
+
     # make smooth template
     real_spec_smooth = np.copy(real_spec)
 
