@@ -14,7 +14,7 @@ real_spec_all = temp["light_curve"]
 print(real_spec_all.shape)
 
 ### change the amplitude
-real_spec_all = real_spec_all*10.
+#real_spec_all = real_spec_all*10.
 #real_spec_all = real_spec_all + 100.
 
 # zero out the mean since WST is not addition invariant
@@ -46,6 +46,7 @@ def calc_coefficient(j):
 
     # normalize, i.e. substract away the zero order coefficients
     real_spec = real_spec/np.mean(np.abs(real_spec))
+    real_spec = real_spec - 10.
 
     # make smooth template
     real_spec_smooth = np.copy(real_spec)
