@@ -15,7 +15,7 @@ import numpy as np
 
 #===============================================================================================
 # load light curves
-temp = np.load("../SDSS_DR14_qso_mock_validation_dense.npz")
+temp = np.load("../SDSS_DR14_qso_mock_normal_dense.npz")
 real_spec = temp["light_curve"]
 print(real_spec.shape)
 
@@ -23,7 +23,7 @@ print(real_spec.shape)
 # print(real_spec.shape)
 
 ### change the amplitude
-#real_spec = real_spec*10.
+real_spec = real_spec*10.
 #real_spec = real_spec + 100.
 
 ## mix two modes
@@ -64,4 +64,4 @@ Sx_all = np.log10(Sx_all[:,1:])
 print(Sx_all.shape)
 
 # save results
-np.save("../Sx_all_validation_wst.npy", Sx_all)
+np.save("../Sx_all_normal_wst_x10.npy", Sx_all)
