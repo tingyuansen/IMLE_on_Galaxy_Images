@@ -31,7 +31,9 @@ print(real_spec.shape)
 #real_spec = -2.5*np.log10(10**(-real_spec[:,:]/2.5)+ 10**(-real_spec[::-1,:]/2.5))
 
 # zero out the mean since WST is not addition invariant
-real_spec = real_spec - np.mean(real_spec)
+for i in range(real_spec.shape[0]):
+    real_spec[i,:] = real_spec[i,:] - np.mean(real_spec[i,:])
+    
 
 #================================================================================================
 # define wavelet scattering hyperparameters
