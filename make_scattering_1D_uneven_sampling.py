@@ -46,7 +46,7 @@ def calc_coefficient(j):
 
     # normalize, i.e. substract away the zero order coefficients
     real_spec = real_spec/np.mean(np.abs(real_spec))
-    real_spec = real_spec - 10.
+    real_spec = real_spec - np.mean(real_spec)
 
     # make smooth template
     real_spec_smooth = np.copy(real_spec)
