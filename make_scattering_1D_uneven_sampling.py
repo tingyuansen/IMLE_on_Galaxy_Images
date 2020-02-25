@@ -14,7 +14,7 @@ real_spec_all = temp["light_curve"]
 print(real_spec_all.shape)
 
 ### change the amplitude
-#real_spec_all = real_spec_all + 100.
+real_spec_all = real_spec_all + 100.
 
 # zero out the mean since WST is not addition invariant
 for i in range(real_spec_all.shape[0]):
