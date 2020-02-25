@@ -14,6 +14,7 @@ real_spec_all = temp["light_curve"]
 print(real_spec_all.shape)
 
 ### change the amplitude
+real_spec_all = real_spec_all*2.
 #real_spec_all = real_spec_all + 100.
 
 # zero out the mean since WST is not addition invariant
@@ -79,4 +80,4 @@ Sx_all = np.array(pool.map(calc_coefficient,range(real_spec_all.shape[0])))
 print(Sx_all.shape)
 
 # save results
-np.save("../Sx_all_normal_dense.npy", Sx_all)
+np.save("../Sx_all_normal_dense_x2.npy", Sx_all)
