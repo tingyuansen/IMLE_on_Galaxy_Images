@@ -24,7 +24,7 @@ print(real_spec.shape)
 
 ### change the amplitude
 #real_spec = real_spec*10.
-#real_spec = real_spec + 100.
+real_spec = real_spec + 100.
 
 ## mix two modes
 #real_spec = (real_spec[:,:] + real_spec[::-1,:])
@@ -66,4 +66,4 @@ Sx_all = np.log10(Sx_all[:,1:])
 print(Sx_all.shape)
 
 # save results
-np.save("../Sx_all_normal_wst.npy", Sx_all)
+np.save("../Sx_all_normal_wst_add100.npy", Sx_all)
