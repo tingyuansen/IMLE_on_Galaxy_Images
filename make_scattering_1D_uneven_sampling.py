@@ -8,7 +8,7 @@ from multiprocessing import Pool
 
 #===============================================================================================
 # load light curves
-temp = np.load("../SDSS_DR14_qso_mock_validation_dense.npz")
+temp = np.load("../SDSS_DR14_qso_mock_normal_dense.npz")
 t_array = temp["t_array"]
 real_spec_all = temp["light_curve"]
 print(real_spec_all.shape)
@@ -18,8 +18,8 @@ print(real_spec_all.shape)
 #real_spec_all = real_spec_all + 100.
 
 # zero out the mean since WST is not addition invariant
-for i in range(real_spec_all.shape[0]):
-    real_spec_all[i,:] = real_spec_all[i,:] - np.mean(real_spec_all[i,:])
+#for i in range(real_spec_all.shape[0]):
+#    real_spec_all[i,:] = real_spec_all[i,:] - np.mean(real_spec_all[i,:])
 
 
 #================================================================================================
@@ -80,4 +80,4 @@ Sx_all = np.array(pool.map(calc_coefficient,range(real_spec_all.shape[0])))
 print(Sx_all.shape)
 
 # save results
-np.save("../Sx_all_validation_dense.npy", Sx_all)
+np.save("../Sx_all_normal_dense.npy", Sx_all)
