@@ -8,14 +8,14 @@ from multiprocessing import Pool
 
 #===============================================================================================
 # load light curves
-temp = np.load("../SDSS_DR14_qso_mock_normal_dense.npz")
+temp = np.load("../SDSS_DR14_qso_mock_mixed_dense.npz")
 t_array = temp["t_array"]
 real_spec_all = temp["light_curve"]
 print(real_spec_all.shape)
 
 ### change the amplitude
-#real_spec_all = real_spec_all*10.
-real_spec_all = real_spec_all + 100.
+real_spec_all = real_spec_all*10.
+#real_spec_all = real_spec_all + 100.
 
 # zero out the mean since WST is not addition invariant
 #for i in range(real_spec_all.shape[0]):
@@ -46,7 +46,6 @@ def calc_coefficient(j):
 
     # normalize, i.e. substract away the zero order coefficients
     #real_spec = real_spec/np.mean(np.abs(real_spec))
-    real_spec = real_spec/np.var(real_spec)
 
     # make smooth template
     real_spec_smooth = np.copy(real_spec)
@@ -81,4 +80,4 @@ Sx_all = np.array(pool.map(calc_coefficient,range(real_spec_all.shape[0])))
 print(Sx_all.shape)
 
 # save results
-np.save("../Sx_all_normal_dense_add100.npy", Sx_all)
+np.save("../Sx_all_mixed_dense_x10.npy", Sx_all)
