@@ -45,7 +45,7 @@ def calc_coefficient(j):
     time_stamp = t_array[j,:]
 
     # normalize, i.e. substract away the zero order coefficients
-    #real_spec = real_spec/np.mean(np.abs(real_spec))
+    real_spec = real_spec/np.mean(np.abs(real_spec))
 
     # make smooth template
     real_spec_smooth = np.copy(real_spec)
