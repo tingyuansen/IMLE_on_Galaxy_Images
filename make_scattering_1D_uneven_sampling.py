@@ -48,7 +48,7 @@ def calc_coefficient(j):
     #real_spec = real_spec/np.mean(np.abs(real_spec))
 
     ### make additive invariant
-    real_spec = real_spec - np.mean(real_spec)
+    real_spec = real_spec - np.mean(np.abs(real_spec))
 
     # make smooth template
     real_spec_smooth = np.copy(real_spec)
