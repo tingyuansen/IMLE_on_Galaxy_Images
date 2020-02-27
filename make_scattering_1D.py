@@ -26,14 +26,6 @@ print(real_spec.shape)
 real_spec = real_spec*10.
 #real_spec = real_spec + 100.
 
-## mix two modes
-#real_spec = (real_spec[:,:] + real_spec[::-1,:])
-#real_spec = -2.5*np.log10(10**(-real_spec[:,:]/2.5)+ 10**(-real_spec[::-1,:]/2.5))
-
-# zero out the mean since WST is not addition invariant
-for i in range(real_spec.shape[0]):
-    real_spec[i,:] = real_spec[i,:] - np.mean(real_spec[i,:])
-
 
 #================================================================================================
 # define wavelet scattering hyperparameters
@@ -63,9 +55,5 @@ Sx_all = Sx_all.cpu().numpy()
 for i in range(Sx_all.shape[0]):
     Sx_all[i,:] = Sx_all[i,:]/np.abs(Sx_all[i,0])
 
-# take log to normalize the coefficient better
-Sx_all = np.log10(Sx_all[:,1:])
-print(Sx_all.shape)
-
 # save results
-np.save("../Sx_all_normal_dense_x10.npy", Sx_all)
+np.save("../Sx_all_normal_dense_x10.npy", Sx_all[:,1:])
