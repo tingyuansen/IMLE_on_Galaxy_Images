@@ -15,7 +15,7 @@ import numpy as np
 
 #===============================================================================================
 # load light curves
-temp = np.load("../SDSS_DR14_qso_mock_normal_dense.npz")
+temp = np.load("../SDSS_DR14_qso_mock_validation_dense.npz")
 real_spec = temp["light_curve"]
 print(real_spec.shape)
 
@@ -56,4 +56,4 @@ for i in range(Sx_all.shape[0]):
     Sx_all[i,:] = Sx_all[i,:]/np.abs(Sx_all[i,0])
 
 # save results
-np.save("../Sx_all_normal_dense.npy", Sx_all[:,1:])
+np.save("../Sx_all_validation_dense.npy", Sx_all[:,1:])
