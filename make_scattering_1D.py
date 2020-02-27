@@ -56,4 +56,4 @@ for i in range(Sx_all.shape[0]):
     Sx_all[i,:] = Sx_all[i,:]/np.abs(Sx_all[i,0])
 
 # save results
-np.save("../Sx_all_normal_dense_x10.npy", Sx_all[:,1:])
+np.save("../Sx_all_normal_dense.npy", Sx_all[:,1:])
