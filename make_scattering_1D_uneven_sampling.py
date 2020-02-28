@@ -8,7 +8,7 @@ from multiprocessing import Pool
 
 #===============================================================================================
 # load light curves
-temp = np.load("../SDSS_DR14_qso_mock_normal_sparse.npz")
+temp = np.load("../SDSS_DR14_qso_mock_normal_sparse.npz", allow_pickle=True)
 t_array = temp["t_array"]
 real_spec_all = temp["light_curve"]
 print(real_spec_all.shape)
