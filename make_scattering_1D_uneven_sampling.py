@@ -9,7 +9,7 @@ from multiprocessing import Pool
 #===============================================================================================
 # choose a ZTF time step
 temp = np.load("../SDSS_DR14_qso_mock_normal_sparse.npz", allow_pickle=True)
-ztf_time = temp["t_array"][164]
+ztf_time = temp["t_array"][133]
 ztf_time = np.unique((ztf_time*10).astype("int"))
 print(ztf_time.shape)
 
