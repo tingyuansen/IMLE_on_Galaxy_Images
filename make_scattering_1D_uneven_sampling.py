@@ -16,8 +16,10 @@ print(ztf_time.shape)
 
 # load light curves
 temp = np.load("../SDSS_DR14_qso_mock_normal_dense.npz")
-t_array = temp["t_array"][:,ztf_time]
-real_spec_all = temp["light_curve"][:,ztf_time]
+t_array = temp["t_array"]
+real_spec_all = temp["light_curve"]
+#t_array = temp["t_array"][:,ztf_time]
+#real_spec_all = temp["light_curve"][:,ztf_time]
 print(real_spec_all.shape)
 
 ### change the amplitude
