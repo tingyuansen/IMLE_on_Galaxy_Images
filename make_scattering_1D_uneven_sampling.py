@@ -9,7 +9,7 @@ from multiprocessing import Pool
 #===============================================================================================
 # choose a ZTF time step
 temp = np.load("../SDSS_DR14_qso_mock_normal_sparse.npz", allow_pickle=True)
-ztf_time = temp["t_array"][133]
+ztf_time = temp["t_array"][164]
 ztf_time = np.unique((ztf_time*10).astype("int"))
 print(ztf_time.shape)
 
@@ -20,7 +20,7 @@ real_spec_all = temp["light_curve"][:,ztf_time]
 print(real_spec_all.shape)
 
 ### change the amplitude
-real_spec_all = real_spec_all*10.
+#real_spec_all = real_spec_all*10.
 #real_spec_all = real_spec_all + 100.
 
 # zero out the mean since WST is not addition invariant
