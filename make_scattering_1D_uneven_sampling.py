@@ -41,8 +41,8 @@ def calc_coefficient(j):
     Sx_all_temp = []
 
     # choose a spectrum
-    real_spec = real_spec_all[j,:]
-    time_stamp = t_array[j,:]
+    real_spec = real_spec_all[j]
+    time_stamp = t_array[j]
 
     # make multiplicative invariant
     # by default it is additive invariant
