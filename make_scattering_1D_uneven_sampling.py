@@ -9,8 +9,9 @@ from multiprocessing import Pool
 #===============================================================================================
 # choose a ZTF time step
 temp = np.load("../SDSS_DR14_qso_mock_normal_sparse.npz", allow_pickle=True)
-ztf_time = temp["t_array"][164]
-ztf_time = np.unique((ztf_time*10).astype("int"))
+ztf_time = temp["t_array"]
+#ztf_time = temp["t_array"][164]
+#ztf_time = np.unique((ztf_time*10).astype("int"))
 print(ztf_time.shape)
 
 # load light curves
@@ -46,9 +47,12 @@ def calc_coefficient(j):
     # array collect coefficients
     Sx_all_temp = []
 
+    # choose time step
+    choose_step = np.unique((ztf_time[j]*10).astype("int"))
+
     # choose a spectrum
-    real_spec = real_spec_all[j]
-    time_stamp = t_array[j]
+    real_spec = real_spec_all[j][choose_step]
+    time_stamp = t_array[j][choose_step]
 
     # make multiplicative invariant
     # by default it is additive invariant
