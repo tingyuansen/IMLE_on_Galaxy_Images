@@ -15,7 +15,7 @@ import numpy as np
 
 #===============================================================================================
 # load light curves
-temp = np.load("../SDSS_DR14_qso_mock_validation_dense.npz")
+temp = np.load("../SDSS_DR14_qso_mock_normal_dense.npz")
 real_spec = temp["light_curve"]
 print(real_spec.shape)
 
@@ -24,7 +24,7 @@ print(real_spec.shape)
 
 ### change the amplitude
 #real_spec = real_spec*10.
-#real_spec = real_spec + 100.
+real_spec = real_spec + 100.
 
 
 #================================================================================================
@@ -58,4 +58,4 @@ Sx_all = Sx_all.cpu().numpy()
 # the default is additive invariant
 
 # save results
-np.save("../Sx_all_validation_dense.npy", Sx_all[:,1:])
+np.save("../Sx_all_normal_dense_add100.npy", Sx_all[:,1:])
