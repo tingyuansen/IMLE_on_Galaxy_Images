@@ -11,15 +11,15 @@ from multiprocessing import Pool
 temp = np.load("../SDSS_DR14_qso_mock_normal_sparse.npz", allow_pickle=True)
 ztf_time = temp["t_array"]
 ztf_time = temp["t_array"][164]
-choose_step = np.unique((ztf_time*10).astype("int"))
-print(choose_step.shape)
-
-# make a denser sampling
-for i in range(5):
-    choose_step = np.concatenate([choose_step,choose_step+3*i])
-choose_step = np.unique(choose_step)
-choose_step = choose_step[choose_step < 10000]
-print(choose_step.shape)
+# choose_step = np.unique((ztf_time*10).astype("int"))
+# print(choose_step.shape)
+#
+# # make a denser sampling
+# for i in range(5):
+#     choose_step = np.concatenate([choose_step,choose_step+3*i])
+# choose_step = np.unique(choose_step)
+# choose_step = choose_step[choose_step < 10000]
+# print(choose_step.shape)
 
 # load light curves
 temp = np.load("../SDSS_DR14_qso_mock_normal_dense.npz")
@@ -51,9 +51,18 @@ def calc_coefficient(j):
     # array collect coefficients
     Sx_all_temp = []
 
+#-----------------------------------------------------------------------------------------------
     # choose time step
-    #choose_step = np.unique((ztf_time[j]*10).astype("int"))
+    choose_step = np.unique((ztf_time[j]*10).astype("int"))
 
+    # make a denser sampling
+    for i in range(5):
+        choose_step = np.concatenate([choose_step,choose_step+3*i])
+    choose_step = np.unique(choose_step)
+    choose_step = choose_step[choose_step < 10000]
+    print(choose_step.shape)
+
+#-----------------------------------------------------------------------------------------------
     # choose a spectrum
     # real_spec = real_spec_all[j]
     # time_stamp = t_array[j]
