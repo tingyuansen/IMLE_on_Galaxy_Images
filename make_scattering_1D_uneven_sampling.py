@@ -10,9 +10,15 @@ from multiprocessing import Pool
 # choose a ZTF time step
 temp = np.load("../SDSS_DR14_qso_mock_normal_sparse.npz", allow_pickle=True)
 ztf_time = temp["t_array"]
-# ztf_time = temp["t_array"][164]
-# choose_step = np.unique((ztf_time*10).astype("int"))
-# print(choose_step.shape)
+ztf_time = temp["t_array"][164]
+choose_step = np.unique((ztf_time*10).astype("int"))
+print(choose_step.shape)
+
+# make a denser sampling
+for i in range(10):
+    choose_step = np.concatenate([choose_step,choose_step+i])
+choose_step = np.unique(choose_step)
+choose_step = choose_step[choose_step < 10000]
 
 # load light curves
 temp = np.load("../SDSS_DR14_qso_mock_validation_dense.npz")
@@ -46,11 +52,7 @@ def calc_coefficient(j):
 
     # choose time step
     #choose_step = np.unique((ztf_time[j]*10).astype("int"))
-    choose_step = np.unique((ztf_time[164]*10).astype("int"))
-    print(choose_step.shape)
-    choose_step = np.concatenate([choose_step,choose_step+1])
-    print(choose_step.shape)
-    
+
     # choose a spectrum
     # real_spec = real_spec_all[j]
     # time_stamp = t_array[j]
