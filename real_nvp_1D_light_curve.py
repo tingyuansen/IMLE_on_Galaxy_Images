@@ -16,7 +16,14 @@ from scipy import interpolate
 # read scattering coefficents
 y_tr = np.load("../Sx_all_normal_dense.npy")
 y_tr = np.log10(y_tr)
-#y_tr[:,4:] = np.random.normal(size=(1000,3))
+
+# exclude entries with nan (no small scale)
+valid_entry = []
+for i in range(y_tr.shape[0]):
+    if np.sum(np.isnan(y_tr[i,:])) == 0:
+        valid_entry.append(i)
+y_tr = y_tr[valid_entry,:]
+print(y_tr.shape)
 
 # convert into torch
 y_tr = torch.from_numpy(y_tr).type(torch.cuda.FloatTensor)
