@@ -67,8 +67,8 @@ class RealNVP(nn.Module):
 # In [3]:
 # define network
 device = torch.device("cuda")
-num_neurons = 300
-#num_neurons = 50
+#num_neurons = 300
+num_neurons = 50
 
 # input dimension
 dim_in = y_tr.shape[-1]
@@ -81,8 +81,8 @@ nett = lambda: nn.Sequential(nn.Linear(dim_in, num_neurons), nn.LeakyReLU(),\
                              nn.Linear(num_neurons, dim_in)).cuda()
 
 # define mask
-num_layers = 10
-#num_layers = 5
+#num_layers = 10
+num_layers = 5
 masks = []
 for i in range(num_layers):
     mask_layer = np.random.randint(2,size=(dim_in))
@@ -103,7 +103,7 @@ flow.cuda()
 #=======================================================================================================
 # In [4]
 # number of epoch and batch size
-num_epochs = 20001
+num_epochs = 10001
 batch_size = 512
 
 # break into batches
