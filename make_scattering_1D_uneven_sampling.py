@@ -19,6 +19,7 @@ for i in range(10):
     choose_step = np.concatenate([choose_step,choose_step+i])
 choose_step = np.unique(choose_step)
 choose_step = choose_step[choose_step < 10000]
+print(choose_step.shape)
 
 # load light curves
 temp = np.load("../SDSS_DR14_qso_mock_validation_dense.npz")
