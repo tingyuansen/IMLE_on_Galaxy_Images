@@ -47,10 +47,10 @@ def calc_coefficient(j):
     choose_step = np.unique((ztf_time[j]*10).astype("int"))
 
     # choose a spectrum
-    real_spec = real_spec_all[j]
-    time_stamp = t_array[j]
-    #real_spec = real_spec_all[j][choose_step]
-    #time_stamp = t_array[j][choose_step]
+    # real_spec = real_spec_all[j]
+    # time_stamp = t_array[j]
+    real_spec = real_spec_all[j][choose_step]
+    time_stamp = t_array[j][choose_step]
 
     # make multiplicative invariant
     # by default it is additive invariant
