@@ -48,7 +48,7 @@ def calc_coefficient(j):
     #choose_step = np.unique((ztf_time[j]*10).astype("int"))
     choose_step = np.unique((ztf_time[164]*10).astype("int"))
     print(choose_step.shape)
-    choose_step = np.concanate([choose_step,choose_step+1])
+    choose_step = np.concatenate([choose_step,choose_step+1])
     print(choose_step.shape)
     
     # choose a spectrum
