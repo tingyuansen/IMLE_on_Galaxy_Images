@@ -24,7 +24,7 @@ from scipy import interpolate
 
 y_tr = np.load("../Sx_all_normal_dense.npy")
 y_tr = np.log10(y_tr)
-y_tr[:,1:] = np.random.normal(size=(1000,6))
+y_tr[:,3:] = np.random.normal(size=(1000,5))
 
 #y_tr = np.random.normal(size=(1000,7))*10.
 
