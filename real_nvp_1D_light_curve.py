@@ -15,14 +15,13 @@ from scipy import interpolate
 #========================================================================================================
 # read scattering coefficents
 y_tr = np.load("../Sx_all_normal_dense.npy")
-#y_tr[y_tr == 0] = np.median(y_tr)
 y_tr[y_tr == 0] = 1.
 y_tr = np.log10(y_tr)
 
 # take median
 for i in range(y_tr.shape[0]):
     y_tr[i,:4] = np.median(y_tr[i,:4])
-    
+
 # convert into torch
 y_tr = torch.from_numpy(y_tr).type(torch.cuda.FloatTensor)
 
@@ -72,8 +71,8 @@ class RealNVP(nn.Module):
 # In [3]:
 # define network
 device = torch.device("cuda")
-#num_neurons = 300
-num_neurons = 50
+num_neurons = 10
+#num_neurons = 50
 
 # input dimension
 dim_in = y_tr.shape[-1]
@@ -86,8 +85,8 @@ nett = lambda: nn.Sequential(nn.Linear(dim_in, num_neurons), nn.LeakyReLU(),\
                              nn.Linear(num_neurons, dim_in)).cuda()
 
 # define mask
-#num_layers = 10
-num_layers = 5
+num_layers = 2
+#num_layers = 5
 masks = []
 for i in range(num_layers):
     mask_layer = np.random.randint(2,size=(dim_in))
