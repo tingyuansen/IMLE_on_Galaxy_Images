@@ -8,11 +8,11 @@ from multiprocessing import Pool
 
 #===============================================================================================
 # choose a ZTF time step
-temp = np.load("../SDSS_DR14_qso_mock_normal_sparse.npz", allow_pickle=True)
-ztf_time = temp["t_array"]
-ztf_time = temp["t_array"][164]
-choose_step = np.unique((ztf_time*10).astype("int"))
-print(choose_step.shape)
+# temp = np.load("../SDSS_DR14_qso_mock_normal_sparse.npz", allow_pickle=True)
+# ztf_time = temp["t_array"]
+# ztf_time = temp["t_array"][164]
+# choose_step = np.unique((ztf_time*10).astype("int"))
+# print(choose_step.shape)
 
 # load light curves
 temp = np.load("../SDSS_DR14_qso_mock_validation_dense.npz")
@@ -27,7 +27,7 @@ print(real_spec_all.shape)
 
 #================================================================================================
 # choose windows of convolution (in unit of days)
-window_array = 10.**np.linspace(-1,2,7)[::-1][:4]
+window_array = 10.**np.linspace(-1,2,7)[::-1]
 
 
 #================================================================================================
