@@ -79,6 +79,7 @@ def calc_coefficient(j):
 
     # export results
     Sx_all_temp = np.array(Sx_all_temp)
+    
     return Sx_all_temp
 
 #-----------------------------------------------------------------------------------------------
