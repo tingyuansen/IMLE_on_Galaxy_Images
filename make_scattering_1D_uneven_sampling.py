@@ -16,7 +16,7 @@ print(choose_step.shape)
 
 # make a denser sampling
 for i in range(5):
-    choose_step = np.concatenate([choose_step,choose_step+5*i])
+    choose_step = np.concatenate([choose_step,choose_step+3*i])
 choose_step = np.unique(choose_step)
 choose_step = choose_step[choose_step < 10000]
 print(choose_step.shape)
