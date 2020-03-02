@@ -14,18 +14,9 @@ from scipy import interpolate
 
 #========================================================================================================
 # read scattering coefficents
-# y_tr = np.load("../Sx_all_normal_dense.npy")
-# y_tr[y_tr == 0] = 1.
-# y_tr = np.log10(y_tr)
-#
-# # take median
-# for i in range(y_tr.shape[0]):
-#     y_tr[i,:4] = np.median(y_tr[i,:4])
-
 y_tr = np.load("../Sx_all_normal_dense.npy")
 y_tr = np.log10(y_tr)
-#y_tr[:,4:] = 1.
-y_tr[:,4:] = np.random.normal(size=(1000,3))
+#y_tr[:,4:] = np.random.normal(size=(1000,3))
 
 # convert into torch
 y_tr = torch.from_numpy(y_tr).type(torch.cuda.FloatTensor)

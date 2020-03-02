@@ -8,16 +8,16 @@ from multiprocessing import Pool
 
 #===============================================================================================
 # choose a ZTF time step
-# temp = np.load("../SDSS_DR14_qso_mock_normal_sparse.npz", allow_pickle=True)
-# ztf_time = temp["t_array"]
+temp = np.load("../SDSS_DR14_qso_mock_normal_sparse.npz", allow_pickle=True)
+ztf_time = temp["t_array"]
 # ztf_time = temp["t_array"][164]
 # choose_step = np.unique((ztf_time*10).astype("int"))
 # print(choose_step.shape)
 
 # load light curves
 temp = np.load("../SDSS_DR14_qso_mock_normal_dense.npz")
-t_array = temp["t_array"][:,::10]
-real_spec_all = temp["light_curve"][:,::10]
+t_array = temp["t_array"]
+real_spec_all = temp["light_curve"]
 print(real_spec_all.shape)
 
 ### change the amplitude
@@ -44,7 +44,7 @@ def calc_coefficient(j):
     Sx_all_temp = []
 
     # choose time step
-    #choose_step = np.unique((ztf_time[j]*10).astype("int"))
+    choose_step = np.unique((ztf_time[j]*10).astype("int"))
 
     # choose a spectrum
     real_spec = real_spec_all[j]
