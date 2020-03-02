@@ -47,7 +47,10 @@ def calc_coefficient(j):
     # choose time step
     #choose_step = np.unique((ztf_time[j]*10).astype("int"))
     choose_step = np.unique((ztf_time[164]*10).astype("int"))
-
+    print(choose_step.shape)
+    choose_step = np.concanate([choose_step,choose_step+1])
+    print(choose_step.shape)
+    
     # choose a spectrum
     # real_spec = real_spec_all[j]
     # time_stamp = t_array[j]
