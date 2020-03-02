@@ -22,7 +22,7 @@ from scipy import interpolate
 # for i in range(y_tr.shape[0]):
 #     y_tr[i,:4] = np.median(y_tr[i,:4])
 
-y_tr = np.random.normal(size=(1000,7))
+y_tr = np.random.normal(size=(1000,7))*10.
 
 # convert into torch
 y_tr = torch.from_numpy(y_tr).type(torch.cuda.FloatTensor)
