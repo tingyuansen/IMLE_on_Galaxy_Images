@@ -24,8 +24,8 @@ from scipy import interpolate
 
 y_tr = np.load("../Sx_all_normal_dense.npy")
 y_tr = np.log10(y_tr)
-y_tr[:,4:] = 1.
-#y_tr[:,4:] = np.random.normal(size=(1000,3))
+#y_tr[:,4:] = 1.
+y_tr[:,4:] = np.random.normal(size=(1000,3))
 
 # convert into torch
 y_tr = torch.from_numpy(y_tr).type(torch.cuda.FloatTensor)
