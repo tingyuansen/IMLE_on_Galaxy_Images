@@ -16,7 +16,7 @@ from scipy import interpolate
 # read scattering coefficents
 y_tr = np.load("../Sx_all_normal_dense.npy")
 #y_tr[y_tr == 0] = np.median(y_tr)
-y_tr[y_tr == 0] = 0.
+y_tr[y_tr == 0] = 1.
 y_tr = np.log10(y_tr)
 
 # convert into torch
