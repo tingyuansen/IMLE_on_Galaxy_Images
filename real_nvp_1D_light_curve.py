@@ -18,13 +18,6 @@ y_tr = np.load("../Sx_all_normal_dense.npy")
 y_tr[y_tr == 0] = np.median(y_tr)
 y_tr = np.log10(y_tr)
 
-# read GP coefficients
-#y_tr = np.load("../kernel_param_mock_normal_dt=0.001.npy")
-
-# restore Lomb Scargle coefficients
-# temp = np.load("../g_lomb_scargle_normal.npz")
-# y_tr = temp["power_added"]
-
 # convert into torch
 y_tr = torch.from_numpy(y_tr).type(torch.cuda.FloatTensor)
 
@@ -112,7 +105,6 @@ flow.cuda()
 # number of epoch and batch size
 num_epochs = 10001
 batch_size = 512
-
 
 # break into batches
 nsamples = y_tr.shape[0]
