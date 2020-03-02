@@ -20,7 +20,7 @@ y_tr = np.log10(y_tr)
 # exclude entries with nan (no small scale)
 valid_entry = []
 for i in range(y_tr.shape[0]):
-    if np.sum(np.isnan(y_tr[i,:])) == 0:
+    if np.sum(np.isfinite(y_tr[i,:])) == y_tr.shape[1]:
         valid_entry.append(i)
 y_tr = y_tr[valid_entry,:]
 print(y_tr.shape)
