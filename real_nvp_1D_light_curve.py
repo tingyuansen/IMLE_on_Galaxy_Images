@@ -17,16 +17,26 @@ from scipy import interpolate
 y_tr = np.load("../Sx_all_normal_dense.npy")
 y_tr = np.log10(y_tr)
 
+#-------------------------------------------------------------------------------------------------------
+### make linear regression
+intercept_1 = []
+for i in range(Sx_coefficient.shape[0]):
+    slope, intercept, dummy, dummy, dummy = stats.linregress(np.arange(y_tr.shape[1]),y_tr[i,:])
+    intercept_1.append(intercept)
+intercept_1 = np.array(intercept_1)
+
 ### eliminate the other information
+y_tr[:,0] = intercept_1
 y_tr[:,1:] = np.random.normal(size=y_tr[:,1:].shape)
 
+#-------------------------------------------------------------------------------------------------------
 # exclude entries with nan (no small scale)
-valid_entry = []
-for i in range(y_tr.shape[0]):
-    if np.sum(np.isfinite(y_tr[i,:])) == y_tr.shape[1]:
-        valid_entry.append(i)
-y_tr = y_tr[valid_entry,:]
-print(y_tr.shape)
+# valid_entry = []
+# for i in range(y_tr.shape[0]):
+#     if np.sum(np.isfinite(y_tr[i,:])) == y_tr.shape[1]:
+#         valid_entry.append(i)
+# y_tr = y_tr[valid_entry,:]
+# print(y_tr.shape)
 
 # convert into torch
 y_tr = torch.from_numpy(y_tr).type(torch.cuda.FloatTensor)
@@ -90,6 +100,7 @@ nett = lambda: nn.Sequential(nn.Linear(dim_in, num_neurons), nn.LeakyReLU(),\
                              nn.Linear(num_neurons, num_neurons), nn.LeakyReLU(),\
                              nn.Linear(num_neurons, dim_in)).cuda()
 
+#-------------------------------------------------------------------------------------------------------
 # define mask
 #num_layers = 10
 num_layers = 5
