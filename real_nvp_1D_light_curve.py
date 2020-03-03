@@ -25,10 +25,10 @@ y_tr = np.log10(y_tr)
 #     slope, intercept, dummy, dummy, dummy = stats.linregress(np.arange(y_tr.shape[1]),y_tr[i,:])
 #     intercept_1.append(intercept)
 # intercept_1 = np.array(intercept_1)
-#
-# ### eliminate the other information
 # y_tr[:,0] = intercept_1
-# y_tr[:,1:] = np.random.normal(size=y_tr[:,1:].shape)
+
+# ### eliminate the other information
+y_tr[:,3:5] = np.random.normal(size=y_tr[:,3:5].shape)
 
 #-------------------------------------------------------------------------------------------------------
 # exclude entries with nan (no small scale)
