@@ -35,7 +35,7 @@ def calc_coefficient(j):
 #-----------------------------------------------------------------------------------------------
     # choose a spectrum
     real_spec = real_spec_all[j]
-    time_stamp = t_array[j]
+    #time_stamp = t_array[j]
 
 #-------------------------------------------------------------------------------------
     # zero order coefficient
