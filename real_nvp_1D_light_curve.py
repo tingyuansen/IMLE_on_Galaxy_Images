@@ -17,6 +17,9 @@ from scipy import interpolate
 y_tr = np.load("../Sx_all_normal_dense.npy")
 y_tr = np.log10(y_tr)
 
+### eliminate the other information
+y_tr[:,1:] = np.random.normal(size=y_tr[:,1:].shape)
+
 # exclude entries with nan (no small scale)
 valid_entry = []
 for i in range(y_tr.shape[0]):
