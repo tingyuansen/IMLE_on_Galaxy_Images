@@ -20,7 +20,7 @@ y_tr = np.log10(y_tr)
 #-------------------------------------------------------------------------------------------------------
 ### make linear regression
 intercept_1 = []
-for i in range(Sx_coefficient.shape[0]):
+for i in range(y_tr.shape[0]):
     slope, intercept, dummy, dummy, dummy = stats.linregress(np.arange(y_tr.shape[1]),y_tr[i,:])
     intercept_1.append(intercept)
 intercept_1 = np.array(intercept_1)
