@@ -7,13 +7,28 @@ from multiprocessing import Pool
 
 
 #===============================================================================================
+# choose a ZTF time step
+temp = np.load("../SDSS_DR14_qso_mock_normal_sparse.npz", allow_pickle=True)
+ztf_time = temp["t_array"]
+#ztf_time = temp["t_array"][164]
+#choose_step = np.unique((ztf_time*10).astype("int"))
+# print(choose_step.shape)
+#
+# # make a denser sampling
+# for i in range(5):
+#     choose_step = np.concatenate([choose_step,choose_step+3*i])
+# choose_step = np.unique(choose_step)
+# choose_step = choose_step[choose_step < 10000]
+# print(choose_step.shape)
+
 # load light curves
 temp = np.load("../SDSS_DR14_qso_mock_normal_dense.npz")
+t_array = temp["t_array"]
 real_spec_all = temp["light_curve"]
 print(real_spec_all.shape)
 
 ### change the amplitude
-real_spec_all = real_spec_all*10.
+#real_spec_all = real_spec_all*10.
 
 # load kernel
 kernel = np.load("kernel_wavelet.npy")
@@ -33,9 +48,28 @@ def calc_coefficient(j):
     Sx_all_temp = []
 
 #-----------------------------------------------------------------------------------------------
+    # choose time step
+    choose_step = np.unique((ztf_time[j]*10).astype("int"))
+
+    # make a denser sampling
+    for i in range(5):
+        choose_step = np.concatenate([choose_step,choose_step+3*i])
+    choose_step = np.unique(choose_step)
+    choose_step = choose_step[choose_step < 10000]
+    print(choose_step.shape)
+
+#-----------------------------------------------------------------------------------------------
     # choose a spectrum
-    real_spec = real_spec_all[j]
+    #real_spec = real_spec_all[j]
     #time_stamp = t_array[j]
+    real_spec = real_spec_all[j][choose_step]
+    time_stamp = t_array[j][choose_step]
+
+#-----------------------------------------------------------------------------------------------
+    # interpolate fascilitate convolution
+    f_power = interpolate.interp1d(choose_step, real_spec, kind='nearest',\
+                               bounds_error=False, fill_value=(real_spec[0],real_spec[-1]))
+    real_spec = f_power(np.arange(10000))
 
 #-------------------------------------------------------------------------------------
     # zero order coefficient
@@ -65,7 +99,7 @@ def calc_coefficient(j):
             real_spec_smooth[i] = np.sum(real_spec_truncate*kernel[k+1][np.max([0,4000-i]):][:real_spec_truncate.size])
 
         # extract coefficients
-        Sx_all_temp.append(np.median(np.absolute(real_spec_smooth[100:-100])/Sx0))
+        Sx_all_temp.append(np.median(np.absolute(real_spec_smooth[choose_step])/Sx0))
 
 #-------------------------------------------------------------------------------------
     # export results
@@ -81,4 +115,4 @@ Sx_all = np.array(pool.map(calc_coefficient,range(real_spec_all.shape[0])))
 print(Sx_all.shape)
 
 # save results
-np.save("../Sx_all_normal_dense_x10.npy", Sx_all)
+np.save("../Sx_all_normal_dense.npy", Sx_all)

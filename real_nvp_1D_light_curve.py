@@ -16,23 +16,20 @@ from scipy import stats
 #========================================================================================================
 # read scattering coefficents
 y_tr = np.load("../Sx_all_normal_dense.npy")
-y_tr = np.log10(y_tr)[:,:2]
+y_tr = np.log10(y_tr)
 
 #-------------------------------------------------------------------------------------------------------
 ### make linear regression
-intercept_1 = []
-slope_1 = []
-for i in range(y_tr.shape[0]):
-    slope, intercept, dummy, dummy, dummy = stats.linregress(np.arange(y_tr.shape[1]),y_tr[i,:])
-    intercept_1.append(intercept)
-    slope_1.append(slope)
-intercept_1 = np.array(intercept_1)
-slope_1 = np.array(slope_1)
-y_tr[:,0] = intercept_1
-y_tr[:,1] = slope_1
-
-# ### eliminate the other information
-# y_tr[:,3:5] = np.random.normal(size=y_tr[:,3:5].shape)
+# intercept_1 = []
+# slope_1 = []
+# for i in range(y_tr.shape[0]):
+#     slope, intercept, dummy, dummy, dummy = stats.linregress(np.arange(y_tr.shape[1]),y_tr[i,:])
+#     intercept_1.append(intercept)
+#     slope_1.append(slope)
+# intercept_1 = np.array(intercept_1)
+# slope_1 = np.array(slope_1)
+# y_tr[:,0] = intercept_1
+# y_tr[:,1] = slope_1
 
 #-------------------------------------------------------------------------------------------------------
 # exclude entries with nan (no small scale)

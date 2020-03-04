@@ -27,7 +27,6 @@ t_array = temp["t_array"]
 real_spec_all = temp["light_curve"]
 print(real_spec_all.shape)
 
-
 ### change the amplitude
 #real_spec_all = real_spec_all*10.
 #real_spec_all = real_spec_all + 100.
