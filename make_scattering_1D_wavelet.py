@@ -80,7 +80,7 @@ def calc_coefficient(j):
     for i in range(real_spec.size):
         real_spec_truncate = real_spec[np.max([0,i-4000]):i+4000+1]
         real_spec_smooth[i] = np.sum(real_spec_truncate*kernel[0][np.max([0,4000-i]):][:real_spec_truncate.size])
-    Sx0 = np.median(np.absolute(real_spec_smooth))
+    Sx0 = np.median(np.absolute(real_spec_smooth[choose_step]))
 
 #-------------------------------------------------------------------------------------
     # make smooth template
