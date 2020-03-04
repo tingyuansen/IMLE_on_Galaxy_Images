@@ -50,8 +50,8 @@ def calc_coefficient(j):
     choose_step = np.unique((ztf_time[j]*10).astype("int"))
 
     # make a denser sampling
-    for i in range(5):
-        choose_step = np.concatenate([choose_step,choose_step+3*i])
+    for i in range(10):
+        choose_step = np.concatenate([choose_step,choose_step+i])
     choose_step = np.unique(choose_step)
     choose_step = choose_step[choose_step < 10000]
     print(choose_step.shape)
