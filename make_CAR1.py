@@ -52,7 +52,7 @@ print(light_curve.shape)
 print(time.time()-start_time)
 
 # save results
-np.savez("../Kelley_CAR1_normal.npy",\
+np.savez("../Kelley_CAR1_validation",\
          light_curve = light_curve,\
          t_array = t_array,\
          tau_array = tau_array_1,\
