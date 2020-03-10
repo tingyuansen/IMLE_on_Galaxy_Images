@@ -112,7 +112,7 @@ def calc_coefficient(j):
 
 #-----------------------------------------------------------------------------------------------
 # number of CPU to run in parallel
-num_CPU = 64
+num_CPU = 8
 pool = Pool(num_CPU)
 Sx_all = np.array(pool.map(calc_coefficient,range(real_spec_all.shape[0])))
 print(Sx_all.shape)
