@@ -24,8 +24,8 @@ from scipy import interpolate
 
 # load light curves
 temp = np.load("../SDSS_DR14_qso_mock_normal_dense.npz")
-t_array = temp["t_array"]
-real_spec_all = temp["light_curve"]
+t_array = temp["t_array"][:,:3000]
+real_spec_all = temp["light_curve"][:,:3000]
 print(real_spec_all.shape)
 
 ### change the amplitude
