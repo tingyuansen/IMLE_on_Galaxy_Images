@@ -23,7 +23,8 @@ from scipy import interpolate
 # print(choose_step.shape)
 
 # load light curves
-temp = np.load("../SDSS_DR14_qso_mock_mixed_dense.npz")
+# temp = np.load("../SDSS_DR14_qso_mock_mixed_dense.npz")
+temp = np.load("../Kelley_CAR1_normal.npz")
 t_array = temp["t_array"][:,:3000]
 real_spec_all = temp["light_curve"][:,:3000]
 print(real_spec_all.shape)
