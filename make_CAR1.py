@@ -33,7 +33,6 @@ def make_CAR1(j):
     cov = var*np.exp(-r/tau_1)
 
     # generate light curve
-    print(cov.shape)
     y_clean_1 = np.random.multivariate_normal(c_mag,cov)
     return y_clean_1
 
