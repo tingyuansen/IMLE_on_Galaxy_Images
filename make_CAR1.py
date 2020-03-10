@@ -57,5 +57,5 @@ print(time.time()-start_time)
 np.savez("../Kelley_CAR1_normal.npy",\
          light_curve = light_curve,\
          t_array = t_array,\
-         tau_array = tau_array,\
-         sigma_array = sigma_array)
+         tau_array = tau_array_1,\
+         sigma_array = sigma_array_1)
