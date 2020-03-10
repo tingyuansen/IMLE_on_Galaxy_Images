@@ -9,8 +9,8 @@ from scipy import interpolate
 
 #===============================================================================================
 # choose a ZTF time step
-temp = np.load("../SDSS_DR14_qso_mock_normal_sparse.npz", allow_pickle=True)
-ztf_time = temp["t_array"]
+# temp = np.load("../SDSS_DR14_qso_mock_normal_sparse.npz", allow_pickle=True)
+# ztf_time = temp["t_array"]
 #ztf_time = temp["t_array"][164]
 #choose_step = np.unique((ztf_time*10).astype("int"))
 # print(choose_step.shape)
@@ -29,7 +29,7 @@ real_spec_all = temp["light_curve"]
 print(real_spec_all.shape)
 
 ### change the amplitude
-real_spec_all = real_spec_all*10.
+#real_spec_all = real_spec_all*10.
 
 
 #================================================================================================
@@ -50,21 +50,21 @@ def calc_coefficient(j):
 
 #-----------------------------------------------------------------------------------------------
     # choose time step
-    choose_step = np.unique((ztf_time[j]*10).astype("int"))
-
-    # make a denser sampling
-    for i in range(10):
-        choose_step = np.concatenate([choose_step,choose_step+i])
-    choose_step = np.unique(choose_step)
-    choose_step = choose_step[choose_step < 10000]
-    print(choose_step.shape)
+    # choose_step = np.unique((ztf_time[j]*10).astype("int"))
+    #
+    # # make a denser sampling
+    # for i in range(10):
+    #     choose_step = np.concatenate([choose_step,choose_step+i])
+    # choose_step = np.unique(choose_step)
+    # choose_step = choose_step[choose_step < 10000]
+    # print(choose_step.shape)
 
 #-----------------------------------------------------------------------------------------------
     # choose a spectrum
-    #real_spec = real_spec_all[j]
-    #time_stamp = t_array[j]
-    real_spec = real_spec_all[j][choose_step]
-    time_stamp = t_array[j][choose_step]
+    real_spec = real_spec_all[j]
+    time_stamp = t_array[j]
+    # real_spec = real_spec_all[j][choose_step]
+    # time_stamp = t_array[j][choose_step]
 
 #-----------------------------------------------------------------------------------------------
     # interpolate fascilitate convolution
@@ -116,4 +116,4 @@ Sx_all = np.array(pool.map(calc_coefficient,range(real_spec_all.shape[0])))
 print(Sx_all.shape)
 
 # save results
-np.save("../Sx_all_normal_dense_x10.npy", Sx_all)
+np.save("../Sx_all_normal_dense.npy", Sx_all)
