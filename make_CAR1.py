@@ -46,9 +46,9 @@ sigma_array_1 = 10**np.random.normal(-2.04,0.23,1000)
 #-----------------------------------------------------------------------------------------------
 # number of CPU to run in parallel
 start_time = time.time()
-num_CPU = 4
+num_CPU = 96
 pool = Pool(num_CPU)
-light_curve = np.array(pool.map(make_CAR1,range(1000)))
+light_curve = np.array(pool.map(make_CAR1,range(100)))
 print(light_curve.shape)
 print(time.time()-start_time)
 
