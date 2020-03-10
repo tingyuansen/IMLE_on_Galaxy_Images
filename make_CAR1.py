@@ -34,13 +34,39 @@ def make_CAR1(j):
 
     # generate light curve
     y_clean_1 = np.random.multivariate_normal(c_mag,cov)
-    return y_clean_1
+    #return y_clean_1
+
+#-----------------------------------------------------------------------------------------------
+    ### make the first component ###
+    tau_2 = tau_array_2[j]
+    sigma_2 = sigma_array_2[j]
+
+    # the mean scale
+    c_mag_2 = 17.
+    c_mag = c_mag_2*np.ones((n,)) # mean magnitude
+
+    # generate CAR1 covariance matrix
+    var = 0.5*tau_2*sigma_2**2
+    cov = var*np.exp(-r/tau_2)
+
+    # generate light curve
+    y_clean_2 = np.random.multivariate_normal(c_mag,cov)
+
+    # generate dual light curve
+    f1 = 10**((18-y_clean_1)/2.5)
+    f2 = 10**((18-y_clean_2)/2.5)
+    f = f1 + f2
+    y_clean = 18-2.5*np.log10(f)
+    return y_clean
 
 
 #=============================================================================================================
 # draw from distribution described in Kelley+ 09
 tau_array_1 = 10**np.random.normal(2.75,0.66,1000)
 sigma_array_1 = 10**np.random.normal(-2.04,0.23,1000)
+
+tau_array_2 = 10**np.random.normal(2.75,0.66,1000)
+sigma_array_2 = 10**np.random.normal(-2.04,0.23,1000)
 
 #-----------------------------------------------------------------------------------------------
 # number of CPU to run in parallel
@@ -51,9 +77,17 @@ light_curve = np.array(pool.map(make_CAR1,range(1000)))
 print(light_curve.shape)
 print(time.time()-start_time)
 
+#-----------------------------------------------------------------------------------------------
 # save results
+# np.savez("../Kelley_CAR1_validation",\
+#          light_curve = light_curve,\
+#          t_array = t_array,\
+#          tau_array = tau_array_1,\
+#          sigma_array = sigma_array_1)
 np.savez("../Kelley_CAR1_validation",\
          light_curve = light_curve,\
          t_array = t_array,\
-         tau_array = tau_array_1,\
-         sigma_array = sigma_array_1)
+         tau_array_1 = tau_array_1,\
+         sigma_array_1 = sigma_array_1,\
+         tau_array_2 = tau_array_2,\
+         sigma_array_2 = sigma_array_2)
