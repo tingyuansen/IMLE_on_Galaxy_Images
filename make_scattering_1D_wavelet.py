@@ -66,11 +66,10 @@ def calc_coefficient(j):
     # real_spec = real_spec_all[j][choose_step]
     # time_stamp = t_array[j][choose_step]
 
-#-----------------------------------------------------------------------------------------------
     # interpolate fascilitate convolution
-    f_power = interpolate.interp1d(choose_step, real_spec, kind='nearest',\
-                               bounds_error=False, fill_value=(real_spec[0],real_spec[-1]))
-    real_spec = f_power(np.arange(10000))
+    # f_power = interpolate.interp1d(choose_step, real_spec, kind='nearest',\
+    #                            bounds_error=False, fill_value=(real_spec[0],real_spec[-1]))
+    # real_spec = f_power(np.arange(10000))
 
 #-------------------------------------------------------------------------------------
     # zero order coefficient
