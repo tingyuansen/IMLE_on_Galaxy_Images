@@ -9,7 +9,7 @@ from multiprocessing import Pool
 duration = 1000
 
 # define time array
-t_clean = np.linspace(0, duration-0.1, int(duration*10.)) # cadence of 0.1 day
+t_clean = np.linspace(0, duration-0.1, int(duration)) # cadence of 0.1 day
 t_array = np.repeat(t_clean,1000).reshape(t_clean.size,1000).T
 r = np.fabs(t_clean[:,None] - t_clean[None,:])
 n = len(t_clean)
