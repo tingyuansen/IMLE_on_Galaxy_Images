@@ -84,7 +84,7 @@ print(time.time()-start_time)
 #          t_array = t_array,\
 #          tau_array = tau_array_1,\
 #          sigma_array = sigma_array_1)
-np.savez("../Kelley_CAR1_validation",\
+np.savez("../Kelley_CAR1_mixed",\
          light_curve = light_curve,\
          t_array = t_array,\
          tau_array_1 = tau_array_1,\
