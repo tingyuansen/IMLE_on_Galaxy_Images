@@ -18,8 +18,8 @@ n = len(t_clean)
 #=============================================================================================================
 # make continuous autoregressive model 1
 def make_CAR1(j):
-
     print(j)
+
     ### make the first component ###
     tau_1 = tau_array_1[j]
     sigma_1 = sigma_array_1[j]
@@ -31,7 +31,6 @@ def make_CAR1(j):
     # generate CAR1 covariance matrix
     var = 0.5*tau_1*sigma_1**2
     cov = var*np.exp(-r/tau_1)
-    print(cov.shape)
 
     # generate light curve
     y_clean_1 = np.random.multivariate_normal(c_mag,cov)
@@ -48,7 +47,7 @@ sigma_array_1 = 10**np.random.normal(-2.04,0.23,1000)
 #-----------------------------------------------------------------------------------------------
 # number of CPU to run in parallel
 start_time = time.time()
-num_CPU = 4
+num_CPU = 2
 pool = Pool(num_CPU)
 light_curve = np.array(pool.map(make_CAR1,range(10)))
 print(light_curve.shape)
