@@ -23,7 +23,7 @@ from scipy import interpolate
 # print(choose_step.shape)
 
 # load light curves
-temp = np.load("../SDSS_DR14_qso_mock_normal_dense.npz")
+temp = np.load("../SDSS_DR14_qso_mock_validation_dense.npz")
 t_array = temp["t_array"][:,:3000]
 real_spec_all = temp["light_curve"][:,:3000]
 print(real_spec_all.shape)
@@ -117,4 +117,4 @@ Sx_all = np.array(pool.map(calc_coefficient,range(real_spec_all.shape[0])))
 print(Sx_all.shape)
 
 # save results
-np.save("../Sx_all_normal_dense.npy", Sx_all)
+np.save("../Sx_all_validation_dense.npy", Sx_all)
