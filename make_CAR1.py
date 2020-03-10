@@ -6,7 +6,7 @@ from multiprocessing import Pool
 
 #=============================================================================================================
 # duration in day
-duration = 100
+duration = 300
 
 # define time array
 t_clean = np.linspace(0, duration-0.1, int(duration*10)) # cadence of 0.1 day
