@@ -62,11 +62,15 @@ def make_CAR1(j):
 
 #=============================================================================================================
 # draw from distribution described in Kelley+ 09
-tau_array_1 = 10**np.random.normal(2.75,0.66,1000)
-sigma_array_1 = 10**np.random.normal(-2.04,0.23,1000)
+#tau_array_1 = 10**np.random.normal(2.75,0.66,1000)
+#sigma_array_1 = 10**np.random.normal(-2.04,0.23,1000)
+tau_array_1 = 10**np.random.normal(2.75,0.06,1000)
+sigma_array_1 = 10**np.random.normal(-2.04,0.02,1000)
 
-tau_array_2 = 10**np.random.normal(2.75,0.66,1000)
-sigma_array_2 = 10**np.random.normal(-2.04,0.23,1000)
+#tau_array_2 = 10**np.random.normal(2.75,0.66,1000)
+#sigma_array_2 = 10**np.random.normal(-2.04,0.23,1000)
+tau_array_2 = 10**np.random.normal(2.75,0.06,1000)
+sigma_array_2 = 10**np.random.normal(-2.04,0.02,1000)
 
 #-----------------------------------------------------------------------------------------------
 # number of CPU to run in parallel
