@@ -84,7 +84,7 @@ def make_CAR1(j):
     log_sigma2 = log_tau_sigma2 - log_tau
     samples = np.vstack([log_tau,(log_sigma2-np.log(2))/2.]).T
 
-    return np.median(samples,axis=0), np.std(samples,axis=0), std_Pred
+    return np.median(samples,axis=0), np.std(samples,axis=0), stdPred
 
 
 #=============================================================================================================
