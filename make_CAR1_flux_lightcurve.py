@@ -92,13 +92,14 @@ def make_CAR1(j):
 
 
 #=============================================================================================================
+# CAR(1) parameters in magnitude space
+tau_1_array = 10**np.random.normal(2.75,0.66,size=1000)
+sigma_1_array = 10**np.random.normal(-2.04,0.23,size=1000)
+
 # number of CPU to run in parallel
 num_CPU = 96
 pool = Pool(num_CPU)
 results = pool.map(make_CAR1,range(1000))
-
-tau_1_array = 10**np.random.normal(2.75,0.66,size=1000)
-sigma_1_array = 10**np.random.normal(-2.04,0.23,size=1000)
 
 # save results
 np.savez("../Flux_CAR1",\
