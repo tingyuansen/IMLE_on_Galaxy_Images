@@ -40,6 +40,10 @@ def make_CAR1(j):
     # convert into flux
     y_clean_1 = 10**((18-y_clean_1)/2.5)
 
+    # add noise
+    err = 0.25
+    y_clean_1 = y_clean_1 + np.random.normal(0,err,len(y_clean_1))
+
 #--------------------------------------------------------------------------------------------------------
     # define likelihood
     def neg_log_like(params, y, gp):
@@ -59,7 +63,7 @@ def make_CAR1(j):
     bounds = {"log_a": (-30,10), "log_c": (-20,0)}
     kernel = celerite.terms.RealTerm(log_a=4, log_c=-15, bounds=bounds)
     gp = celerite.GP(kernel, c_mag_1)
-    gp.compute(t_clean)
+    gp.compute(t_clean, yerr=err)
     init = gp.get_parameter_vector()
     bounds = gp.get_parameter_bounds()
     r = minimize(neg_log_like, init, method="L-BFGS-B", bounds=bounds, args=(y_clean_1, gp))
