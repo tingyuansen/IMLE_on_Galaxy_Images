@@ -21,8 +21,8 @@ def make_CAR1(j):
 #------------------------------------------------------------------------------------
     ### make the first component ###
     # choosing the mean from Kelley+ 09
-    tau_1 = 10**np.random.normal(2.75,0.66)
-    sigma_1 = 10**np.random.normal(-2.04,0.23)
+    tau_1 = tau_1_array[j]
+    sigma_1 = sigma_1_array[j]
 
     # the mean scale
     c_mag_1 = 17.
@@ -96,6 +96,9 @@ def make_CAR1(j):
 num_CPU = 96
 pool = Pool(num_CPU)
 results = pool.map(make_CAR1,range(1000))
+
+tau_1_array = 10**np.random.normal(2.75,0.66,size=1000)
+sigma_1_array = 10**np.random.normal(-2.04,0.23,size=1000)
 
 # save results
 np.savez("../Flux_CAR1",\
