@@ -5,7 +5,7 @@ from The_Payne import training
 
 #==========================================================================================
 # read spectra
-temp = np.load("../H3_training_grid.npz")
+temp = np.load("../Kurucz_CK3_Optical_R=45000_MIKE.npz")
 #spectra = temp["spectra"][:,150:4433+150]
 #spectra = temp["spectra"][:,150:4375+150]
 spectra = temp["spectra"]
@@ -26,14 +26,14 @@ np.savez("../ind_shuffle_payne_h3.npz", ind_shuffle=ind_shuffle)
 # training_labels = labels[ind_shuffle,:][:18000,:]
 # validation_spectra = spectra[ind_shuffle,:][18000:,:]
 # validation_labels = labels[ind_shuffle,:][18000:,:]
-training_spectra = spectra[ind_shuffle,:][:72000,:]
-training_labels = labels[ind_shuffle,:][:72000,:]
-validation_spectra = spectra[ind_shuffle,:][72000:,:]
-validation_labels = labels[ind_shuffle,:][72000:,:]
+training_spectra = spectra[ind_shuffle,:][:18000,:]
+training_labels = labels[ind_shuffle,:][:18000,:]
+validation_spectra = spectra[ind_shuffle,:][18000:,:]
+validation_labels = labels[ind_shuffle,:][18000:,:]
 
 #----------------------------------------------------------------------------------------
 # train neural network # require GPU
 training_loss, validation_loss = training.neural_net(training_labels, training_spectra,\
                                                      validation_labels, validation_spectra,\
                                                      num_neurons=300, learning_rate=1e-4,\
-                                                     num_steps=1e7, batch_size=32, num_pixel=spectra.shape[1])
+                                                     num_steps=1e7, batch_size=128, num_pixel=spectra.shape[1])
