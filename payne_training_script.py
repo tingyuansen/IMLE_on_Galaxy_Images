@@ -26,11 +26,12 @@ training_spectra = spectra[:18000,:]
 training_labels = labels[:18000,:]
 validation_spectra = spectra[18000:,:]
 validation_labels = labels[18000:,:]
-
+print(training_spectra.shape)
+print(validation_spectra.shape)
 
 #----------------------------------------------------------------------------------------
 # train neural network # require GPU
 training_loss, validation_loss = training.neural_net(training_labels, training_spectra,\
                                                      validation_labels, validation_spectra,\
                                                      num_neurons=300, learning_rate=1e-4,\
-                                                     num_steps=1e7, batch_size=32, num_pixel=spectra.shape[1])
+                                                     num_steps=1e7, batch_size=64, num_pixel=spectra.shape[1])
