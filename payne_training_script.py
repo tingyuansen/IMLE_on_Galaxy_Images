@@ -6,8 +6,6 @@ from The_Payne import training
 #==========================================================================================
 # read spectra
 temp = np.load("../Kurucz_CK3_Optical_R=45000_MIKE.npz")
-#spectra = temp["spectra"][:,150:4433+150]
-#spectra = temp["spectra"][:,150:4375+150]
 spectra = temp["spectra"]
 labels = temp["labels"]
 labels[:,0] = labels[:,0]/1000.
@@ -22,14 +20,13 @@ np.savez("../ind_shuffle_payne_h3.npz", ind_shuffle=ind_shuffle)
 
 #----------------------------------------------------------------------------------------
 # separate into training and validation set
-# training_spectra = spectra[ind_shuffle,:][:18000,:]
-# training_labels = labels[ind_shuffle,:][:18000,:]
-# validation_spectra = spectra[ind_shuffle,:][18000:,:]
-# validation_labels = labels[ind_shuffle,:][18000:,:]
-training_spectra = spectra[ind_shuffle,:][:1000,:]
-training_labels = labels[ind_shuffle,:][:1000,:]
-validation_spectra = spectra[ind_shuffle,:][-1000:,:]
-validation_labels = labels[ind_shuffle,:][-1000:,:]
+spectra = spectra[ind_shuffle,:]
+labels = labels[ind_shuffle,:]
+training_spectra = spectra[:18000,:]
+training_labels = labels[:18000,:]
+validation_spectra = spectra[18000:,:]
+validation_labels = labels[18000:,:]
+
 
 #----------------------------------------------------------------------------------------
 # train neural network # require GPU
